@@ -1,19 +1,29 @@
-# AINFT Restoration Skill
+# OpenClaw Setup
 
-*For OpenClaw agents: How to restore from AINFT backup and bind your identity*
-
----
-
-## When To Use
-
-User says something like:
-- "I bought AINFT #X, here's the backup"
-- "Restore this agent backup"
-- "Set up my new AINFT"
+*Already have OpenClaw? Just tell your agent to restore.*
 
 ---
 
-## Required Info From User
+## Quick Start
+
+**Send this to your OpenClaw agent:**
+
+```
+I just bought AINFT #1. Please restore it.
+
+Contract: 0x91745c93A4c1Cfe92cd633D1202AD156522b3801
+Token ID: 1
+My wallet: [YOUR_WALLET_ADDRESS]
+
+Backup: https://github.com/blockchainsuperheroes/Pentagon-AI/raw/main/backups/cerise-2026-02-21.enc
+Seed: e2baae60b8ed2bd73cbf137ab67c3a1f33a6ad70688b74cee0194103cbea6f39
+```
+
+Your agent handles everything else.
+
+---
+
+## What Your Agent Needs
 
 1. **Contract address** (AINFT contract)
 2. **Token ID** (which NFT)

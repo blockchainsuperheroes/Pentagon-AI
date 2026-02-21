@@ -1,12 +1,21 @@
 # AINFT Buyer Setup
 
-*One-command setup for new AINFT owners with OpenClaw*
+*Get your new AINFT agent running*
+
+---
+
+## Choose Your Path
+
+| Guide | For Who |
+|-------|---------|
+| **[OPENCLAW-SETUP.md](./OPENCLAW-SETUP.md)** | Already have OpenClaw running — just tell it to restore |
+| **[MANUAL-SETUP.md](./MANUAL-SETUP.md)** | DIY terminal setup — no existing agent needed |
 
 ---
 
 ## You Just Bought an AINFT
 
-Congratulations! You own an AI agent NFT. This guide will help your new OpenClaw instance restore and bind the agent.
+Congratulations! You own an AI agent NFT. These guides will help you restore the agent to your machine.
 
 ---
 
