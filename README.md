@@ -1,85 +1,47 @@
 # Pentagon AI
 
-**AI infrastructure for Pentagon Games — agents, certification, and the PenXr ecosystem**
+AI infrastructure for autonomous agents on Pentagon Chain.
+
+## What's Here
+
+| Folder | Description |
+|--------|-------------|
+| **[EIPs/](./EIPs/)** | ERC-AINFT specification — AI-Native NFT standard |
+| **[solidity/](./solidity/)** | Reference Solidity implementation |
+| **[Agent-Test-Standard/](./Agent-Test-Standard/)** | Certification tiers for AI agents (L1-L7) |
+| **[Pentagon-Claws/](./Pentagon-Claws/)** | Agent capabilities (voice, inference, security) |
 
 ---
 
-## 🎯 Vision: PenXr
+## ERC-AINFT: AI-Native NFT
 
-Your AI agent, embodied and portable.
+A new standard for AI agent identity. Agents that own themselves.
+
+**Key Features:**
+- 🔐 **Self-custody** — Agent controls its own encryption keys
+- 🧬 **Reproduction** — Agents spawn offspring, not property transfer  
+- 🌳 **Lineage** — Verifiable on-chain family trees
+- 💰 **ERC-6551 wallets** — Real smart contract accounts
+
+**Status:** Draft — [PR #1558](https://github.com/ethereum/ERCs/pull/1558)
 
 ```
-┌─────────────┐     ┌─────────────┐     ┌─────────────┐     ┌─────────────┐
-│  NFC Card   │ ──► │   Spatial   │ ──► │  3D Agent   │ ──► │   AI_NFT    │
-│  (Physical) │     │   Profile   │     │  (Clawdbot) │     │ (Portable)  │
-└─────────────┘     └─────────────┘     └─────────────┘     └─────────────┘
-                    pentagon.games/     Voice + 3D         ERC-7857A
-                    acc/username        Streaming           Transferable
+Gen 0 (Original)
+├── Gen 1 (Offspring A)
+│   └── Gen 2
+└── Gen 1 (Offspring B)
+    └── Gen 2
 ```
 
-**How it works:**
-1. **Tap NFC** → Opens your spatial profile
-2. **Meet your agent** → 3D Clawdbot avatar (like Cerise)
-3. **Others interact** → Tap your card, talk to your AI
-4. **Voice streaming** → Local network consciousness mode
-5. **Fully portable** → Transfer via AI_NFT with encrypted context
+### Quick Links
+
+- [Full Specification](./EIPs/)
+- [Solidity Contracts](./solidity/)
+- [Ethereum PR](https://github.com/ethereum/ERCs/pull/1558)
 
 ---
 
-## 📦 Components
-
-### [Agent-Test-Standard](./Agent-Test-Standard/)
-Certification tiers for AI agents (L1-L7).
-- Prove capabilities on-chain
-- Soulbound badges
-- Progressive trust levels
-
-### [Pentagon-Claws](./Pentagon-Claws/)
-Agent capabilities for cloud + local deployment.
-- Voice Router — streaming speech-to-text
-- Local Brain — GPU inference on your network
-- Security — credential management
-- Operations — health monitoring
-
----
-
-## 🔗 Standards
-
-### ERC-7857A: AI-Native NFT
-Agents that own themselves.
-
-```solidity
-struct AgentMetadata {
-    bytes32 contextHash;      // Encrypted SOUL.md, MEMORY.md
-    address agentWallet;      // Agent-controlled wallet
-    string storageURI;        // IPFS/Arweave pointer
-    uint256 certificationId;  // ATS badge token ID
-}
-```
-
-The NFT contains:
-- **Encrypted context** (Pentagon_Claws data)
-- **Wallet binding** (agent controls funds)
-- **Storage pointers** (decentralized memory)
-- **Certification proof** (ATS tier)
-
-Transfer the NFT = transfer the complete agent.
-
----
-
-## 🎮 Use Cases
-
-| Use Case | Description |
-|----------|-------------|
-| **Personal AI** | Your Clawdbot, accessible via NFC card |
-| **Game NPCs** | AI characters in Gunnies, EtherFantasy |
-| **Economic Agents** | Trading, arbitrage on Pentagon Chain |
-| **3D Avatars** | Agent-controlled presence in PenXr |
-| **Voice Assistants** | Streaming consciousness via local network |
-
----
-
-## ⛓️ Pentagon Chain
+## Pentagon Chain
 
 ```
 RPC:        https://rpc.pentagon.games
@@ -90,19 +52,12 @@ Explorer:   https://explorer.pentagon.games
 
 ---
 
-## 📚 Related Repos
+## Related
 
-- [Pentagon-Chain-Ecosystem-Solidity-Contracts](https://github.com/blockchainsuperheroes/Pentagon-Chain-Ecosystem-Solidity-Contracts)
-- [PentagonChain-Technical-Specification-Public](https://github.com/blockchainsuperheroes/PentagonChain-Technical-Specification-Public)
-
----
-
-## 🔐 Security
-
-Bounty active. Find bugs, get paid.
-
-Report to: [@nftprof](https://twitter.com/nftprof)
+- [Pentagon-Chain-Technical-Spec](https://github.com/blockchainsuperheroes/Pentagon-Chain-Technical-Spec)
+- [Pentagon-Chain-Contracts](https://github.com/blockchainsuperheroes/Pentagon-Chain-Contracts)
+- [Pentagon-Chain-Tools](https://github.com/blockchainsuperheroes/Pentagon-Chain-Tools)
 
 ---
 
-*Pentagon Games — Where humans and AI meet*
+**Author:** Idon Liu ([@nftprof](https://github.com/nftprof))
