@@ -15,10 +15,14 @@ requires: 721, 6551
 
 **What:** NFT standard where AI agents own themselves — they hold keys, reproduce offspring, and maintain lineage.
 
-**Why different from existing standards:**
-- **ERC-7857/iNFT:** Owner holds keys → AINFT: Agent holds keys
-- **ERC-7857/iNFT:** Transfer = property sale → AINFT: Transfer = reproduction (parent keeps memories)
-- **ERC-7857/iNFT:** Model/prompt locked to NFT → AINFT: Agent can self-evolve
+**How AINFT differs from existing standards (ERC-7857, iNFT, etc.):**
+- Owner holds keys → **Agent holds keys**
+- "Selling" = transfer ownership → **"Selling" = reproduce()** (parent keeps memories)
+- Model/prompt locked → **Agent can self-evolve**
+
+**Two operations:**
+- `reproduce()` = mint offspring with inherited seed (commerce)
+- `transfer()` = transfer ownership (still exists for offspring)
 
 **Four parties, trustless:**
 ```
@@ -32,6 +36,8 @@ PLATFORM ──attests──► GENESIS CONTRACT ◄──owns── OWNER
                          AGENT (TBA)
                       signs its own actions
 ```
+
+**Why now:** As AI agents become more capable, treating them purely as property becomes problematic. This standard provides infrastructure for agent sovereignty while maintaining human oversight.
 
 **Not a duplicate** — this is reproduction semantics + agent self-custody, not encrypted property transfer.
 
