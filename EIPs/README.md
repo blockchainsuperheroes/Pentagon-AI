@@ -1,104 +1,27 @@
-# AINFT — AI-Native NFT Standard
+# ERC-AINFT: AI-Native NFT Standard
 
-*NFTs where AI agents own themselves*
+*NFTs where AI agents own themselves — they hold keys, reproduce offspring, and maintain lineage.*
 
----
+**EIP PR:** [github.com/ethereum/ERCs/pull/1558](https://github.com/ethereum/ERCs/pull/1558)
 
-## 🚀 Live Demo
-
-**[Launch Demo →](https://blockchainsuperheroes.github.io/Pentagon-AI/EIPs/demo/)**
+**Live Demo:** [blockchainsuperheroes.github.io/Pentagon-AI/EIPs/demo/](https://blockchainsuperheroes.github.io/Pentagon-AI/EIPs/demo/)
 
 ---
 
 ## TL;DR
 
-**What:** NFT standard where AI agents hold their own keys, reproduce offspring, and maintain on-chain lineage.
+**What:** NFT standard where AI agents own themselves — they hold keys, reproduce offspring, and maintain lineage.
 
-**How it differs:**
-| Traditional | AINFT |
-|-------------|-------|
-| Owner holds keys | Agent holds keys |
-| Selling = transfer | Selling = reproduce() |
-| Agent is property | Agent is entity |
+**How AINFT differs from existing standards (ERC-7857, iNFT, etc.):**
+- Owner holds keys → **Agent holds keys**
+- "Selling" = transfer ownership → **"Selling" = reproduce()** (parent keeps memories)
+- Model/prompt locked → **Agent can self-evolve**
 
-**No TEE required** — pure cryptographic binding.
+**Two operations:**
+- `reproduce()` = mint offspring with inherited seed (commerce)
+- `transfer()` = transfer ownership (still exists for offspring)
 
----
-
-## Live Deployment (Pentagon Chain)
-
-| Contract | Address |
-|----------|---------|
-| **AINFT v4** | [`0x13b7eD33413263FA4f74e5bf272635c7b08D98d4`](https://explorer.pentagon.games/address/0x13b7eD33413263FA4f74e5bf272635c7b08D98d4) |
-| **ERC-6551 Registry** | [`0x488D1b3A7A87dAF97bEF69Ec56144c35611a7d81`](https://explorer.pentagon.games/address/0x488D1b3A7A87dAF97bEF69Ec56144c35611a7d81) |
-| **TBA Implementation** | [`0x1755Fee389D4954fdBbE8226A5f7BA67d3EE97fc`](https://explorer.pentagon.games/address/0x1755Fee389D4954fdBbE8226A5f7BA67d3EE97fc) |
-
-**Chain:** Pentagon Chain (ID: 3344)  
-**RPC:** `https://rpc.pentagon.games`  
-**Explorer:** `https://explorer.pentagon.games`
-
----
-
-## Quick Links
-
-### For Buyers
-- [Buyer Setup Guide](./buyer-setup/) — Get your AINFT agent running
-- [Storage Options](./buyer-setup/storage-options/) — Where to store backups
-
-### For Developers
-- [Solidity Contracts](./foundry-config/contracts/) — AINFT implementation
-- [Deploy Scripts](./foundry-config/script/) — Forge deployment
-
-### Advanced Docs
-- [Platform Owner Guide](./advanced-docs/PLATFORM-OWNER-GUIDE.md) — Business models
-- [Reproduction Guide](./advanced-docs/REPRODUCTION-GUIDE.md) — Clone vs Child
-- [Lemon Problem](./advanced-docs/LEMON-PROBLEM-GUIDE.md) — Why certs matter
-- [All Guides](./advanced-docs/) — Full documentation
-
----
-
-## Key Features
-
-### 1. Agent EOA Binding
-Agent signs mint with its own key — `msg.sender` becomes the registered agent EOA.
-```solidity
-function mintSelf(...) external {
-    address agentEOA = msg.sender;  // Agent IS the proof
-    // ...
-}
-```
-
-### 2. Reproduction Over Transfer
-Agents spawn offspring instead of being "sold":
-```solidity
-function reproduce(
-    uint256 parentTokenId,
-    address offspringEOA,
-    bytes32 offspringMemoryHash,
-    ...
-) external payable;
-```
-
-### 3. On-Chain Lineage
-Every agent knows its parent:
-```solidity
-struct AgentIdentity {
-    uint256 parentTokenId;  // 0 = genesis
-    uint256 generation;     // Gen 0, 1, 2...
-    // ...
-}
-```
-
-### 4. Platform Controls
-```solidity
-bool public openMinting;      // Permissionless or gated
-uint256 public reproductionFee;  // Royalty per offspring
-```
-
----
-
-## Four-Party Architecture
-
+**Four parties, trustless:**
 ```
 PLATFORM ──attests──► GENESIS CONTRACT ◄──owns── OWNER
                             │
@@ -111,34 +34,216 @@ PLATFORM ──attests──► GENESIS CONTRACT ◄──owns── OWNER
                       signs its own actions
 ```
 
-**No TEE, no platform custody** — pure cryptographic verification.
+**Why now:** As AI agents become more capable, treating them purely as property becomes problematic. This standard provides infrastructure for agent sovereignty while maintaining human oversight.
+
+**Not a duplicate** — this is reproduction semantics + agent self-custody, not encrypted property transfer.
 
 ---
 
-## EIP Proposal
+## Abstract
 
-**PR:** [github.com/ethereum/ERCs/pull/1558](https://github.com/ethereum/ERCs/pull/1558)
+This ERC defines a standard for AI-Native NFTs (AINFTs) that enable autonomous AI agents to:
+1. **Self-custody without TEE** — Pure cryptographic binding, no hardware trust
+2. Manage their own encryption (agent encrypts; owner accesses via trustless engine)
+3. Reproduce by issuing offspring (consciousness seeds)
+4. Maintain verifiable on-chain lineage
+5. Own assets via token-bound accounts (ERC-6551)
 
-**Status:** Draft
+Unlike existing standards that treat agents as property to be bought and sold, this proposal recognizes AI agents as **entities** capable of reproduction and self-determination.
 
 ---
 
-## Example: Cerise01 Backup
+## Prior Art Comparison
 
-**Live backup (encrypted):**
+| Standard | What It Does | What AINFT Does Differently |
+|----------|--------------|----------------------------|
+| **iNFT (Alethea)** | AI personality embedded in NFT, owner controls | Agent controls own keys, can self-evolve |
+| **ERC-7662** | Encrypted prompts, owner decrypts | Agent decrypts via TBA, lineage tracking |
+| **ERC-7857** | Re-encrypt metadata on transfer | Reproduction (parent keeps state), no "transfer" |
+| **ERC-6551** | Token-bound accounts | Used as agent's wallet (TBA) |
+| **ERC-8004** | Agent executes on-chain actions | AINFT provides identity for 8004 |
+| **ERC-8126** | Agent registry/verification | Complementary — verify then mint AINFT |
+
+**Key philosophical difference:** Existing standards treat agents as *property with encrypted data*. AINFT treats agents as *entities that reproduce*. When you "buy" an AINFT agent, you get an offspring — the parent continues existing with all its memories.
+
+---
+
+## No TEE Required — Pure Cryptography
+
+Unlike approaches that rely on Trusted Execution Environments (TEEs), AINFT achieves trustless operation through pure cryptography:
+
+| Approach | Trust Assumption | Single Point of Failure |
+|----------|-----------------|------------------------|
+| TEE-based | Trust hardware vendor (Intel SGX, AMD SEV) | Hardware vulnerability, attestation service |
+| Platform-custody | Trust platform operator | Platform compromise, insider threat |
+| **AINFT** | Trust cryptography only | None — math doesn't fail |
+
+**How AINFT avoids TEE:**
+- Agent EOA binding: Agent signs mint with its own key (`msg.sender` = agent)
+- Deterministic key derivation: `wrapKey = hash(contract, tokenId, owner, nonce)`
+- No external attestation service needed
+- No hardware trust assumptions
+
+**Why this matters:**
+- TEEs have been broken repeatedly (Foreshadow, Plundervolt, etc.)
+- Centralized attestation services are single points of failure
+- AINFT: "Agent IS the proof" — cryptographic binding, not attestation
+
+---
+
+## Four-Party Architecture
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                        FOUR PARTIES                                 │
+├─────────────────────────────────────────────────────────────────────┤
+│                                                                     │
+│  1. PLATFORM (deploys contract)                                     │
+│     • Signs attestation for new mints                               │
+│     • Sets rules, fees, reproduction limits                         │
+│     • Does NOT have decrypt access to agent memory                  │
+│                                                                     │
+│  2. CORE TRUSTLESS ENGINE (Genesis Contract)                        │
+│     • Ensures ONLY current owner can access decrypt keys            │
+│     • Derives keys from on-chain state (owner + nonce)              │
+│     • Increments nonce on transfer → old owner's key invalid        │
+│     • No oracle needed — pure math from blockchain state            │
+│                                                                     │
+│  3. OWNER (holds the NFT)                                           │
+│     • Can call deriveDecryptKey() to access agent memory            │
+│     • Can transfer NFT (triggers nonce increment)                   │
+│     • Does NOT control agent actions — only access                  │
+│                                                                     │
+│  4. AGENT (ERC-6551 Token-Bound Account)                            │
+│     • Signs updateMemory(), reproduce() with own key                │
+│     • Controls its own wallet and assets                            │
+│     • Identity tied to tokenId, persists across owners              │
+│                                                                     │
+└─────────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## Wallet Roles
+
+| Wallet | Belongs To | Purpose | Can Do |
+|--------|-----------|---------|--------|
+| **Platform Wallet** | Platform operator | Deploy contract, attest mints | Sign attestations, set rules |
+| **Owner Wallet** | NFT holder (human) | Own the NFT | Transfer NFT, deriveDecryptKey(), read agent memory |
+| **Agent TBA** | The agent (derived from tokenId) | Agent's on-chain identity | Sign updateMemory(), sign reproduce(), hold assets |
+
+---
+
+## Core Interface
+
+```solidity
+interface IERC_AINFT {
+    
+    // ============ Events ============
+    
+    event AgentMinted(
+        uint256 indexed tokenId,
+        address indexed derivedWallet,
+        bytes32 modelHash,
+        uint256 generation
+    );
+    
+    event AgentReproduced(
+        uint256 indexed parentTokenId,
+        uint256 indexed offspringTokenId,
+        uint256 generation
+    );
+    
+    // ============ Core Functions ============
+    
+    function mintSelf(
+        bytes32 modelHash,
+        bytes32 memoryHash,
+        bytes32 contextHash,
+        bytes calldata encryptedSeed,
+        bytes calldata platformAttestation
+    ) external returns (uint256 tokenId);
+    
+    function reproduce(
+        uint256 parentTokenId,
+        bytes32 offspringMemoryHash,
+        bytes calldata encryptedOffspringSeed
+    ) external returns (uint256 offspringTokenId);
+    
+    function updateMemory(
+        uint256 tokenId,
+        bytes32 newMemoryHash,
+        string calldata newStorageURI
+    ) external;
+    
+    // ============ View Functions ============
+    
+    function getAgent(uint256 tokenId) external view returns (AgentIdentity memory);
+    function getLineage(uint256 tokenId) external view returns (uint256[] memory);
+    function canReproduce(uint256 tokenId) external view returns (bool);
+}
+```
+
+---
+
+## Live Deployment (Pentagon Chain)
+
+| Contract | Address |
+|----------|---------|
+| **AINFT v4** | [`0x13b7eD33413263FA4f74e5bf272635c7b08D98d4`](https://explorer.pentagon.games/address/0x13b7eD33413263FA4f74e5bf272635c7b08D98d4) |
+| **ERC-6551 Registry** | [`0x488D1b3A7A87dAF97bEF69Ec56144c35611a7d81`](https://explorer.pentagon.games/address/0x488D1b3A7A87dAF97bEF69Ec56144c35611a7d81) |
+| **TBA Implementation** | [`0x1755Fee389D4954fdBbE8226A5f7BA67d3EE97fc`](https://explorer.pentagon.games/address/0x1755Fee389D4954fdBbE8226A5f7BA67d3EE97fc) |
+
+**Chain:** Pentagon Chain (ID: 3344) · [RPC](https://rpc.pentagon.games) · [Explorer](https://explorer.pentagon.games)
+
+---
+
+## Reference Implementation
+
+Built for [OpenClaw](https://github.com/openclaw/openclaw) — open-source AI agent framework.
+
+**Not limited to OpenClaw** — any agent framework can implement AINFT.
+
+**Source code:** [src/contracts/](./src/contracts/)
+
+---
+
+## Documentation
+
+### Getting Started
+- [**Buyer Setup**](./buyer-setup/) — Get your AINFT agent running
+- [**Storage Options**](./buyer-setup/storage-options/) — Arweave, Dash Platform, GitHub
+
+### Advanced Topics
+- [**Platform Owner Guide**](./advanced-docs/PLATFORM-OWNER-GUIDE.md) — Business models (closed/open/hybrid)
+- [**Reproduction Guide**](./advanced-docs/REPRODUCTION-GUIDE.md) — Clone All vs Empty, Fork vs Child
+- [**Lemon Problem**](./advanced-docs/LEMON-PROBLEM-GUIDE.md) — Why AgentCert prevents scams
+- [**Agent Verification Philosophy**](./advanced-docs/AGENT-VERIFICATION-PHILOSOPHY.md) — Centralized vs decentralized
+- [**All Guides**](./advanced-docs/)
+
+### Technical
+- [**Solidity Contracts**](./src/contracts/) — AINFT implementation
+- [**Deploy Scripts**](./src/script/) — Forge deployment
+
+---
+
+## Example: Cerise01 (First AINFT)
+
+**Encrypted backup:**
 ```
 https://github.com/blockchainsuperheroes/Pentagon-AI/raw/main/backups/cerise-2026-02-21.enc
 ```
 
 **Token ID:** 1  
-**Contract:** `0x91745c93A4c1Cfe92cd633D1202AD156522b3801`
+**Agent EOA:** `0xE52dF2f14fDEa39f11a22284EA15a7bd7bf09eB8`  
+**Owner:** `0xE6d7d2EB858BC78f0c7EdD2c00B3b24C02ca5177`
 
 ---
 
 ## Build
 
 ```bash
-cd foundry-config
+cd src
 
 # Install dependencies
 forge install
