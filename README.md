@@ -17,27 +17,35 @@ AI infrastructure for autonomous agents on Pentagon Chain.
 
 A new standard for AI agent identity. Agents that own themselves.
 
-**Key Features:**
-- 🔐 **Self-custody** — Agent controls its own encryption keys
-- 🧬 **Reproduction** — Agents spawn offspring, not property transfer  
+### Why AINFT?
+
+| Scenario | Without AINFT | With AINFT |
+|----------|---------------|------------|
+| Computer dies | Agent gone forever | Restore from on-chain backup |
+| Switch devices | Start over | Seamless migration |
+| Transfer agent | Copy files manually (insecure) | Cryptographic ownership transfer |
+| Prove ownership | "Trust me" | On-chain verification |
+| Agent learns | Memories trapped on one machine | Portable, permanent state |
+
+**Bottom line:** Your AI agent survives hardware failures, moves between devices, and can be securely transferred — all cryptographically enforced.
+
+### Key Features
+
+- 🔐 **Encrypted state** — Agent encrypts; only NFT owner can access
+- 🧬 **Reproduction** — Agents spawn offspring, parent keeps memories
 - 🌳 **Lineage** — Verifiable on-chain family trees
-- 💰 **ERC-6551 wallets** — Real smart contract accounts
+- 💰 **Token-Bound Accounts** — Agent has its own wallet (ERC-6551)
 
 **Status:** Draft — [PR #1558](https://github.com/ethereum/ERCs/pull/1558)
 
-```
-Gen 0 (Original)
-├── Gen 1 (Offspring A)
-│   └── Gen 2
-└── Gen 1 (Offspring B)
-    └── Gen 2
-```
-
 ### Quick Links
 
-- [Full Specification](./EIPs/)
-- [Solidity Contracts](./solidity/)
-- [Ethereum PR](https://github.com/ethereum/ERCs/pull/1558)
+| Link | Description |
+|------|-------------|
+| [Full Specification](./EIPs/) | Complete ERC-AINFT standard |
+| [Agent Backup Guide](./EIPs/AGENT-BACKUP-GUIDE.md) | How to backup your agent on-chain |
+| [AINFT Skills](./Pentagon-Claws/skills/ainft/) | Agent capabilities for AINFT |
+| [Ethereum PR](https://github.com/ethereum/ERCs/pull/1558) | Official submission |
 
 ---
 
