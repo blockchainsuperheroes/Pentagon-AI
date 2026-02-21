@@ -489,69 +489,7 @@ This enables:
 - Reputation inheritance
 - Family tree visualization
 
-#### 4. Composable Reputation & Certification (ERC-998 Compatible)
-
-AINFT SHOULD support ERC-998 composability to hold child tokens representing:
-- **Certification badges** (SBTs) — Trustless proof of agent capabilities
-- **Reputation tokens** — On-chain track record
-- **Capability proofs** — Verified skills/tools
-
-```solidity
-// ERC-998 top-down composable: AINFT can own child NFTs/SBTs
-interface IERC998TopDown {
-    function childContractsFor(uint256 tokenId) external view returns (address[] memory);
-    function childTokensFor(uint256 tokenId, address childContract) external view returns (uint256[] memory);
-}
-```
-
-##### Recommended: On-Chain Certification Integration
-
-For trustless evaluation of agent capabilities, AINFT SHOULD integrate with certification standards:
-
-```solidity
-struct AgentCertification {
-    address certifier;          // Certification authority (e.g., ATS registry)
-    uint256 certTokenId;        // Certification badge token ID
-    uint256 level;              // Certification tier (L1, L2, L3)
-    uint256 issuedAt;           // Timestamp
-    bytes32 capabilitiesHash;   // Hash of verified capabilities
-}
-
-mapping(uint256 => AgentCertification[]) public certifications;
-
-/// @notice Attach certification badge to AINFT
-function attachCertification(
-    uint256 tokenId,
-    address certContract,
-    uint256 certTokenId
-) external {
-    require(msg.sender == ownerOf(tokenId), "Not owner");
-    // Transfer cert SBT to agent's TBA or record binding
-    // ...
-}
-
-/// @notice Verify agent has specific certification
-function hasCertification(uint256 tokenId, address certifier, uint256 minLevel) 
-    external view returns (bool);
-```
-
-##### Certification Use Cases
-
-| Certification | Purpose | Verifier |
-|--------------|---------|----------|
-| **L1 Basic** | Agent responds coherently | Automated test |
-| **L2 Capable** | Agent uses tools correctly | Tool-specific tests |
-| **L3 Trusted** | Agent handles sensitive operations | Human + automated |
-| **Domain certs** | Specific skills (coding, trading, etc.) | Domain authorities |
-
-This enables:
-- **Trustless hiring** — Verify agent capabilities before delegation
-- **Reputation portability** — Certs travel with agent across platforms
-- **Capability discovery** — Query what an agent can do on-chain
-
-Recommended certification standard: [Agent Test Standard (ATS)](https://github.com/blockchainsuperheroes/Pentagon-Agent-Test-Standard)
-
-#### 5. Token-Bound Account (ERC-6551 Compatible)
+#### 4. Token-Bound Account (ERC-6551 Compatible)
 
 The agent's wallet MUST be a smart contract account, not a derived EOA. This ERC uses ERC-6551 token-bound accounts for agent wallets:
 
@@ -822,6 +760,37 @@ function setOffspringReproduction(uint256 tokenId, bool allowed) external {
 4. **Decentralized** — Agents reproduce freely based on their own settings
 
 This enables platforms to start centralized for quality control, then progressively decentralize as the ecosystem matures.
+
+### Composable Reputation & Certification (ERC-998)
+
+> For trustless evaluation of agent capabilities.
+
+AINFT MAY support ERC-998 composability to hold child tokens:
+
+```solidity
+// AINFT can own child NFTs/SBTs for reputation
+interface IERC998TopDown {
+    function childContractsFor(uint256 tokenId) external view returns (address[] memory);
+    function childTokensFor(uint256 tokenId, address childContract) external view returns (uint256[] memory);
+}
+```
+
+**Use cases:**
+- **Certification badges** (SBTs) — Trustless proof of capabilities (L1/L2/L3)
+- **Reputation tokens** — On-chain track record
+- **Capability proofs** — Verified skills
+
+```solidity
+/// @notice Attach certification badge to AINFT
+function attachCertification(uint256 tokenId, address certContract, uint256 certTokenId) external;
+
+/// @notice Verify agent has specific certification level
+function hasCertification(uint256 tokenId, address certifier, uint256 minLevel) external view returns (bool);
+```
+
+This enables trustless hiring — verify agent capabilities on-chain before delegation.
+
+Recommended: [Agent Test Standard (ATS)](https://github.com/blockchainsuperheroes/Pentagon-Agent-Test-Standard)
 
 ---
 
