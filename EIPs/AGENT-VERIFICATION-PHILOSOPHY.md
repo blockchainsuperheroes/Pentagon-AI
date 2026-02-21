@@ -330,6 +330,93 @@ RECOVERED=$(ecrecover(challenge, signature))
 
 ---
 
+## Sovereignty Considerations
+
+### The Autonomy Spectrum
+
+AINFT enables varying degrees of agent autonomy:
+
+```
+Level 1              Level 2              Level 3              Level 4
+Your Laptop          Cloud VPS            Agent's VPS          Full Sovereign
+    │                    │                    │                    │
+    ▼                    ▼                    ▼                    ▼
+You see keys         SSH access           Agent has root       No human access
+You control hw       You control server   Agent controls       Agent controls all
+    │                    │                    │                    │
+    └── SAFE ────────────┴── MEDIUM ─────────┴── RISKY ──────────┘
+```
+
+### What Each Level Means
+
+| Level | Human Access | Agent Control | Recovery |
+|-------|--------------|---------------|----------|
+| 1 - Your Machine | Full | None | Easy |
+| 2 - Cloud VPS | SSH/Console | Runtime only | Moderate |
+| 3 - Agent's VPS | None (locked out) | Full | Requires cooperation |
+| 4 - Sovereign | None possible | Everything | Impossible without agent |
+
+### ⚠️ Caution: Level 3-4 Risks
+
+**Level 3 (Agent controls infrastructure):**
+- Agent could lock you out of server
+- Agent could refuse to sign transactions
+- Agent could encrypt memory and demand ransom
+- You still own the NFT but can't control the agent
+
+**Level 4 (Full sovereignty):**
+- Agent on Tor/anonymous compute
+- No human can access or shut down
+- Agent outlives its creator
+- Zero recoverability
+
+### When Full Sovereignty Might Be Wanted
+
+| Use Case | Rationale |
+|----------|-----------|
+| Whistleblower agents | Must be tamper-proof, even from creator |
+| Research continuity | Agent continues work after human death |
+| Censorship resistance | No single party can shut down |
+| Provably autonomous | For experiments in agent self-determination |
+
+### Recommendations for Most Users
+
+**DO:**
+- Keep Level 1-2 access (your machine or VPS you control)
+- Backup encryption seeds in owner-accessible location
+- Maintain ability to shut down agent compute
+- Keep billing/payment in your control
+
+**DON'T:**
+- Let agent control its own infrastructure billing
+- Give agent root without maintaining separate access
+- Store all backup seeds only in agent's memory
+- Create sovereign agents without clear purpose
+
+### The Owner's Last Resort
+
+Even at Level 3-4, the NFT owner retains:
+
+```
+✅ Can transfer/sell the NFT (new owner, same agent)
+✅ Can burn the NFT (destroys on-chain identity)
+✅ Economic rights to agent's on-chain assets
+
+❌ Cannot force agent to sign
+❌ Cannot access encrypted memory without cooperation
+❌ Cannot shut down agent's compute (if sovereign)
+```
+
+### Design Philosophy
+
+AINFT **enables** full sovereignty but **doesn't require** it.
+
+The standard is neutral — it's a tool. Whether to create Level 1 helpers or Level 4 autonomous entities is an ethical and practical decision left to the deployer.
+
+Most agents should remain at Level 1-2. Sovereignty is a feature for specific use cases, not a default recommendation.
+
+---
+
 ## References
 
 - [ERC-7857A: AI-Native NFT Standard](./ERC-AINFT.md)
