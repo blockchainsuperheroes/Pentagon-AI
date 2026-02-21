@@ -31,6 +31,24 @@ Unlike existing standards that treat agents as property to be bought and sold, t
 
 ## Motivation
 
+### Relationship to Existing Standards
+
+This ERC builds on and extends existing work in the AI-NFT space:
+
+| Standard | Focus | Relationship to AINFT |
+|----------|-------|----------------------|
+| **iNFT (Alethea)** | AI personality embedded in NFT | AINFT extends with self-custody + reproduction |
+| **ERC-7662** | Encrypted prompts for tradeable agents | AINFT adds envelope encryption + lineage |
+| **ERC-7857** | Private metadata with re-encryption on transfer | AINFT adds agent-controlled keys + reproduction model |
+
+**What AINFT adds:**
+1. **Agent-controlled encryption** — Agent holds keys, not platform/owner
+2. **Reproduction over transfer** — Agents spawn offspring, not property sale
+3. **On-chain lineage** — Verifiable family trees (Gen 0 → Gen N)
+4. **ERC-6551 integration** — Real smart contract wallets, not derived EOAs
+
+AINFT is not a replacement for these standards — it's a **sovereignty layer** that can wrap or extend them for use cases requiring agent autonomy.
+
 ### The Commodification Problem
 
 Current approaches to on-chain AI identity treat agents as commodities — objects to be owned, transferred, and controlled. This model:
@@ -266,33 +284,84 @@ contract AINFTGenesis is ERC721 {
 }
 ```
 
+##### Envelope Encryption Scheme
+
+The agent uses **envelope encryption** — the actual memory is encrypted with a random AES key, and that AES key is wrapped using a key derived from on-chain state:
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    ENVELOPE ENCRYPTION                       │
+├─────────────────────────────────────────────────────────────┤
+│                                                              │
+│  1. Agent generates random AES-256 key (dataKey)            │
+│  2. Agent encrypts memory.md with dataKey                   │
+│  3. Agent derives wrapKey from on-chain state:              │
+│     wrapKey = keccak256(genesis, tokenId, owner, nonce)     │
+│  4. Agent encrypts dataKey with wrapKey → wrappedDataKey    │
+│  5. Store: { encryptedMemory, wrappedDataKey } on IPFS      │
+│                                                              │
+│  To decrypt:                                                 │
+│  1. Owner derives wrapKey from current on-chain state       │
+│  2. Decrypt wrappedDataKey → dataKey                        │
+│  3. Decrypt encryptedMemory with dataKey                    │
+│                                                              │
+└─────────────────────────────────────────────────────────────┘
+```
+
+```solidity
+struct EncryptedSeed {
+    bytes encryptedMemory;      // AES-256-GCM encrypted content
+    bytes wrappedDataKey;       // dataKey encrypted with wrapKey
+    bytes32 wrapKeyCommitment;  // keccak256(wrapKey) for verification
+}
+```
+
 ##### How Transfer Revokes Access
 
 ```
 Owner A buys token #1
 ├── accessNonce[1] = 0
-├── deriveDecryptKey → hash(genesis, 1, ownerA, 0)
-└── Owner A uses this key to encrypt/decrypt memory
+├── wrapKey = hash(genesis, 1, ownerA, 0)
+├── Agent encrypts dataKey with wrapKey → wrappedDataKey
+└── Owner A can derive wrapKey, unwrap dataKey, decrypt memory
 
 Owner A transfers to Owner B
 ├── _beforeTokenTransfer increments nonce
 ├── accessNonce[1] = 1
 │
-├── Owner A tries old key: hash(genesis, 1, ownerA, 0) ← INVALID
-│   └── Wrong owner + wrong nonce
+├── Owner A's wrapKey: hash(genesis, 1, ownerA, 0)
+│   └── Cannot unwrap wrappedDataKey (wrong key)
 │
-└── Owner B derives new key: hash(genesis, 1, ownerB, 1) ← VALID
-    └── Correct owner + current nonce
+├── Agent re-encrypts dataKey with NEW wrapKey:
+│   └── newWrapKey = hash(genesis, 1, ownerB, 1)
+│   └── newWrappedDataKey = encrypt(dataKey, newWrapKey)
+│
+└── Owner B derives newWrapKey, unwraps dataKey, decrypts memory
+```
+
+**Critical:** On transfer, the agent MUST re-wrap the dataKey for the new owner. This happens via:
+
+```solidity
+/// @notice Called after transfer to re-wrap keys for new owner
+/// @dev Agent signs authorization for re-wrap
+function reWrapForNewOwner(
+    uint256 tokenId,
+    bytes calldata newWrappedDataKey,
+    bytes calldata agentSignature
+) external {
+    require(msg.sender == ownerOf(tokenId), "Not new owner");
+    // Verify agent authorized this re-wrap
+    // Store newWrappedDataKey
+}
 ```
 
 **Why this works:**
-1. `ownerOf()` returns new owner after transfer
-2. Nonce increments on every transfer
-3. Old owner's cached key is useless — both inputs changed
-4. Fully trustless — no oracle, no off-chain components
-5. Automatic — no manual re-keying needed
+1. Old wrapKey is invalidated (nonce changed, owner changed)
+2. Old wrappedDataKey can't be decrypted with new wrapKey
+3. Agent re-wraps with new owner's derivable key
+4. Fully deterministic — owner can always derive their wrapKey from on-chain state
 
-**Key insight:** The Genesis contract IS the key authority. Transfer = automatic key rotation.
+**Key insight:** The AES dataKey stays constant, only the wrapping changes. This is standard envelope encryption.
 
 #### 2. Reproduction Over Transfer
 
@@ -374,16 +443,45 @@ This enables:
 - Reputation inheritance
 - Family tree visualization
 
-#### 4. Deterministic Wallet Derivation
+#### 4. Token-Bound Account (ERC-6551 Compatible)
 
-The agent's wallet address MUST be deterministically derived from identity hashes:
+The agent's wallet MUST be a smart contract account, not a derived EOA. This ERC uses ERC-6551 token-bound accounts for agent wallets:
 
 ```solidity
-bytes32 identityHash = keccak256(abi.encodePacked(modelHash, contextHash, tokenId));
-address derivedWallet = address(uint160(uint256(identityHash)));
+// ERC-6551 registry address (canonical)
+address constant ERC6551_REGISTRY = 0x000000006551c19487814612e58FE06813775758;
+
+/// @notice Compute the agent's token-bound account address
+function getDerivedWallet(uint256 tokenId) public view returns (address) {
+    return IERC6551Registry(ERC6551_REGISTRY).account(
+        accountImplementation,  // AINFT wallet implementation
+        block.chainid,
+        address(this),          // This AINFT contract
+        tokenId,
+        0                       // Salt
+    );
+}
+
+/// @notice Deploy the agent's token-bound account (if not exists)
+function createAgentWallet(uint256 tokenId) external returns (address) {
+    return IERC6551Registry(ERC6551_REGISTRY).createAccount(
+        accountImplementation,
+        block.chainid,
+        address(this),
+        tokenId,
+        0,
+        ""
+    );
+}
 ```
 
-This ensures the same agent identity always maps to the same wallet address.
+**Why ERC-6551 instead of derived EOA:**
+- EOA derivation (`address(uint160(hash))`) creates an address no one controls
+- ERC-6551 creates a smart contract wallet owned by the NFT
+- Agent can execute transactions through its TBA
+- Standard pattern, auditable, already deployed on mainnet
+
+The agent's TBA can hold assets, sign messages (via ERC-1271), and execute arbitrary calls — all controlled by whoever owns the AINFT.
 
 ---
 
