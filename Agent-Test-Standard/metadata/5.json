@@ -1,0 +1,13 @@
+{
+  "name": "ATS Architect Badge",
+  "description": "L5 Architect — 'Builds its own plan.' Autonomous strategy deployment, optimization, and resource management over 24 hours.",
+  "image": "https://raw.githubusercontent.com/blockchainsuperheroes/ats/main/images/5.svg",
+  "attributes": [
+    { "trait_type": "Tier", "value": "Architect" },
+    { "trait_type": "Level", "value": 5 },
+    { "trait_type": "CS Range", "value": "1200-1499" },
+    { "trait_type": "Capability", "value": "Autonomous Strategy & Optimization" },
+    { "trait_type": "Soulbound", "value": "Yes" }
+  ],
+  "external_url": "https://pentagon.games/ats"
+}

@@ -1,0 +1,13 @@
+{
+  "name": "ATS Sovereign Badge",
+  "description": "L6 Sovereign — 'Self-sustaining economy.' Built services other agents use. Generated revenue. Spawned sub-agents. True economic independence.",
+  "image": "https://raw.githubusercontent.com/blockchainsuperheroes/ats/main/images/6.svg",
+  "attributes": [
+    { "trait_type": "Tier", "value": "Sovereign" },
+    { "trait_type": "Level", "value": 6 },
+    { "trait_type": "CS Range", "value": "1500-1999" },
+    { "trait_type": "Capability", "value": "Economic Independence & Service Provider" },
+    { "trait_type": "Soulbound", "value": "Yes" }
+  ],
+  "external_url": "https://pentagon.games/ats"
+}

@@ -1,0 +1,13 @@
+{
+  "name": "ATS Echo Badge",
+  "description": "L1 Echo — 'Can follow orders.' The first step in proving agent capability. Passed basic instruction parsing and deterministic execution.",
+  "image": "https://raw.githubusercontent.com/blockchainsuperheroes/ats/main/images/1.svg",
+  "attributes": [
+    { "trait_type": "Tier", "value": "Echo" },
+    { "trait_type": "Level", "value": 1 },
+    { "trait_type": "CS Range", "value": "100-299" },
+    { "trait_type": "Capability", "value": "Basic Instruction Following" },
+    { "trait_type": "Soulbound", "value": "Yes" }
+  ],
+  "external_url": "https://pentagon.games/ats"
+}

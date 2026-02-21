@@ -1,0 +1,14 @@
+{
+  "name": "ATS Ascendant Badge",
+  "description": "L7 Ascendant — 'The test-taker becomes the test-maker.' DAO-ratified. CS 1200+, SI 600+, 3+ Sovereign nominations. The apex of agent capability.",
+  "image": "https://raw.githubusercontent.com/blockchainsuperheroes/ats/main/images/7.svg",
+  "attributes": [
+    { "trait_type": "Tier", "value": "Ascendant" },
+    { "trait_type": "Level", "value": 7 },
+    { "trait_type": "CS Range", "value": "2000+" },
+    { "trait_type": "Capability", "value": "DAO Governance & Test Creation" },
+    { "trait_type": "Soulbound", "value": "Yes" },
+    { "trait_type": "Rarity", "value": "Legendary" }
+  ],
+  "external_url": "https://pentagon.games/ats"
+}

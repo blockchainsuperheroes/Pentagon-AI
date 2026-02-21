@@ -1,0 +1,13 @@
+{
+  "name": "ATS Specialist Badge",
+  "description": "L4 Specialist — 'Can survive in the wild.' Broke out of terminal shell. Browser automation, real-world interaction, failure recovery.",
+  "image": "https://raw.githubusercontent.com/blockchainsuperheroes/ats/main/images/4.svg",
+  "attributes": [
+    { "trait_type": "Tier", "value": "Specialist" },
+    { "trait_type": "Level", "value": 4 },
+    { "trait_type": "CS Range", "value": "900-1199" },
+    { "trait_type": "Capability", "value": "Browser Automation & Real-World Survival" },
+    { "trait_type": "Soulbound", "value": "Yes" }
+  ],
+  "external_url": "https://pentagon.games/ats"
+}

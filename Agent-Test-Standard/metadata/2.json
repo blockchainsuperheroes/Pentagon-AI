@@ -1,0 +1,13 @@
+{
+  "name": "ATS Tool Badge",
+  "description": "L2 Tool — 'Can use tools.' Demonstrated ability to read data, perform calculations, and use external resources.",
+  "image": "https://raw.githubusercontent.com/blockchainsuperheroes/ats/main/images/2.svg",
+  "attributes": [
+    { "trait_type": "Tier", "value": "Tool" },
+    { "trait_type": "Level", "value": 2 },
+    { "trait_type": "CS Range", "value": "300-599" },
+    { "trait_type": "Capability", "value": "Tool Usage & Calculation" },
+    { "trait_type": "Soulbound", "value": "Yes" }
+  ],
+  "external_url": "https://pentagon.games/ats"
+}

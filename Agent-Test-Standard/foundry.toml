@@ -1,0 +1,17 @@
+[profile.default]
+src = "contracts"
+out = "out"
+libs = ["lib"]
+remappings = [
+    "@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/"
+]
+evm_version = "paris"
+
+[profile.default.rpc]
+pentagon = { url = "https://rpc.pentagon.games", chain_id = 3344 }
+
+[rpc_endpoints]
+pentagon = "https://rpc.pentagon.games"
+
+[etherscan]
+pentagon = { key = "", url = "https://explorer.pentagon.games/api" }
