@@ -27,6 +27,7 @@ contract ERC7857A_v2 {
     );
     
     event MemoryUpdated(uint256 indexed tokenId, bytes32 newMemoryHash);
+    event AgentRebind(uint256 indexed tokenId, address indexed oldEOA, address indexed newEOA);
     event Transfer(address indexed from, address indexed to, uint256 indexed tokenId);
     event Approval(address indexed owner, address indexed approved, uint256 indexed tokenId);
     event ApprovalForAll(address indexed owner, address indexed operator, bool approved);
@@ -299,6 +300,30 @@ contract ERC7857A_v2 {
     function setReproduction(uint256 tokenId, bool enabled) external {
         require(ownerOf(tokenId) == msg.sender, "Not owner");
         _reproductionEnabled[tokenId] = enabled;
+    }
+    
+    /**
+     * @notice Owner rebinds AINFT to new agent EOA
+     * @dev Disconnects old EOA, binds new one. Old agent loses identity.
+     * @param tokenId The token to rebind
+     * @param newAgentEOA The new agent's EOA address
+     */
+    function rebindAgent(uint256 tokenId, address newAgentEOA) external {
+        require(ownerOf(tokenId) == msg.sender, "Not owner");
+        require(newAgentEOA != address(0), "Zero address");
+        require(eoaToToken[newAgentEOA] == 0, "EOA already registered");
+        
+        // Clear old binding
+        address oldEOA = _agents[tokenId].agentEOA;
+        if (oldEOA != address(0)) {
+            delete eoaToToken[oldEOA];
+        }
+        
+        // Set new binding
+        _agents[tokenId].agentEOA = newAgentEOA;
+        eoaToToken[newAgentEOA] = tokenId;
+        
+        emit AgentRebind(tokenId, oldEOA, newAgentEOA);
     }
     
     // ============ Internal ============
