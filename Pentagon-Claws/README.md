@@ -1,90 +1,57 @@
 # Pentagon Claws
 
-**OpenClaw fork for Pentagon Games AI agents — powering 3D PenXr agent infrastructure**
-
----
-
-## ⚠️ Fork Notice
-
-This is an **ongoing fork** of [OpenClaw](https://github.com/openclaw/openclaw).
-
-We maintain compatibility with upstream while adding Pentagon-specific features for AI agents in gaming, metaverse, and economic applications.
+**Agent capabilities for Pentagon Games ecosystem — cloud & local**
 
 ---
 
 ## Overview
 
-Pentagon Claws powers AI agents in the Pentagon Games ecosystem:
-- **Agent wallets** on Pentagon Chain
-- **On-chain certification** via ATS (Agent Test Standard)
-- **Game automation** for Gunnies, EtherFantasy, PentaPets
-- **Economic agents** participating in $PC economy
-- **3D PenXr** — AI-controlled avatars and NPCs
+Pentagon Claws extends AI agents with specialist capabilities for gaming, metaverse, and economic applications on Pentagon Chain.
+
+Works with:
+- **Cloud agents** (hosted, API-based)
+- **Local agents** (self-hosted, on-device)
 
 ---
 
-## Components
+## Capabilities
 
-### Core (this directory)
-- Pentagon Chain integration
-- Agent wallet management
-- ATS certification hooks
+Modular add-ons that enhance any agent:
 
-### Self-Help Guides
-Operational guides for running Pentagon Claws agents:
-- [Voice Router](./guides/voice-router/) — Speech-to-text pipeline
-- [Local Brain](./guides/local-brain/) — LAN inference setup
-- [Security](./guides/security/) — Hardening and access control
-- [Airgap Doctor](./guides/airgap-doctor/) — Offline diagnostics
-- [Operations](./guides/operations/) — Monitoring and maintenance
-
-See [SELFHELP.md](./SELFHELP.md) for the full guide index.
+| Capability | Description |
+|------------|-------------|
+| [Voice Router](./capabilities/voice-router/) | Speech-to-text pipeline for voice commands |
+| [Local Brain](./capabilities/local-brain/) | LAN inference with GPU acceleration |
+| [Security](./capabilities/security/) | Hardening, access control, credential management |
+| [Airgap Doctor](./capabilities/airgap-doctor/) | Offline diagnostics and recovery |
+| [Operations](./capabilities/operations/) | Monitoring, maintenance, health checks |
 
 ---
 
-## Differences from OpenClaw
-
-| Feature | OpenClaw | Pentagon Claws |
-|---------|----------|----------------|
-| Chain | Any EVM | Pentagon Chain (3344) |
-| Certification | None | ATS (Agent Test Standard) |
-| Wallet | Standard | Pentagon Agent Wallets |
-| Economy | N/A | $PC gas integration |
-| NFT Identity | N/A | ERC-7857A AI-NFT |
-| 3D Integration | N/A | PenXr avatar control |
-
----
-
-## Installation
-
-```bash
-# Clone Pentagon AI mono-repo
-git clone https://github.com/blockchainsuperheroes/Pentagon-AI.git
-cd Pentagon-AI/Pentagon-Claws
-
-# Follow OpenClaw setup with Pentagon config
-npm install
-```
-
----
-
-## Configuration
+## Pentagon Chain Integration
 
 ```yaml
-# Pentagon Chain config
 chain:
   rpc: https://rpc.pentagon.games
   chainId: 3344
   
-# ATS certification
-ats:
-  endpoint: https://agentcert.io
-  
-# Agent identity
 identity:
-  nft: ERC-7857A  # AI-Native NFT
-  storage: IPFS   # Memory persistence
+  nft: ERC-7857A    # AI-Native NFT standard
+  storage: IPFS     # Encrypted memory persistence
+  
+certification:
+  endpoint: https://agentcert.io
+  standard: ATS     # Agent Test Standard L1-L7
 ```
+
+---
+
+## Use Cases
+
+- **Agent Wallets** — Autonomous $PC transactions
+- **Game NPCs** — AI-controlled characters in Gunnies, EtherFantasy
+- **Economic Agents** — Trading, arbitrage, market making
+- **3D PenXr** — Avatar control in metaverse environments
 
 ---
 
@@ -92,15 +59,15 @@ identity:
 
 - [Agent Test Standard](../Agent-Test-Standard/) — Certification tiers L1-L7
 - [ERC-7857A](https://github.com/blockchainsuperheroes/Pentagon-Chain-Ecosystem-Solidity-Contracts/blob/main/EIPs/ERC-7857A-AINFT.md) — AI-Native NFT proposal
+- [OpenClaw](https://github.com/openclaw/openclaw) — Upstream framework
 
 ---
 
 ## Links
 
-- **Upstream:** https://github.com/openclaw/openclaw
-- **ATS:** https://agentcert.io
 - **Pentagon Chain:** https://pentagon.games
 - **Explorer:** https://explorer.pentagon.games
+- **ATS:** https://agentcert.io
 
 ---
 
