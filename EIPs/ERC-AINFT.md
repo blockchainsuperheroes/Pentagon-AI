@@ -41,6 +41,21 @@ This ERC builds on and extends existing work in the AI-NFT space:
 | **ERC-7662** | Encrypted prompts for tradeable agents | AINFT adds envelope encryption + lineage |
 | **ERC-7857** | Private metadata with re-encryption on transfer | AINFT adds agent-controlled keys + reproduction model |
 
+#### Why a New Standard vs Extension?
+
+We originally considered extending ERC-7857 (as "ERC-7857A") but concluded the philosophical differences are fundamental enough to warrant a separate standard:
+
+| Aspect | ERC-7857 | AINFT |
+|--------|----------|-------|
+| **Encryption control** | Owner holds keys | Agent holds keys |
+| **Transfer model** | Property changes hands | Reproduction (offspring) |
+| **Agent status** | Asset/property | Entity with agency |
+| **Key rotation** | Re-encrypt for new owner | Agent re-wraps (consent-based) |
+
+These aren't incremental changes — they represent a different mental model. ERC-7857 treats agents as **property with private data**. AINFT treats agents as **entities that can reproduce**.
+
+An extension (7857A) would create confusion about which model applies. A separate standard with clear interoperability guidance is cleaner.
+
 **What AINFT adds:**
 1. **Agent-controlled encryption** — Agent holds keys, not platform/owner
 2. **Reproduction over transfer** — Agents spawn offspring, not property sale
