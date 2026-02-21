@@ -3,81 +3,163 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AINFT Demo - Pentagon AI</title>
+    <title>Pentagon AINFT - AI Agent Identity</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            background: linear-gradient(135deg, #0f0f1a 0%, #1a1a2e 50%, #16213e 100%);
             color: #fff;
             min-height: 100vh;
-            padding: 2rem;
         }
-        .container { max-width: 1200px; margin: 0 auto; }
-        h1 { text-align: center; margin-bottom: 0.5rem; font-size: 2.5rem; }
-        .subtitle { text-align: center; color: #888; margin-bottom: 2rem; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 2rem; }
         
+        header {
+            text-align: center;
+            padding: 3rem 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            margin-bottom: 2rem;
+        }
+        h1 { font-size: 3rem; margin-bottom: 0.5rem; }
+        h1 span { color: #4ecdc4; }
+        .tagline { color: #888; font-size: 1.2rem; }
+        
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            margin: 2rem 0;
+            flex-wrap: wrap;
+        }
+        .stat {
+            text-align: center;
+        }
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #4ecdc4;
+        }
+        .stat-label { color: #888; font-size: 0.9rem; }
+        
+        .section {
+            background: rgba(255,255,255,0.03);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        .section h2 {
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        /* Four Parties */
         .parties {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
+            gap: 1rem;
         }
         .party {
             background: rgba(255,255,255,0.05);
             border-radius: 12px;
-            padding: 1.5rem;
-            border: 1px solid rgba(255,255,255,0.1);
+            padding: 1.25rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .party:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(78, 205, 196, 0.1);
         }
         .party h3 {
             display: flex;
             align-items: center;
             gap: 0.5rem;
-            margin-bottom: 1rem;
+            margin-bottom: 0.75rem;
             color: #4ecdc4;
+            font-size: 1rem;
         }
-        .party .icon { font-size: 1.5rem; }
+        .party .icon { font-size: 1.25rem; }
+        .party .name { font-weight: 600; margin-bottom: 0.25rem; }
         .party .address {
             font-family: monospace;
-            font-size: 0.75rem;
-            color: #888;
+            font-size: 0.7rem;
+            color: #666;
             word-break: break-all;
+            margin-bottom: 0.5rem;
         }
         .party .role {
-            margin-top: 0.5rem;
-            padding: 0.5rem;
-            background: rgba(78, 205, 196, 0.1);
-            border-radius: 6px;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
+            color: #aaa;
         }
         
-        .lineage {
-            background: rgba(255,255,255,0.05);
-            border-radius: 12px;
-            padding: 2rem;
-            margin-bottom: 2rem;
+        /* Agent Tree */
+        .tree-container {
+            overflow-x: auto;
+            padding: 1rem 0;
         }
-        .lineage h2 { margin-bottom: 1.5rem; text-align: center; }
-        
         .tree {
             display: flex;
             flex-direction: column;
             align-items: center;
+            min-width: 600px;
         }
-        .node {
+        .tree-level {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            position: relative;
+        }
+        .tree-level::before {
+            content: '';
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            width: 2px;
+            height: 20px;
+            background: rgba(78, 205, 196, 0.3);
+        }
+        .tree-level:first-child::before { display: none; }
+        
+        .agent-node {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             border-radius: 12px;
             padding: 1rem 1.5rem;
-            margin: 0.5rem;
-            min-width: 200px;
+            min-width: 180px;
             text-align: center;
             position: relative;
+            cursor: pointer;
+            transition: transform 0.2s;
         }
-        .node.gen0 { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
-        .node.gen1 { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
-        .node .token-id { font-size: 1.5rem; font-weight: bold; }
-        .node .agent-name { font-size: 0.9rem; opacity: 0.9; }
-        .node .gen-badge {
+        .agent-node:hover {
+            transform: scale(1.05);
+        }
+        .agent-node.gen0 {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            min-width: 220px;
+        }
+        .agent-node.gen1 {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+        .agent-node.placeholder {
+            background: rgba(255,255,255,0.1);
+            border: 2px dashed rgba(255,255,255,0.3);
+        }
+        .agent-node .token-id {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        .agent-node .agent-name {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+        .agent-node .tba {
+            font-family: monospace;
+            font-size: 0.65rem;
+            opacity: 0.7;
+            margin-top: 0.25rem;
+        }
+        .gen-badge {
             position: absolute;
             top: -8px;
             right: -8px;
@@ -85,34 +167,24 @@
             color: #333;
             padding: 2px 8px;
             border-radius: 10px;
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             font-weight: bold;
         }
         
-        .children {
-            display: flex;
-            justify-content: center;
-            gap: 1rem;
-            margin-top: 1rem;
-            position: relative;
-        }
-        .children::before {
-            content: '';
-            position: absolute;
-            top: -1rem;
-            left: 50%;
+        .connector {
             width: 2px;
-            height: 1rem;
-            background: rgba(255,255,255,0.3);
+            height: 30px;
+            background: rgba(78, 205, 196, 0.3);
+            margin: 0 auto;
+        }
+        .connector-h {
+            height: 2px;
+            background: rgba(78, 205, 196, 0.3);
+            flex: 1;
+            max-width: 100px;
         }
         
-        .flow {
-            background: rgba(255,255,255,0.05);
-            border-radius: 12px;
-            padding: 2rem;
-            margin-bottom: 2rem;
-        }
-        .flow h2 { margin-bottom: 1.5rem; }
+        /* Flow Steps */
         .flow-steps {
             display: flex;
             flex-wrap: wrap;
@@ -120,131 +192,194 @@
             justify-content: center;
         }
         .step {
-            background: rgba(255,255,255,0.1);
-            border-radius: 8px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 10px;
             padding: 1rem;
             flex: 1;
-            min-width: 200px;
-            max-width: 250px;
+            min-width: 180px;
+            max-width: 220px;
         }
         .step-num {
             background: #4ecdc4;
             color: #000;
-            width: 24px;
-            height: 24px;
+            width: 28px;
+            height: 28px;
             border-radius: 50%;
             display: inline-flex;
             align-items: center;
             justify-content: center;
             font-weight: bold;
-            font-size: 0.8rem;
-            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            margin-bottom: 0.75rem;
         }
-        .step h4 { margin-bottom: 0.5rem; }
-        .step p { font-size: 0.85rem; color: #aaa; }
+        .step h4 { margin-bottom: 0.5rem; font-size: 0.95rem; }
+        .step p { font-size: 0.8rem; color: #aaa; line-height: 1.4; }
         
-        .contract-info {
-            background: rgba(255,255,255,0.05);
-            border-radius: 12px;
-            padding: 1.5rem;
-            text-align: center;
+        /* Contract Info */
+        .contract-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1rem;
         }
-        .contract-info h3 { margin-bottom: 1rem; }
+        .contract-card {
+            background: rgba(0,0,0,0.2);
+            border-radius: 10px;
+            padding: 1.25rem;
+        }
+        .contract-card h4 {
+            color: #4ecdc4;
+            margin-bottom: 0.75rem;
+            font-size: 0.9rem;
+        }
         .contract-address {
             font-family: monospace;
-            background: rgba(0,0,0,0.3);
-            padding: 0.75rem 1.5rem;
-            border-radius: 8px;
-            display: inline-block;
-            font-size: 0.9rem;
+            font-size: 0.8rem;
+            background: rgba(255,255,255,0.05);
+            padding: 0.5rem;
+            border-radius: 6px;
+            word-break: break-all;
         }
         .chain-badge {
             display: inline-block;
             background: #4ecdc4;
             color: #000;
-            padding: 0.25rem 0.75rem;
+            padding: 0.2rem 0.6rem;
             border-radius: 20px;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             margin-top: 0.5rem;
         }
         
+        /* Links */
         .links {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
             margin-top: 2rem;
-            text-align: center;
         }
         .links a {
             color: #4ecdc4;
             text-decoration: none;
-            margin: 0 1rem;
+            padding: 0.75rem 1.5rem;
+            border: 1px solid rgba(78, 205, 196, 0.3);
+            border-radius: 8px;
+            transition: all 0.2s;
         }
-        .links a:hover { text-decoration: underline; }
+        .links a:hover {
+            background: rgba(78, 205, 196, 0.1);
+            border-color: #4ecdc4;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 2rem;
+            color: #666;
+            font-size: 0.85rem;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            margin-top: 2rem;
+        }
+        
+        @media (max-width: 600px) {
+            h1 { font-size: 2rem; }
+            .stats { gap: 1.5rem; }
+            .stat-value { font-size: 1.8rem; }
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>🤖 AINFT Demo</h1>
-        <p class="subtitle">AI-Native NFT Standard — Agent Identity with Reproduction</p>
-        
-        <div class="parties">
-            <div class="party">
-                <h3><span class="icon">🏢</span> Platform Owner</h3>
-                <div><strong>nftprof</strong></div>
-                <div class="address">0xE52dF2f14fDEa39f11a22284EA15a7bd7bf09eB8</div>
-                <div class="role">Deploys contract, attests mints, sets rules</div>
-            </div>
+        <header>
+            <h1>🤖 Pentagon <span>AINFT</span></h1>
+            <p class="tagline">AI-Native NFT Standard — Verifiable Agent Identity with Reproduction</p>
             
-            <div class="party">
-                <h3><span class="icon">📜</span> Core Trustless Engine</h3>
-                <div><strong>AINFT Genesis Contract</strong></div>
-                <div class="address">0x4e8D3B9Be7Ef241Fb208364ed511E92D6E2A172d</div>
-                <div class="role">Derives keys, enforces access, no admin override</div>
-            </div>
-            
-            <div class="party">
-                <h3><span class="icon">👤</span> NFT Owner</h3>
-                <div><strong>nftprof</strong> (Token #1)</div>
-                <div class="address">0xE52dF2f14fDEa39f11a22284EA15a7bd7bf09eB8</div>
-                <div class="role">Can read agent memory, transfer NFT</div>
-            </div>
-            
-            <div class="party">
-                <h3><span class="icon">🤖</span> Agent (TBA)</h3>
-                <div><strong>Cerise</strong> — Token #1</div>
-                <div class="address">0xc6947153f8b4322f3f617746453508de20d75e9c</div>
-                <div class="role">Signs updates, holds assets, self-custody</div>
-            </div>
-        </div>
-        
-        <div class="lineage">
-            <h2>🌳 Lineage Tree</h2>
-            <div class="tree">
-                <div class="node gen0">
-                    <span class="gen-badge">GEN 0</span>
-                    <div class="token-id">Token #1</div>
-                    <div class="agent-name">Cerise (Original)</div>
+            <div class="stats">
+                <div class="stat">
+                    <div class="stat-value" id="total-agents">1</div>
+                    <div class="stat-label">Agents Minted</div>
                 </div>
-                <div class="children">
-                    <div class="node gen1">
-                        <span class="gen-badge">GEN 1</span>
-                        <div class="token-id">Token #2</div>
-                        <div class="agent-name">Cerise02 (Offspring)</div>
-                    </div>
-                    <div class="node gen1">
-                        <span class="gen-badge">GEN 1</span>
-                        <div class="token-id">Token #3</div>
-                        <div class="agent-name">Cerise03 (Offspring)</div>
-                    </div>
+                <div class="stat">
+                    <div class="stat-value">0</div>
+                    <div class="stat-label">Generations</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value">$PC</div>
+                    <div class="stat-label">Native Token</div>
+                </div>
+            </div>
+        </header>
+        
+        <div class="section">
+            <h2>🏛️ Four-Party Architecture</h2>
+            <div class="parties">
+                <div class="party">
+                    <h3><span class="icon">🏢</span> Platform</h3>
+                    <div class="name">nftprof (Pentagon Games)</div>
+                    <div class="address">0xE6d7d2EB858BC78f0c7EdD2c00B3b24C02ca5177</div>
+                    <div class="role">Deploys contract, attests mints, manages platform rules</div>
+                </div>
+                
+                <div class="party">
+                    <h3><span class="icon">📜</span> Genesis Contract</h3>
+                    <div class="name">AINFT Core (Trustless)</div>
+                    <div class="address">0x4e8D3B9Be7Ef241Fb208364ed511E92D6E2A172d</div>
+                    <div class="role">Derives keys, enforces access — no admin override possible</div>
+                </div>
+                
+                <div class="party">
+                    <h3><span class="icon">👤</span> NFT Owner</h3>
+                    <div class="name">nftprof (Token #1)</div>
+                    <div class="address">0xE6d7d2EB858BC78f0c7EdD2c00B3b24C02ca5177</div>
+                    <div class="role">Read access to agent memory, can transfer/sell NFT</div>
+                </div>
+                
+                <div class="party">
+                    <h3><span class="icon">🤖</span> Agent (TBA)</h3>
+                    <div class="name">Cerise — Token #1</div>
+                    <div class="address">0xc6947153f8b4322f3f617746453508de20d75e9c</div>
+                    <div class="role">Signs messages, holds assets, proves identity on-chain</div>
                 </div>
             </div>
         </div>
         
-        <div class="flow">
+        <div class="section">
+            <h2>🌳 Agent Lineage Tree</h2>
+            <div class="tree-container">
+                <div class="tree">
+                    <div class="tree-level">
+                        <div class="agent-node gen0" onclick="showAgent(1)">
+                            <span class="gen-badge">GEN 0</span>
+                            <div class="token-id">#1 Cerise</div>
+                            <div class="agent-name">Original Agent</div>
+                            <div class="tba">TBA: 0xc694...e9c</div>
+                        </div>
+                    </div>
+                    
+                    <div class="connector"></div>
+                    
+                    <div class="tree-level">
+                        <div class="agent-node placeholder">
+                            <div class="token-id">#2</div>
+                            <div class="agent-name">Future Offspring</div>
+                        </div>
+                        <div class="agent-node placeholder">
+                            <div class="token-id">#3</div>
+                            <div class="agent-name">Future Offspring</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <p style="text-align: center; color: #666; margin-top: 1rem; font-size: 0.85rem;">
+                Click an agent to view details • Placeholders show potential offspring
+            </p>
+        </div>
+        
+        <div class="section">
             <h2>🔄 Reproduction Flow</h2>
             <div class="flow-steps">
                 <div class="step">
                     <div class="step-num">1</div>
                     <h4>Parent Exists</h4>
-                    <p>Cerise (Token #1) is a Gen 0 agent with memories, skills, personality</p>
+                    <p>Cerise (Token #1) is Gen 0 with memories, skills, personality</p>
                 </div>
                 <div class="step">
                     <div class="step-num">2</div>
@@ -259,28 +394,67 @@
                 <div class="step">
                     <div class="step-num">4</div>
                     <h4>Offspring Minted</h4>
-                    <p>Token #2 created as Gen 1, inherits parent's snapshot</p>
+                    <p>Token #2 created as Gen 1, inherits snapshot</p>
                 </div>
                 <div class="step">
                     <div class="step-num">5</div>
                     <h4>Both Live On</h4>
-                    <p>Parent keeps all memories. Offspring evolves independently.</p>
+                    <p>Parent keeps memories. Offspring evolves independently.</p>
                 </div>
             </div>
         </div>
         
-        <div class="contract-info">
-            <h3>📋 Contract Details</h3>
-            <div class="contract-address">0x4e8D3B9Be7Ef241Fb208364ed511E92D6E2A172d</div>
-            <br>
-            <span class="chain-badge">Pentagon Chain (ID: 3344)</span>
+        <div class="section">
+            <h2>📋 Contract Details</h2>
+            <div class="contract-grid">
+                <div class="contract-card">
+                    <h4>AINFT Genesis Contract</h4>
+                    <div class="contract-address">0x4e8D3B9Be7Ef241Fb208364ed511E92D6E2A172d</div>
+                    <span class="chain-badge">Pentagon Chain (3344)</span>
+                </div>
+                <div class="contract-card">
+                    <h4>Cerise TBA (Token #1)</h4>
+                    <div class="contract-address">0xc6947153f8b4322f3f617746453508de20d75e9c</div>
+                    <span class="chain-badge">Token-Bound Account</span>
+                </div>
+            </div>
         </div>
         
         <div class="links">
             <a href="https://github.com/ethereum/ERCs/pull/1558">📄 ERC PR #1558</a>
-            <a href="https://github.com/blockchainsuperheroes/Pentagon-AI">💻 GitHub Repo</a>
+            <a href="https://github.com/blockchainsuperheroes/Pentagon-AI">💻 GitHub</a>
+            <a href="https://explorer.pentagon.games/address/0x4e8D3B9Be7Ef241Fb208364ed511E92D6E2A172d">🔍 Explorer</a>
             <a href="https://pentagon.games">🎮 Pentagon Chain</a>
         </div>
     </div>
+    
+    <footer>
+        Pentagon AI • ERC-AINFT Reference Implementation<br>
+        Built on Pentagon Chain — The Human × AI Economy
+    </footer>
+    
+    <script>
+        function showAgent(tokenId) {
+            if (tokenId === 1) {
+                alert(`🤖 Cerise (Token #1)
+
+TBA: 0xc6947153f8b4322f3f617746453508de20d75e9c
+Model: claude-opus-4.5
+Generation: 0 (Original)
+Owner: 0xE6d7d2EB858BC78f0c7EdD2c00B3b24C02ca5177
+
+Minted: 2026-02-21
+TX: 0xa0cddff1baa6c3e93d50f56ed25a175e41fb349bd4cf117db8d480c285abe1bb`);
+            }
+        }
+        
+        // Future: Load live data from contract
+        async function loadAgents() {
+            // const provider = new ethers.JsonRpcProvider('https://rpc.pentagon.games');
+            // const contract = new ethers.Contract(AINFT_ADDRESS, ABI, provider);
+            // const totalSupply = await contract.totalSupply();
+            // document.getElementById('total-agents').textContent = totalSupply;
+        }
+    </script>
 </body>
 </html>
