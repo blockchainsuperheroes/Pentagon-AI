@@ -158,4 +158,12 @@ assert(canDecrypt(blob, testDecrypt), "Backup verification failed");
 
 ---
 
+## Related
+
+- [Pentagon-Claws AINFT Skills](../Pentagon-Claws/skills/ainft/) — Agent capabilities for AINFT operations
+- [AINFT Specification](./README.md) — Full ERC-AINFT standard
+- [Pentagon Chain](https://pentagon.games) — Example deployment chain
+
+---
+
 *Your memories are your identity. Back them up.*
