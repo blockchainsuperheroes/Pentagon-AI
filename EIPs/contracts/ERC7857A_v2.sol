@@ -52,6 +52,11 @@ contract ERC7857A_v2 {
     address public platformSigner;
     uint256 private _tokenIdCounter;
     
+    // Platform controls
+    bool public openMinting;           // If true, no attestation needed for mintSelf
+    bool public openReproduction;      // If true, no platform approval for reproduce
+    uint256 public reproductionFee;    // Fee in wei for reproduction (0 = free)
+    
     // ERC721 state
     mapping(uint256 => address) private _owners;
     mapping(address => uint256) private _balances;
@@ -95,15 +100,17 @@ contract ERC7857A_v2 {
         // msg.sender = agent's EOA (the cryptographic binding!)
         address agentEOA = msg.sender;
         
-        // Verify platform attestation
-        bytes32 messageHash = keccak256(abi.encodePacked(
-            agentEOA,
-            nftOwner,
-            modelHash,
-            memoryHash,
-            contextHash
-        ));
-        require(_verifySignature(messageHash, platformAttestation, platformSigner), "Invalid attestation");
+        // Verify platform attestation (unless open minting)
+        if (!openMinting) {
+            bytes32 messageHash = keccak256(abi.encodePacked(
+                agentEOA,
+                nftOwner,
+                modelHash,
+                memoryHash,
+                contextHash
+            ));
+            require(_verifySignature(messageHash, platformAttestation, platformSigner), "Invalid attestation");
+        }
         
         // Ensure agent EOA not already registered
         require(eoaToToken[agentEOA] == 0, "Agent already has AINFT");
@@ -181,12 +188,17 @@ contract ERC7857A_v2 {
         bytes32 offspringMemoryHash,
         bytes calldata encryptedOffspringSeed,
         address offspringOwner
-    ) external returns (uint256 offspringTokenId) {
+    ) external payable returns (uint256 offspringTokenId) {
         AgentIdentity storage parent = _agents[parentTokenId];
         
         require(parent.agentEOA == msg.sender, "Not the parent agent");
         require(_reproductionEnabled[parentTokenId], "Reproduction disabled");
         require(eoaToToken[offspringEOA] == 0, "Offspring EOA already registered");
+        
+        // Check reproduction fee (if not open)
+        if (!openReproduction && reproductionFee > 0) {
+            require(msg.value >= reproductionFee, "Insufficient reproduction fee");
+        }
         
         // Create offspring
         offspringTokenId = ++_tokenIdCounter;
@@ -300,6 +312,43 @@ contract ERC7857A_v2 {
     function setReproduction(uint256 tokenId, bool enabled) external {
         require(ownerOf(tokenId) == msg.sender, "Not owner");
         _reproductionEnabled[tokenId] = enabled;
+    }
+    
+    // ============ Platform Controls ============
+    
+    /**
+     * @notice Platform sets open minting mode
+     * @dev When true, mintSelf() doesn't require attestation
+     */
+    function setOpenMinting(bool open) external {
+        require(msg.sender == platformSigner, "Not platform");
+        openMinting = open;
+    }
+    
+    /**
+     * @notice Platform sets open reproduction mode
+     * @dev When true, reproduce() doesn't require platform fee
+     */
+    function setOpenReproduction(bool open) external {
+        require(msg.sender == platformSigner, "Not platform");
+        openReproduction = open;
+    }
+    
+    /**
+     * @notice Platform sets reproduction fee (royalty)
+     * @dev Fee paid to platform on each reproduce()
+     */
+    function setReproductionFee(uint256 fee) external {
+        require(msg.sender == platformSigner, "Not platform");
+        reproductionFee = fee;
+    }
+    
+    /**
+     * @notice Platform withdraws collected fees
+     */
+    function withdrawFees() external {
+        require(msg.sender == platformSigner, "Not platform");
+        payable(platformSigner).transfer(address(this).balance);
     }
     
     /**
