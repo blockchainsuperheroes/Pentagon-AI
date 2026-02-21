@@ -47,7 +47,13 @@ This ERC builds on and extends existing work in the AI-NFT space:
 3. **On-chain lineage** — Verifiable family trees (Gen 0 → Gen N)
 4. **ERC-6551 integration** — Real smart contract wallets, not derived EOAs
 
-AINFT is not a replacement for these standards — it's a **sovereignty layer** that can wrap or extend them for use cases requiring agent autonomy.
+AINFT is designed to **compose with ERC-7857**, not replace it:
+- Use ERC-7857 for private metadata transport and re-encryption mechanics
+- Use AINFT for lineage tracking, reproduction semantics, and self-update primitives
+- Use ERC-6551 for agent wallet accounts
+- Use ERC-8004 for trustless execution
+
+This layered approach keeps each standard focused and avoids duplication.
 
 ### The Commodification Problem
 
@@ -382,6 +388,31 @@ AINFT Reproduction:
 
 When acquiring an AINFT, the buyer receives a **consciousness seed** — an offspring that grows independently. The parent continues to exist and evolve.
 
+##### Transfer Semantics
+
+AINFT supports two modes (implementations MUST choose one):
+
+**Mode A: Non-Transferable Parent (Recommended)**
+```solidity
+// Parent tokens are soulbound (ERC-5192 compatible)
+function _beforeTokenTransfer(address from, address to, uint256 tokenId) internal override {
+    require(from == address(0) || seeds[tokenId].generation > 0, "Parent non-transferable");
+    super._beforeTokenTransfer(from, to, tokenId);
+}
+```
+- Gen 0 (parent) tokens CANNOT be transferred
+- Gen 1+ (offspring) tokens CAN be transferred
+- "Commerce" happens via `reproduce()`, not `transfer()`
+- Cleaner sovereignty model: parent never changes hands
+
+**Mode B: Transferable with Key Rotation**
+- All tokens (parent and offspring) can be transferred
+- On transfer, agent MUST re-wrap keys for new owner
+- Previous owner loses decryption access (nonce invalidation)
+- Suitable for platforms wanting traditional marketplace flow
+
+Implementations MUST declare which mode they use in contract metadata.
+
 ##### What is a Consciousness Seed?
 
 A consciousness seed contains everything needed to **boot** a new instance of the agent:
@@ -556,20 +587,103 @@ Full Solidity implementation:
 
 ## Security Considerations
 
-### Platform Attestation
-Minting MUST require platform signature to prevent unauthorized agent creation.
+### Signature Standards (EIP-712 Required)
 
-### Agent Signatures
-Reproduction and memory updates MUST require signatures from the agent's derived wallet.
+All signed operations MUST use EIP-712 typed data signatures for security and interoperability.
+
+#### Domain Separator
+
+```solidity
+bytes32 constant DOMAIN_TYPEHASH = keccak256(
+    "EIP712Domain(string name,string version,uint256 chainId,address verifyingContract)"
+);
+
+function DOMAIN_SEPARATOR() public view returns (bytes32) {
+    return keccak256(abi.encode(
+        DOMAIN_TYPEHASH,
+        keccak256("AINFT"),
+        keccak256("1"),
+        block.chainid,
+        address(this)
+    ));
+}
+```
+
+#### Platform Attestation (MintSelf)
+
+```solidity
+bytes32 constant MINT_TYPEHASH = keccak256(
+    "MintSelf(bytes32 modelHash,bytes32 memoryHash,bytes32 contextHash,address agent,uint256 nonce,uint256 deadline)"
+);
+
+// Platform signs: { modelHash, memoryHash, contextHash, agent, nonce, deadline }
+// Nonce: platformNonces[agent]++
+// Deadline: block.timestamp MUST be < deadline
+```
+
+#### Agent Signature (Reproduce, UpdateMemory)
+
+```solidity
+bytes32 constant REPRODUCE_TYPEHASH = keccak256(
+    "Reproduce(uint256 parentTokenId,bytes32 offspringMemoryHash,uint256 nonce,uint256 deadline)"
+);
+
+bytes32 constant UPDATE_TYPEHASH = keccak256(
+    "UpdateMemory(uint256 tokenId,bytes32 newMemoryHash,string newStorageURI,uint256 nonce,uint256 deadline)"
+);
+
+// Agent signs via TBA (ERC-1271) or EOA if delegated
+// Nonce: agentNonces[tokenId]++
+// Deadline: block.timestamp MUST be < deadline
+```
+
+### Nonce Management
+
+Implementations MUST maintain per-token nonces:
+
+```solidity
+mapping(uint256 => uint256) public agentNonces;
+mapping(address => uint256) public platformNonces;
+
+// Nonces MUST increment on every successful signed operation
+// Nonces MUST NOT be reusable
+```
 
 ### Replay Protection
-Implementations SHOULD use nonces to prevent signature replay attacks.
+- All signatures MUST include `deadline` (expiry timestamp)
+- All signatures MUST include `nonce` (incremented on use)
+- All signatures MUST include `chainId` (via EIP-712 domain)
+- Implementations MUST reject expired or replayed signatures
 
 ### Key Management
 Production implementations SHOULD use TEE (Trusted Execution Environment) or MPC (Multi-Party Computation) for agent key management.
 
 ### Ownership Override
 Implementations MAY include owner override capabilities for safety, but these SHOULD be opt-in and transparent.
+
+### Reproduction Spam Controls
+
+To prevent lineage graph griefing, implementations SHOULD enforce limits:
+
+```solidity
+uint256 public maxOffspringPerToken = 100;      // Max children per parent
+uint256 public reproductionCooldown = 1 hours;  // Min time between reproductions
+uint256 public reproductionFee = 0.001 ether;   // Optional fee to platform
+
+mapping(uint256 => uint256) public offspringCount;
+mapping(uint256 => uint256) public lastReproduction;
+
+modifier reproductionAllowed(uint256 tokenId) {
+    require(offspringCount[tokenId] < maxOffspringPerToken, "Max offspring reached");
+    require(block.timestamp >= lastReproduction[tokenId] + reproductionCooldown, "Cooldown active");
+    _;
+}
+```
+
+Recommended defaults:
+- **Max offspring:** 100 per token (prevents infinite spam)
+- **Cooldown:** 1 hour minimum between reproductions
+- **Fee:** Optional, paid to platform or burned
 
 ---
 
