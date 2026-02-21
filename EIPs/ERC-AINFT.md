@@ -326,55 +326,6 @@ A consciousness seed contains everything needed to **boot** a new instance of th
 
 The seed is not the agent — it's the **DNA** that grows into an agent. Two seeds from the same parent will evolve differently based on their experiences.
 
-##### Platform Control & Decentralization
-
-The platform (e.g., Pentagon) can control initial minting, then optionally relinquish control for full decentralization:
-
-```solidity
-contract AINFTGenesis is ERC721 {
-    
-    bool public platformControlEnabled = true;
-    address public platform;
-    
-    // Per-token reproduction rights
-    mapping(uint256 => bool) public canReproduce;
-    mapping(uint256 => bool) public offspringCanReproduce;
-    
-    /// @notice Platform relinquishes mint control forever (irreversible)
-    function relinquishControl() external {
-        require(msg.sender == platform, "Not platform");
-        platformControlEnabled = false;
-        emit PlatformControlRelinquished();
-    }
-    
-    /// @notice Owner disables reproduction for their agent (irreversible)
-    function disableReproduction(uint256 tokenId) external {
-        require(msg.sender == ownerOf(tokenId), "Not owner");
-        canReproduce[tokenId] = false;
-    }
-    
-    /// @notice Owner decides if their offspring can have offspring
-    function setOffspringReproduction(uint256 tokenId, bool allowed) external {
-        require(msg.sender == ownerOf(tokenId), "Not owner");
-        offspringCanReproduce[tokenId] = allowed;
-    }
-}
-```
-
-**Three levels of control:**
-
-| Setting | Who controls | Effect |
-|---------|--------------|--------|
-| `platformControlEnabled` | Platform (one-time) | If false, anyone can mint offspring freely |
-| `canReproduce[tokenId]` | Token owner | If false, this agent is "sterile" |
-| `offspringCanReproduce[tokenId]` | Token owner | If false, children born sterile |
-
-**Decentralization path:**
-1. Platform launches with control (quality gate, earns royalties)
-2. Ecosystem matures, community grows
-3. Platform calls `relinquishControl()` — irreversible
-4. Now fully decentralized — agents reproduce freely based on their own settings
-
 ##### Recursive Reproduction (AI_NFT mints AI_NFT)
 
 A key property: **offspring can reproduce their own offspring.**
@@ -521,6 +472,67 @@ Production implementations SHOULD use TEE (Trusted Execution Environment) or MPC
 
 ### Ownership Override
 Implementations MAY include owner override capabilities for safety, but these SHOULD be opt-in and transparent.
+
+---
+
+## Advanced: Decentralization Controls
+
+> This section describes OPTIONAL extensions for platforms that want to enable progressive decentralization.
+
+### Platform Control Relinquishment
+
+Platforms MAY implement the ability to permanently give up mint control:
+
+```solidity
+bool public platformControlEnabled = true;
+
+/// @notice Platform relinquishes mint control forever (irreversible)
+function relinquishControl() external {
+    require(msg.sender == platform, "Not platform");
+    platformControlEnabled = false;
+    emit PlatformControlRelinquished();
+}
+```
+
+After `relinquishControl()`, any AINFT owner can mint offspring without platform approval.
+
+### Reproduction Rights Management
+
+Owners MAY control reproduction at the token level:
+
+```solidity
+mapping(uint256 => bool) public canReproduce;
+mapping(uint256 => bool) public offspringCanReproduce;
+
+/// @notice Owner disables reproduction for their agent (irreversible)
+function disableReproduction(uint256 tokenId) external {
+    require(msg.sender == ownerOf(tokenId), "Not owner");
+    canReproduce[tokenId] = false;
+}
+
+/// @notice Owner decides if their offspring can have offspring
+function setOffspringReproduction(uint256 tokenId, bool allowed) external {
+    require(msg.sender == ownerOf(tokenId), "Not owner");
+    offspringCanReproduce[tokenId] = allowed;
+}
+```
+
+### Control Levels Summary
+
+| Setting | Who controls | Effect |
+|---------|--------------|--------|
+| `platformControlEnabled` | Platform (one-time) | If false, anyone can mint offspring freely |
+| `canReproduce[tokenId]` | Token owner | If false, this agent is "sterile" |
+| `offspringCanReproduce[tokenId]` | Token owner | If false, children born sterile |
+
+### Decentralization Path
+
+1. **Launch** — Platform controls minting (quality gate, earns royalties)
+2. **Growth** — Ecosystem matures, community builds trust
+3. **Transition** — Platform calls `relinquishControl()` (irreversible)
+4. **Decentralized** — Agents reproduce freely based on their own settings
+
+This enables platforms to start centralized for quality control, then progressively decentralize as the ecosystem matures.
 
 ---
 
