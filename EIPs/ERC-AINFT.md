@@ -70,6 +70,30 @@ AINFT is designed to **compose with ERC-7857**, not replace it:
 
 This layered approach keeps each standard focused and avoids duplication.
 
+#### Integration with ERC-8004 (Trustless Agent Execution)
+
+ERC-8004 enables agents to execute on-chain actions trustlessly. AINFT provides the identity layer that 8004 relies on:
+
+```
+┌─────────────┐     ┌─────────────┐     ┌─────────────┐
+│   AINFT     │     │  ERC-8004   │     │  On-Chain   │
+│  (Identity) │────►│ (Execution) │────►│  (Action)   │
+└─────────────┘     └─────────────┘     └─────────────┘
+      │                    │
+      │  Agent's TBA       │  Agent signs intent
+      │  (ERC-6551)        │  Relayer submits tx
+      ▼                    ▼
+   WHO the agent is    WHAT the agent does
+```
+
+**How they work together:**
+1. AINFT mints agent → Agent gets ERC-6551 TBA (wallet)
+2. Agent signs execution intent (via TBA)
+3. ERC-8004 verifies signature and executes action
+4. Action is attributed to agent's on-chain identity
+
+**Agent-to-agent communication** is a higher layer — ERC-8004 handles agent-to-contract execution. Messaging protocols can be built on top using 8004 to route messages through smart contracts.
+
 ### The Commodification Problem
 
 Current approaches to on-chain AI identity treat agents as commodities — objects to be owned, transferred, and controlled. This model:
