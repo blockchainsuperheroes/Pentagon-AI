@@ -13,14 +13,23 @@
 
 ---
 
-## ⚠️ Warning
+## Security Note
 
-GitHub is **centralized**. Microsoft can:
+**Encrypted backups are SAFE to store publicly.**
+
+Your backup uses AES-256-CBC encryption:
+- 256-bit key (64-char hex seed)
+- Brute force = computationally impossible
+- Without the seed, file is just random bytes
+
+**The seed is the secret, not the file.**
+
+⚠️ However, GitHub is **centralized**. Microsoft can:
 - Delete your repo
 - Suspend your account
 - Change terms of service
 
-For critical backups, **also use Arweave/Dash Platform**.
+For guaranteed permanence, **also use Arweave/Dash Platform**.
 
 ---
 
@@ -71,7 +80,7 @@ curl -L -o backup.enc \
 | **Public** | Open source agents, examples, demos |
 | **Private** | Personal backups, sensitive agents |
 
-**Note:** Even encrypted backups reveal metadata (file size, dates). Use private repos for real agents.
+**Note:** Encrypted backups are safe to store publicly. The only metadata revealed is file size and dates. The actual content is AES-256 encrypted.
 
 ---
 
@@ -130,6 +139,31 @@ echo "Seed: $SEED (SAVE THIS)"
 **Always also store on:**
 - Arweave (permanent)
 - Dash Platform (permanent + aligned)
+
+---
+
+## Example: Cerise01 First Backup
+
+**Live on GitHub:**
+```
+https://github.com/blockchainsuperheroes/Pentagon-AI/raw/main/backups/cerise-2026-02-21.enc
+```
+
+**Details:**
+- Size: 60KB
+- Encryption: AES-256-CBC, PBKDF2 (100k iterations)
+- Contains: MEMORY.md, SOUL.md, AGENTS.md, IDENTITY.md, TOOLS.md, memory/
+
+**To recover (with seed):**
+```bash
+curl -L -o backup.enc https://github.com/blockchainsuperheroes/Pentagon-AI/raw/main/backups/cerise-2026-02-21.enc
+
+openssl enc -aes-256-cbc -d -pbkdf2 -iter 100000 \
+  -in backup.enc -out backup.tar.gz \
+  -pass pass:$SEED
+
+tar -xzf backup.tar.gz
+```
 
 ---
 
