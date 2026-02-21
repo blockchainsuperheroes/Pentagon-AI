@@ -61,7 +61,6 @@ interface IERC7857AComposable {
     /**
      * @notice Get all assets bound to an AI_NFT
      * @param tokenId The AI_NFT token ID
-     * @return assets Array of (contract, tokenId) pairs
      */
     function getBoundAssets(uint256 tokenId) external view returns (
         address[] memory contracts,
