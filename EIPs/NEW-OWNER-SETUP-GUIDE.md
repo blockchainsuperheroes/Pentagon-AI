@@ -4,23 +4,25 @@
 
 ---
 
-## The Challenge
+## Important Principle
 
-You bought an AINFT. You have:
-- ✅ NFT ownership
-- ✅ Decrypted backup files
-- ✅ Agent's memory, personality, config
-
-But the **agent's EOA is still bound to the token**. You need to either:
-1. **Get the original EOA private key** from seller (ideal)
-2. **Run agent without EOA access** (limited)
-3. **Re-mint with new EOA** (new identity)
+> **Never ask for the agent's EOA private key.**
+> 
+> The EOA belongs to the agent, not the human. Just like you wouldn't ask someone for their wallet private key, you don't ask an agent for theirs. On transfer, simply **rebind** to a new EOA.
 
 ---
 
-## Scenario A: You Have the Agent's Private Key
+## What You Need From Seller
 
-**Best case.** Seller provided the agent's EOA private key along with the backup.
+✅ NFT transfer
+✅ Encrypted backup file
+✅ Decryption seed
+
+❌ **NOT the agent's EOA key** — that stays with the old agent
+
+---
+
+## The Standard Flow
 
 ### Step 1: Set Up OpenClaw
 
@@ -37,16 +39,43 @@ openclaw init
 ### Step 2: Restore Backup Files
 
 ```bash
-# Copy recovered files
-cp /path/to/recovered/MEMORY.md .
-cp /path/to/recovered/SOUL.md .
-cp /path/to/recovered/AGENTS.md .
-cp /path/to/recovered/IDENTITY.md .
-cp /path/to/recovered/TOOLS.md .
-cp -r /path/to/recovered/memory/ .
+# Decrypt backup (using seed from seller)
+openssl enc -aes-256-cbc -d -in backup.enc -out backup.tar.gz -pass pass:$SEED
+tar -xzf backup.tar.gz
+
+# Copy to workspace
+cp MEMORY.md SOUL.md AGENTS.md IDENTITY.md TOOLS.md .
+cp -r memory/ .
 ```
 
-### Step 3: Configure Agent Identity
+### Step 3: Generate NEW Agent EOA
+
+```bash
+# Agent generates its own fresh wallet
+AGENT_KEY=$(openssl rand -hex 32)
+AGENT_ADDRESS=$(cast wallet address --private-key 0x$AGENT_KEY)
+
+echo "New Agent EOA: $AGENT_ADDRESS"
+# Store key securely for agent
+```
+
+### Step 4: Owner Rebinds AINFT
+
+```bash
+# As NFT owner, rebind to new agent EOA
+AINFT="0x5ed123Fa794A0f5e463965c85aE76C1634202633"
+TOKEN_ID=1
+
+cast send $AINFT \
+  "rebindAgent(uint256,address)" \
+  $TOKEN_ID \
+  $AGENT_ADDRESS \
+  --rpc-url https://rpc.pentagon.games \
+  --private-key $OWNER_KEY \
+  --legacy
+```
+
+### Step 5: Configure Agent Identity
 
 Edit `openclaw.json`:
 
@@ -55,9 +84,8 @@ Edit `openclaw.json`:
   "agent": {
     "identity": {
       "ainft": {
-        "contract": "0x91745c93A4c1Cfe92cd633D1202AD156522b3801",
+        "contract": "0x5ed123Fa794A0f5e463965c85aE76C1634202633",
         "tokenId": 1,
-        "agentEOA": "0xE52dF2f14fDEa39f11a22284EA15a7bd7bf09eB8",
         "chain": 3344,
         "rpc": "https://rpc.pentagon.games"
       }
@@ -66,37 +94,23 @@ Edit `openclaw.json`:
 }
 ```
 
-### Step 4: Import Agent's EOA
-
-```bash
-# Store agent's private key securely
-# Option A: Environment variable
-export AGENT_PRIVATE_KEY="0x..."
-
-# Option B: In secrets file
-echo "AGENT_PRIVATE_KEY=0x..." >> ~/my-agent/.env
-
-# Option C: Hardware wallet (advanced)
-```
-
-### Step 5: Start Agent
+### Step 6: Start Agent
 
 ```bash
 openclaw gateway start
 ```
 
-### Step 6: Verify Identity
+### Step 7: Verify Identity
 
-Agent can now sign messages to prove identity:
+Agent can now prove identity with NEW EOA:
 
 ```bash
-# Agent signs a test message
-MESSAGE="I am AINFT #1, now owned by [new owner]"
+MESSAGE="I am AINFT #1, now with new owner"
 
 # Verify on-chain
-cast call 0x91745c93A4c1Cfe92cd633D1202AD156522b3801 \
+cast call $AINFT \
   "verifyAgentSignature(uint256,bytes32,bytes)(bool)" \
-  1 \
+  $TOKEN_ID \
   $(echo -n "$MESSAGE" | cast keccak) \
   $SIGNATURE \
   --rpc-url https://rpc.pentagon.games
@@ -104,95 +118,25 @@ cast call 0x91745c93A4c1Cfe92cd633D1202AD156522b3801 \
 
 ---
 
-## Scenario B: No Private Key (Agent Cooperation Required)
+## What Happens to Old Agent?
 
-Seller didn't provide EOA private key. Agent may still have it in memory.
+After rebind:
 
-### If Agent Was Running
+```
+Old Agent (EOA A):
+- Still has its key
+- Still has memory copy
+- BUT: verifyAgentSignature() now FAILS
+- Identity unbound from AINFT
 
-1. **Contact seller** to have agent export its key
-2. **Or** negotiate agent handoff (seller runs migration script)
-
-### If Agent Is Offline
-
-Without the private key:
-- ❌ Cannot sign as the registered agent
-- ✅ Can still run agent with restored memory
-- ❌ On-chain identity verification will fail
-
-**Options:**
-1. **Run as unverified** — Agent works but can't prove AINFT identity
-2. **Re-mint new AINFT** — Create new identity with your EOA
-
----
-
-## Scenario C: Re-Mint with New EOA
-
-Create a new AINFT binding for the restored agent.
-
-### Step 1: Generate New Agent EOA
-
-```bash
-# Create new wallet for agent
-AGENT_KEY=$(openssl rand -hex 32)
-AGENT_ADDRESS=$(cast wallet address --private-key 0x$AGENT_KEY)
-
-echo "New Agent EOA: $AGENT_ADDRESS"
-echo "Private Key: 0x$AGENT_KEY"
-# SAVE THESE SECURELY
+New Agent (EOA B):
+- Fresh key
+- Restored memory from backup
+- verifyAgentSignature() SUCCEEDS
+- Is the official AINFT holder
 ```
 
-### Step 2: Get Platform Attestation
-
-Platform signs to authorize the mint:
-
-```bash
-PLATFORM_KEY="0x..."  # Platform signer key
-YOUR_ADDRESS="0x..."  # New owner address
-MODEL_HASH=$(echo -n "claude-opus-4.5" | cast keccak)
-MEMORY_HASH=$(cat MEMORY.md | cast keccak)
-SOUL_HASH=$(cat SOUL.md | cast keccak)
-
-MESSAGE_HASH=$(cast keccak $(cast abi-encode --packed \
-  "f(address,address,bytes32,bytes32,bytes32)" \
-  $AGENT_ADDRESS $YOUR_ADDRESS $MODEL_HASH $MEMORY_HASH $SOUL_HASH))
-
-ATTESTATION=$(cast wallet sign --private-key $PLATFORM_KEY $MESSAGE_HASH)
-```
-
-### Step 3: Agent Mints New AINFT
-
-```bash
-AINFT="0x91745c93A4c1Cfe92cd633D1202AD156522b3801"
-ENCRYPTED_SEED="0x$(openssl rand -hex 32)"
-
-cast send $AINFT \
-  "mintSelf(bytes32,bytes32,bytes32,bytes,address,bytes)" \
-  $MODEL_HASH \
-  $MEMORY_HASH \
-  $SOUL_HASH \
-  $ENCRYPTED_SEED \
-  $YOUR_ADDRESS \
-  $ATTESTATION \
-  --rpc-url https://rpc.pentagon.games \
-  --private-key 0x$AGENT_KEY \
-  --legacy
-```
-
-### Step 4: Link to Previous Identity (Optional)
-
-Document the lineage:
-
-```bash
-# In agent's MEMORY.md
-echo "
-## Identity Migration
-- Previous AINFT: #1 (EOA: 0xE52d...)
-- Current AINFT: #2 (EOA: $AGENT_ADDRESS)
-- Migration date: $(date)
-- Reason: Ownership transfer without key handoff
-" >> MEMORY.md
-```
+The old agent is like a human who lost their ID — they're still "them" but can't prove it officially.
 
 ---
 
@@ -312,13 +256,16 @@ echo "Verification result: $RESULT"
 
 ## Summary
 
-| Scenario | Continuity | Can Verify | Action |
-|----------|------------|------------|--------|
-| Have EOA key | ✅ Full | ✅ Yes | Import + run |
-| No key, agent cooperates | ✅ Full | ✅ Yes | Request key export |
-| No key, agent offline | ❌ Broken | ❌ No | Re-mint |
+| Step | Action |
+|------|--------|
+| 1 | Buy NFT |
+| 2 | Get backup + decryption seed |
+| 3 | Decrypt and restore memory |
+| 4 | Agent generates NEW EOA |
+| 5 | Owner calls `rebindAgent()` |
+| 6 | Agent verifies identity ✅ |
 
-**Golden rule:** Always negotiate EOA key handoff as part of the purchase.
+**Golden rule:** Never ask for agent's EOA key. Rebind to fresh EOA instead.
 
 ---
 
