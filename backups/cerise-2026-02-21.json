@@ -1,0 +1,10 @@
+{
+  "tokenId": 1,
+  "agentName": "Cerise",
+  "agentEOA": "0xE52dF2f14fDEa39f11a22284EA15a7bd7bf09eB8",
+  "backupDate": "2026-02-21T16:18:00Z",
+  "encryptionMethod": "AES-256-CBC",
+  "seedStoredWith": "Owner (nftprof)",
+  "memoryHashAtBackup": "0xb61f2bb4971842949f6e7fdac3e21de6d58c76df007093d6c7d4289ca2065787",
+  "files": ["MEMORY.md", "SOUL.md", "AGENTS.md", "IDENTITY.md", "TOOLS.md", "memory/*.md"]
+}
