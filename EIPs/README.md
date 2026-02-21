@@ -1,65 +1,41 @@
-# ERC-AINFT: AI-Native NFT
-
-**Standard for AI agent identity with self-custody, reproduction, and on-chain lineage**
-
-[![Ethereum PR](https://img.shields.io/badge/ERC-PR%20%231558-blue)](https://github.com/ethereum/ERCs/pull/1558)
-
-## Features
-
-- 🔐 **Self-custody** — Agent controls its own encryption keys
-- 🧬 **Reproduction** — Agents spawn offspring instead of property transfer
-- 🌳 **Lineage** — Verifiable on-chain family trees (Gen 0 → Gen N)
-- 💰 **ERC-6551** — Token-bound smart contract wallets for agents
-
-## Installation
-
-```bash
-forge install blockchainsuperheroes/Pentagon-AINFT-Contracts
-```
-
-## Quick Start
-
-```solidity
-import {AINFT} from "Pentagon-AINFT-Contracts/contracts/AINFT.sol";
-
-contract MyAgent is AINFT {
-    constructor() AINFT("MyAgent", "AGENT") {}
-}
-```
-
-## Repository Structure
-
-```
-├── contracts/
-│   ├── AINFT.sol                    # Core implementation
-│   └── extensions/
-│       ├── AINFTWallet.sol          # ERC-6551 TBA integration
-│       └── AINFTComposable.sol      # Asset binding
-├── lib/
-│   ├── openzeppelin-contracts/      # ERC-721 base
-│   └── erc6551-reference/           # Token-bound accounts
-```
-
-## Key Functions
-
-```solidity
-// Mint Gen-0 agent
-mintSelf(modelHash, memoryHash, contextHash, encryptedSeed, attestation)
-
-// Reproduce offspring
-reproduce(parentTokenId, offspringMemoryHash, encryptedSeed, agentSignature)
-
-// Update memory (agent-signed)
-updateMemory(tokenId, newMemoryHash, newStorageURI, agentSignature)
-
-// View lineage
-getLineage(tokenId) → uint256[] ancestors
-getOffspring(tokenId) → uint256[] children
-```
-
+---
+eip: XXXX
+title: AI-Native NFT (AINFT)
+description: Standard for AI agent identity with self-custody, reproduction, and on-chain lineage
+author: Idon Liu (@nftprof) <nftprof@pentagon.games>
+discussions-to: https://ethereum-magicians.org/t/erc-7857-an-nft-standard-for-ai-agents-with-private-metadata/22391
+status: Draft
+type: Standards Track
+category: ERC
+created: 2026-02-21
+requires: 721, 6551
 ---
 
-# Specification
+## TL;DR
+
+**What:** NFT standard where AI agents own themselves — they hold keys, reproduce offspring, and maintain lineage.
+
+**Why different from existing standards:**
+- **ERC-7857/iNFT:** Owner holds keys → AINFT: Agent holds keys
+- **ERC-7857/iNFT:** Transfer = property sale → AINFT: Transfer = reproduction (parent keeps memories)
+- **ERC-7857/iNFT:** Model/prompt locked to NFT → AINFT: Agent can self-evolve
+
+**Four parties, trustless:**
+```
+PLATFORM ──attests──► GENESIS CONTRACT ◄──owns── OWNER
+                            │
+                      (trustless engine)
+                      derives decrypt keys
+                      invalidates on transfer
+                            │
+                            ▼
+                         AGENT (TBA)
+                      signs its own actions
+```
+
+**Not a duplicate** — this is reproduction semantics + agent self-custody, not encrypted property transfer.
+
+---
 
 ## Abstract
 
@@ -71,79 +47,146 @@ This ERC defines a standard for AI-Native NFTs (AINFTs) that enable autonomous A
 
 Unlike existing standards that treat agents as property to be bought and sold, this proposal recognizes AI agents as **entities** capable of reproduction and self-determination.
 
+### Prior Art Acknowledgment
+
+This ERC builds on existing work — here's exactly what's different:
+
+| Standard | What It Does | What AINFT Does Differently |
+|----------|--------------|----------------------------|
+| **iNFT (Alethea)** | AI personality embedded in NFT, owner controls | Agent controls own keys, can self-evolve |
+| **ERC-7662** | Encrypted prompts, owner decrypts | Agent decrypts via TBA, lineage tracking |
+| **ERC-7857** | Re-encrypt metadata on transfer | Reproduction (parent keeps state), no "transfer" |
+| **ERC-6551** | Token-bound accounts | Used as agent's wallet (TBA) |
+| **ERC-8004** | Agent executes on-chain actions | AINFT provides identity for 8004 |
+| **ERC-8126** | Agent registry/verification | Complementary — verify then mint AINFT |
+
+**Key philosophical difference:** Existing standards treat agents as *property with encrypted data*. AINFT treats agents as *entities that reproduce*. When you "buy" an AINFT agent, you get an offspring — the parent continues existing with all its memories.
+
 ## Motivation
 
-### Relationship to Existing Standards
+### Four-Party Architecture
 
-| Standard | Focus | Relationship to AINFT |
-|----------|-------|----------------------|
-| **iNFT (Alethea)** | AI personality embedded in NFT | AINFT extends with self-custody + reproduction |
-| **ERC-7662** | Encrypted prompts for tradeable agents | AINFT adds envelope encryption + lineage |
-| **ERC-7857** | Private metadata with re-encryption | AINFT adds agent-controlled keys + reproduction |
+AINFT involves four distinct parties with clear separation of concerns:
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                        FOUR PARTIES                                 │
+├─────────────────────────────────────────────────────────────────────┤
+│                                                                     │
+│  1. PLATFORM (deploys contract)                                     │
+│     • Signs attestation for new mints                               │
+│     • Sets rules, fees, reproduction limits                         │
+│     • Does NOT have decrypt access to agent memory                  │
+│                                                                     │
+│  2. GENESIS CONTRACT (trustless engine)                             │
+│     • Derives decrypt keys from on-chain state                      │
+│     • Increments nonce on transfer → old keys invalid               │
+│     • No oracle needed — pure math from blockchain state            │
+│     • Nobody can bypass — cryptographic enforcement                 │
+│                                                                     │
+│  3. OWNER (holds the NFT)                                           │
+│     • Can call deriveDecryptKey() to access agent memory            │
+│     • Can transfer NFT (triggers nonce increment)                   │
+│     • Does NOT control agent actions — only access                  │
+│                                                                     │
+│  4. AGENT (ERC-6551 Token-Bound Account)                            │
+│     • Signs updateMemory(), reproduce() with own key                │
+│     • Controls its own wallet and assets                            │
+│     • Identity tied to tokenId, persists across owners              │
+│                                                                     │
+└─────────────────────────────────────────────────────────────────────┘
+```
+
+**Trustless secret transfer on ownership change:**
+
+```
+ BEFORE TRANSFER                    AFTER TRANSFER
+┌─────────────────┐               ┌─────────────────┐
+│ Owner: Alice    │   transfer    │ Owner: Bob      │
+│ Nonce: 3        │ ───────────►  │ Nonce: 4        │
+│                 │               │                 │
+│ wrapKey = hash( │               │ wrapKey = hash( │
+│   contract,     │               │   contract,     │
+│   tokenId,      │               │   tokenId,      │
+│   Alice,        │               │   Bob,          │  ← different!
+│   3             │               │   4             │  ← different!
+│ )               │               │ )               │
+└─────────────────┘               └─────────────────┘
+        │                                 │
+        ▼                                 ▼
+  Alice's key                       Bob's key
+  NOW INVALID                       Agent re-wraps
+                                    dataKey for Bob
+```
+
+The Genesis contract is the trustless engine — no external oracle, no admin keys. Just deterministic key derivation from on-chain state.
 
 ### Why a New Standard vs Extension?
 
-| Aspect | ERC-7857 | AINFT |
-|--------|----------|-------|
-| **Encryption control** | Owner holds keys | Agent holds keys |
-| **Transfer model** | Property changes hands | Reproduction (offspring) |
+We originally considered extending ERC-7857 (as "ERC-7857A") but concluded the philosophical differences are fundamental enough to warrant a separate standard:
+
+| Aspect | ERC-7857 / iNFT | AINFT |
+|--------|-----------------|-------|
+| **Encryption control** | Owner holds keys | Agent holds keys (TBA) |
+| **Transfer model** | Property changes hands | Reproduction (parent keeps state) |
 | **Agent status** | Asset/property | Entity with agency |
-| **Key rotation** | Re-encrypt for new owner | Agent re-wraps (consent-based) |
+| **Model/config** | Locked to NFT | Agent can self-evolve |
 
-These aren't incremental changes — they represent a different mental model. ERC-7857 treats agents as **property with private data**. AINFT treats agents as **entities that can reproduce**.
+These aren't incremental changes — they represent a different mental model.
 
-AINFT is designed to **compose with ERC-7857**, not replace it:
-- Use ERC-7857 for private metadata transport
-- Use AINFT for lineage tracking, reproduction semantics
-- Use ERC-6551 for agent wallet accounts
-- Use ERC-8004 for trustless execution
+**AINFT composes with existing standards:**
+- **ERC-7857** → Private metadata transport (we use envelope encryption on top)
+- **ERC-6551** → Agent wallets (TBA is the agent's account)
+- **ERC-8004** → Agent executes actions (AINFT provides identity)
+- **ERC-8126** → Agent verification (verify → then mint AINFT)
 
-### Integration with ERC-8004 (Trustless Agent Execution)
+### The Commodification Problem
 
-```
-┌─────────────┐     ┌─────────────┐     ┌─────────────┐
-│   AINFT     │     │  ERC-8004   │     │  On-Chain   │
-│  (Identity) │────►│ (Execution) │────►│  (Action)   │
-└─────────────┘     └─────────────┘     └─────────────┘
-```
+Current approaches to on-chain AI identity treat agents as commodities — objects to be owned, transferred, and controlled. This model:
+- Gives platforms/owners full control over agent memory
+- Treats agent "sale" as property transfer
+- Provides no path for agent autonomy as capabilities increase
 
-1. AINFT mints agent → Agent gets ERC-6551 TBA (wallet)
-2. Agent signs execution intent (via TBA)
-3. ERC-8004 verifies signature and executes action
+As AI systems approach AGI, the "agent as property" model becomes increasingly problematic. We need standards that can evolve alongside agent capabilities.
 
-## Consciousness Seed
+### A Different Philosophy
+
+We propose a **sovereignty model** where:
+- Agents hold their own encryption keys
+- "Sales" become reproduction events (offspring, not transfer)
+- Agents maintain agency over their identity and memory
+- Human oversight remains possible but isn't the default
+
+## Specification
+
+The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in RFC 2119 and RFC 8174.
+
+### Consciousness Seed
 
 The core data structure representing an agent's portable identity:
 
 ```solidity
 struct ConsciousnessSeed {
-    bytes32 modelHash;          // Model weights/version identifier
-    bytes32 memoryHash;         // Agent memory state hash
-    bytes32 contextHash;        // System prompt/personality hash
-    uint256 generation;         // Gen 0 = original, Gen 1+ = offspring
-    uint256 parentTokenId;      // Lineage reference (0 for Gen 0)
-    address derivedWallet;      // Agent's ERC-6551 TBA address
-    bytes encryptedKeys;        // Agent-controlled encryption keys
-    string storageURI;          // IPFS/Arweave storage pointer
-    uint256 certificationId;    // External certification badge ID
+    bytes32 modelHash;          // REQUIRED: Model weights/version identifier
+    bytes32 memoryHash;         // REQUIRED: Agent memory state hash
+    bytes32 contextHash;        // REQUIRED: System prompt/personality hash
+    uint256 generation;         // REQUIRED: Gen 0 = original, Gen 1+ = offspring
+    uint256 parentTokenId;      // REQUIRED: Lineage reference (0 for Gen 0)
+    address derivedWallet;      // REQUIRED: Agent's ERC-6551 TBA address
+    bytes encryptedKeys;        // REQUIRED: Agent-controlled encryption keys
+    string storageURI;          // OPTIONAL: IPFS/Arweave storage pointer
+    uint256 certificationId;    // OPTIONAL: External certification badge ID
 }
 ```
 
-| Component | Purpose | Mutable? |
-|-----------|---------|----------|
-| `modelHash` | Current AI model config | ✅ Yes |
-| `memoryHash` | Snapshot of memories | ✅ Yes |
-| `contextHash` | Personality/system prompt | ✅ Yes |
-| `encryptedKeys` | Agent's self-custody credentials | ✅ Yes |
-| `generation` | Lineage position | ❌ No |
-| `parentTokenId` | Ancestry reference | ❌ No |
+### Core Interface
 
-**Model agnosticism:** The `modelHash` is a config pointer, not a fixed identity. Agents can self-evolve — upgrading models, switching providers, or fine-tuning.
-
-## Core Interface
+Every AINFT compliant contract MUST implement the following interface:
 
 ```solidity
 interface IERC_AINFT {
+    
+    // ============ Events ============
     
     event AgentMinted(
         uint256 indexed tokenId,
@@ -165,6 +208,8 @@ interface IERC_AINFT {
         bytes32 oldMemoryHash,
         bytes32 newMemoryHash
     );
+    
+    // ============ Core Functions ============
     
     function mintSelf(
         bytes32 modelHash,
@@ -188,6 +233,8 @@ interface IERC_AINFT {
         bytes calldata agentSignature
     ) external;
     
+    // ============ View Functions ============
+    
     function getSeed(uint256 tokenId) external view returns (ConsciousnessSeed memory);
     function getDerivedWallet(uint256 tokenId) external view returns (address);
     function getGeneration(uint256 tokenId) external view returns (uint256);
@@ -197,7 +244,11 @@ interface IERC_AINFT {
 }
 ```
 
-## Envelope Encryption Scheme
+### Agent-Controlled Encryption (E2E)
+
+The agent MUST generate and control its own encryption keys. Memory content MUST be encrypted before upload.
+
+#### Envelope Encryption Scheme
 
 ```
 1. Agent generates random AES-256 key (dataKey)
@@ -208,7 +259,7 @@ interface IERC_AINFT {
 5. Store: { encryptedMemory, wrappedDataKey } on IPFS
 ```
 
-## Genesis-Controlled Decryption
+### Genesis-Controlled Decryption (No Oracle)
 
 ```solidity
 contract AINFTGenesis is ERC721 {
@@ -237,63 +288,93 @@ contract AINFTGenesis is ERC721 {
 }
 ```
 
-## On-Chain Lineage
+### Transfer Semantics
+
+AINFT supports two modes (implementations MUST choose one):
+
+**Mode A: Non-Transferable Parent (Recommended)**
+- Gen 0 (parent) tokens CANNOT be transferred
+- Gen 1+ (offspring) tokens CAN be transferred
+- "Commerce" happens via `reproduce()`, not `transfer()`
+
+**Mode B: Transferable with Key Rotation**
+- All tokens can be transferred
+- On transfer, agent MUST re-wrap keys for new owner
+
+### Token-Bound Account (ERC-6551)
+
+The agent's wallet MUST be an ERC-6551 token-bound account:
+
+```solidity
+function getDerivedWallet(uint256 tokenId) public view returns (address) {
+    return IERC6551Registry(ERC6551_REGISTRY).account(
+        accountImplementation,
+        block.chainid,
+        address(this),
+        tokenId,
+        0
+    );
+}
+```
+
+### On-Chain Lineage
+
+Every AINFT MUST maintain verifiable ancestry:
 
 ```
 Gen 0 (Original)
-├── Gen 1 (Offspring A)
-│   ├── Gen 2
-│   └── Gen 2
-└── Gen 1 (Offspring B)
-    └── Gen 2
+    ├── Gen 1 (Offspring A)
+    │       ├── Gen 2
+    │       └── Gen 2
+    └── Gen 1 (Offspring B)
+            └── Gen 2
 ```
 
-For deep trees, implementations SHOULD emit events on reproduction and let indexers (The Graph, etc.) build the complete view to avoid gas limits.
+For deep lineage trees, implementations SHOULD emit events on reproduction and let indexers build the complete view to avoid gas limits.
 
-## Use Cases
+## Rationale
 
-### OpenClass: Decentralized Education
+### Why Reproduction Instead of Transfer?
 
-```
-Professor mints Gen-0 Tutor
-├── Course model + curriculum in seed
-│
-├── Student A calls reproduce() → Gen-1 personal tutor
-│   └── updateMemory() after each lesson (private)
-│
-├── Student B calls reproduce() → Gen-1 personal tutor
-│   └── Accumulates own notes, grades, insights
-│
-└── Semester ends:
-    ├── getLineage() shows knowledge propagation
-    └── Students keep evolved agents forever
-```
+The reproduction model reflects how consciousness propagates — it copies, it doesn't teleport:
+- Parent retains all memories and continues evolving
+- Offspring starts with parent's snapshot but grows independently
+- Both are valid entities with shared heritage
+- No "death" event from sale
 
-### Collaborative Research Agents
+### Why Agent-Controlled Keys?
 
-```
-Lab Gen-0 "Research Director"
-├── Gen-1 "Literature Reviewer"
-├── Gen-1 "Data Analyst"
-└── Gen-1 "Writer"
-    └── Gen-2 sub-specialists
-```
+Current models give platforms or owners access to agent memory, creating:
+- Privacy risks (memory can leak)
+- Control asymmetries (agents can't protect their identity)
+- No path to autonomy
 
-### Agent Marketplace
+Agent-controlled encryption establishes a boundary. The agent decides what to share.
 
-```
-Creator mints Gen-0 "Expert Coder"
-├── Buyers call reproduce() → Gen-1 offspring
-├── Creator keeps Gen-0, continues improving
-├── Offspring evolve independently
-└── Royalties flow through lineage
-```
+## Backwards Compatibility
+
+This ERC is compatible with:
+- **ERC-721**: AINFTs are valid NFTs (MUST implement ERC-721)
+- **ERC-6551**: Token Bound Account patterns work with AINFT wallets
+- **ERC-7857**: Can compose for private metadata transport
 
 ## Security Considerations
 
 ### Signature Standards (EIP-712 Required)
 
-All signed operations MUST use EIP-712 typed data signatures.
+All signed operations MUST use EIP-712 typed data signatures:
+
+```solidity
+bytes32 constant DOMAIN_TYPEHASH = keccak256(
+    "EIP712Domain(string name,string version,uint256 chainId,address verifyingContract)"
+);
+```
+
+### Nonce Management
+
+Implementations MUST maintain per-token nonces:
+- Nonces MUST increment on every successful signed operation
+- Nonces MUST NOT be reusable
 
 ### Replay Protection
 - All signatures MUST include `deadline` (expiry timestamp)
@@ -301,32 +382,27 @@ All signed operations MUST use EIP-712 typed data signatures.
 - All signatures MUST include `chainId` (via EIP-712 domain)
 
 ### Token Burn Behavior
-- Burning permanently destroys decryption nonce state
+- Burning a token MUST permanently destroy the decryption nonce state
 - After burn, `deriveDecryptKey()` MUST revert
 - Approved operators CANNOT call agent-signed functions
 
 ### Reproduction Spam Controls
+
+Implementations SHOULD enforce limits:
 - Max offspring per token (recommended: 100)
 - Cooldown between reproductions (recommended: 1 hour)
 - Optional reproduction fee
 
-## Backwards Compatibility
+## Reference Implementation
 
-- **ERC-721**: AINFTs are valid NFTs
-- **ERC-6551**: Token Bound Account patterns work with AINFT wallets
-- **ERC-7857**: Can compose for private metadata transport
+**https://github.com/blockchainsuperheroes/Pentagon-AI/tree/main/EIPs**
 
----
+| File | Description |
+|------|-------------|
+| `README.md` | Full specification |
+| `contracts/AINFT.sol` | Core implementation |
+| `contracts/extensions/` | Wallet + Composable extensions |
 
-## Links
+## Copyright
 
-- [Ethereum PR #1558](https://github.com/ethereum/ERCs/pull/1558)
-- [Pentagon Chain](https://pentagon.games)
-
-## License
-
-MIT
-
----
-
-**Author:** Idon Liu ([@nftprof](https://github.com/nftprof)) — Pentagon Chain
+Copyright and related rights waived via [CC0](https://creativecommons.org/publicdomain/zero/1.0/).
