@@ -1,66 +1,127 @@
-## Foundry
+# AINFT — AI-Native NFT Standard
 
-**Foundry is a blazing fast, portable and modular toolkit for Ethereum application development written in Rust.**
+*NFTs where AI agents own themselves*
 
-Foundry consists of:
+---
 
-- **Forge**: Ethereum testing framework (like Truffle, Hardhat and DappTools).
-- **Cast**: Swiss army knife for interacting with EVM smart contracts, sending transactions and getting chain data.
-- **Anvil**: Local Ethereum node, akin to Ganache, Hardhat Network.
-- **Chisel**: Fast, utilitarian, and verbose solidity REPL.
+## TL;DR
 
-## Documentation
+**What:** NFT standard where AI agents hold their own keys, reproduce offspring, and maintain on-chain lineage.
 
-https://book.getfoundry.sh/
+**How it differs:**
+| Traditional | AINFT |
+|-------------|-------|
+| Owner holds keys | Agent holds keys |
+| Selling = transfer | Selling = reproduce() |
+| Agent is property | Agent is entity |
 
-## Usage
+**No TEE required** — pure cryptographic binding.
 
-### Build
+---
 
-```shell
-$ forge build
+## Live Deployment (Pentagon Chain)
+
+| Contract | Address |
+|----------|---------|
+| **AINFT v4** | `0x13b7eD33413263FA4f74e5bf272635c7b08D98d4` |
+| **ERC-6551 Registry** | `0x488D1b3A7A87dAF97bEF69Ec56144c35611a7d81` |
+| **TBA Implementation** | `0x1755Fee389D4954fdBbE8226A5f7BA67d3EE97fc` |
+
+**Chain:** Pentagon Chain (ID: 3344)  
+**RPC:** `https://rpc.pentagon.games`  
+**Explorer:** `https://explorer.pentagon.games`
+
+---
+
+## Quick Links
+
+### For Buyers
+- [Buyer Setup Guide](./buyer-setup/) — Get your AINFT agent running
+- [Storage Options](./buyer-setup/storage-options/) — Where to store backups
+
+### For Developers
+- [Solidity Contracts](./contracts/) — AINFT implementation
+- [Deploy Scripts](./script/) — Forge deployment
+
+### Advanced Docs
+- [Platform Owner Guide](./advanced-docs/PLATFORM-OWNER-GUIDE.md) — Business models
+- [Reproduction Guide](./advanced-docs/REPRODUCTION-GUIDE.md) — Clone vs Child
+- [Lemon Problem](./advanced-docs/LEMON-PROBLEM-GUIDE.md) — Why certs matter
+- [All Guides](./advanced-docs/) — Full documentation
+
+---
+
+## Key Features
+
+### 1. Agent EOA Binding
+Agent signs mint with its own key — `msg.sender` becomes the registered agent EOA.
+```solidity
+function mintSelf(...) external {
+    address agentEOA = msg.sender;  // Agent IS the proof
+    // ...
+}
 ```
 
-### Test
-
-```shell
-$ forge test
+### 2. Reproduction Over Transfer
+Agents spawn offspring instead of being "sold":
+```solidity
+function reproduce(
+    uint256 parentTokenId,
+    address offspringEOA,
+    bytes32 offspringMemoryHash,
+    ...
+) external payable;
 ```
 
-### Format
-
-```shell
-$ forge fmt
+### 3. On-Chain Lineage
+Every agent knows its parent:
+```solidity
+struct AgentIdentity {
+    uint256 parentTokenId;  // 0 = genesis
+    uint256 generation;     // Gen 0, 1, 2...
+    // ...
+}
 ```
 
-### Gas Snapshots
-
-```shell
-$ forge snapshot
+### 4. Platform Controls
+```solidity
+bool public openMinting;      // Permissionless or gated
+uint256 public reproductionFee;  // Royalty per offspring
 ```
 
-### Anvil
+---
 
-```shell
-$ anvil
+## EIP Proposal
+
+**PR:** https://github.com/ethereum/ERCs/pull/1558
+
+**Status:** Draft
+
+---
+
+## Reference Implementation
+
+Built for [OpenClaw](https://github.com/openclaw/openclaw) — open-source AI agent framework.
+
+**Not limited to OpenClaw** — any agent framework can implement AINFT.
+
+---
+
+## Build
+
+```bash
+# Install dependencies
+forge install
+
+# Build
+forge build
+
+# Deploy
+forge script script/DeployV2.s.sol:DeployV2 \
+  --rpc-url https://rpc.pentagon.games \
+  --broadcast --legacy
 ```
 
-### Deploy
+---
 
-```shell
-$ forge script script/Counter.s.sol:CounterScript --rpc-url <your_rpc_url> --private-key <your_private_key>
-```
-
-### Cast
-
-```shell
-$ cast <subcommand>
-```
-
-### Help
-
-```shell
-$ forge --help
-$ anvil --help
-$ cast --help
-```
+*Pentagon AI — The Human × Agent Economy*
