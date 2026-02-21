@@ -43,9 +43,31 @@ Data lives on Dash Platform
 
 ---
 
+## Resources
+
+- **Platform Explorer API:** https://platform-explorer.com/api
+- **Chrome Extension:** https://chromewebstore.google.com/detail/dash-platform-extension/odmphbcnlldggfhcpdjgnlhbehoicdnf
+
+---
+
 ## Setup
 
-### Create Dash Wallet
+### Option 1: Chrome Extension (Easiest)
+
+1. Install [Dash Platform Extension](https://chromewebstore.google.com/detail/dash-platform-extension/odmphbcnlldggfhcpdjgnlhbehoicdnf)
+2. Create or import wallet
+3. Switch to Mainnet
+4. Your identity is ready
+
+**Features:**
+- Mainnet / Testnet support
+- Seedphrase / Keystore wallet types
+- Identity management with secure key storage
+- Balance & transaction history
+- Developer SDK for dApp integration
+- Permission system for website access
+
+### Option 2: Dash SDK (Developers)
 
 ```bash
 # Install Dash SDK
