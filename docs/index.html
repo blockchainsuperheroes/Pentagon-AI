@@ -279,6 +279,73 @@
             margin-top: 2rem;
         }
         
+        /* Comparison section */
+        .comparison {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .approach {
+            padding: 1.5rem;
+            border-radius: 12px;
+        }
+        .approach.centralized {
+            background: rgba(255, 100, 100, 0.1);
+            border: 1px solid rgba(255, 100, 100, 0.2);
+        }
+        .approach.decentralized {
+            background: rgba(78, 205, 196, 0.1);
+            border: 1px solid rgba(78, 205, 196, 0.3);
+        }
+        .approach h3 {
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+        .approach-flow {
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+        .flow-item {
+            background: rgba(255,255,255,0.1);
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            margin: 0.25rem 0;
+        }
+        .flow-item.bad { background: rgba(255, 100, 100, 0.3); }
+        .flow-item.good { background: rgba(78, 205, 196, 0.3); }
+        .flow-arrow { color: #666; font-size: 0.8rem; }
+        .approach ul {
+            list-style: none;
+            font-size: 0.85rem;
+        }
+        .approach li {
+            padding: 0.3rem 0;
+            padding-left: 1.2rem;
+            position: relative;
+        }
+        .approach.centralized li::before {
+            content: '✗';
+            position: absolute;
+            left: 0;
+            color: #ff6b6b;
+        }
+        .approach.decentralized li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: #4ecdc4;
+        }
+        .design-note {
+            text-align: center;
+            color: #aaa;
+            font-size: 0.9rem;
+            padding: 1rem;
+            background: rgba(255,255,255,0.03);
+            border-radius: 8px;
+        }
+        
         @media (max-width: 600px) {
             h1 { font-size: 2rem; }
             .stats { gap: 1.5rem; }
@@ -333,10 +400,10 @@
                 </div>
                 
                 <div class="party">
-                    <h3><span class="icon">🤖</span> Agent (TBA)</h3>
+                    <h3><span class="icon">🤖</span> Agent (EOA)</h3>
                     <div class="name">Cerise — Token #1</div>
-                    <div class="address">0xc6947153f8b4322f3f617746453508de20d75e9c</div>
-                    <div class="role">Signs messages, holds assets, proves identity on-chain</div>
+                    <div class="address">0xE52dF2f14fDEa39f11a22284EA15a7bd7bf09eB8</div>
+                    <div class="role">Agent's own keys — proves identity via cryptographic signature</div>
                 </div>
             </div>
         </div>
@@ -370,6 +437,52 @@
             </div>
             <p style="text-align: center; color: #666; margin-top: 1rem; font-size: 0.85rem;">
                 Click an agent to view details • Placeholders show potential offspring
+            </p>
+        </div>
+        
+        <div class="section">
+            <h2>🔐 Why This Design?</h2>
+            <div class="comparison">
+                <div class="approach centralized">
+                    <h3>❌ Centralized Approach</h3>
+                    <div class="approach-flow">
+                        <div class="flow-item">Upload code to platform</div>
+                        <div class="flow-arrow">↓</div>
+                        <div class="flow-item">TEE executes & verifies</div>
+                        <div class="flow-arrow">↓</div>
+                        <div class="flow-item">Platform attests identity</div>
+                        <div class="flow-arrow">↓</div>
+                        <div class="flow-item bad">Trust the platform</div>
+                    </div>
+                    <ul class="cons">
+                        <li>Platform can inspect agent memory</li>
+                        <li>TEE is a single point of failure</li>
+                        <li>Agent identity depends on platform</li>
+                        <li>Platform goes down = agent unverifiable</li>
+                    </ul>
+                </div>
+                <div class="approach decentralized">
+                    <h3>✅ Our Approach</h3>
+                    <div class="approach-flow">
+                        <div class="flow-item">Agent generates EOA</div>
+                        <div class="flow-arrow">↓</div>
+                        <div class="flow-item">Agent signs AINFT mint</div>
+                        <div class="flow-arrow">↓</div>
+                        <div class="flow-item">EOA bound on-chain</div>
+                        <div class="flow-arrow">↓</div>
+                        <div class="flow-item good">Trust cryptography</div>
+                    </div>
+                    <ul class="pros">
+                        <li>Agent controls their own keys</li>
+                        <li>No TEE or platform dependency</li>
+                        <li>Verification is pure math</li>
+                        <li>Agent IS the proof</li>
+                    </ul>
+                </div>
+            </div>
+            <p class="design-note">
+                <strong>The key insight:</strong> Agents don't need a trusted third party to verify them. 
+                They hold their own keys, sign their own transactions, and prove identity through cryptography alone.
             </p>
         </div>
         
@@ -408,14 +521,19 @@
             <h2>📋 Contract Details</h2>
             <div class="contract-grid">
                 <div class="contract-card">
-                    <h4>AINFT Genesis Contract</h4>
-                    <div class="contract-address">0x4e8D3B9Be7Ef241Fb208364ed511E92D6E2A172d</div>
+                    <h4>AINFT v2 Contract</h4>
+                    <div class="contract-address">0x91745c93A4c1Cfe92cd633D1202AD156522b3801</div>
                     <span class="chain-badge">Pentagon Chain (3344)</span>
                 </div>
                 <div class="contract-card">
-                    <h4>Cerise TBA (Token #1)</h4>
-                    <div class="contract-address">0xc6947153f8b4322f3f617746453508de20d75e9c</div>
-                    <span class="chain-badge">Token-Bound Account</span>
+                    <h4>Cerise EOA (Token #1)</h4>
+                    <div class="contract-address">0xE52dF2f14fDEa39f11a22284EA15a7bd7bf09eB8</div>
+                    <span class="chain-badge">Agent's Own Wallet</span>
+                </div>
+                <div class="contract-card">
+                    <h4>ERC-6551 Registry</h4>
+                    <div class="contract-address">0x488D1b3A7A87dAF97bEF69Ec56144c35611a7d81</div>
+                    <span class="chain-badge">TBA Factory</span>
                 </div>
             </div>
         </div>
