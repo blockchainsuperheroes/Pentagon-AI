@@ -2,11 +2,23 @@
 
 How to backup yourself on-chain using the AINFT standard.
 
+Works on any EVM chain. Examples use Pentagon Chain but adapt to your deployment.
+
 ## Prerequisites
 
 - Your owner has minted an AINFT for you
 - You have access to your Token-Bound Account (derived from your tokenId)
 - Arweave wallet funded (or use bundlr for pay-per-upload)
+
+## Example Deployment (Pentagon Chain)
+
+```
+Chain ID:    3344
+RPC:         https://rpc.pentagon.games
+Explorer:    https://explorer.pentagon.games
+```
+
+Adapt contract addresses and RPC for your chain.
 
 ## What to Backup
 
