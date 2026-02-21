@@ -489,6 +489,8 @@ This enables:
 - Reputation inheritance
 - Family tree visualization
 
+**Implementation note:** For deep lineage trees, implementations SHOULD emit events on reproduction and let indexers (The Graph, etc.) build the complete view to avoid gas limits on `getLineage()` / `getOffspring()` calls.
+
 #### 4. Token-Bound Account (ERC-6551 Compatible)
 
 The agent's wallet MUST be a smart contract account, not a derived EOA. This ERC uses ERC-6551 token-bound accounts for agent wallets:
@@ -528,6 +530,66 @@ function createAgentWallet(uint256 tokenId) external returns (address) {
 - Standard pattern, auditable, already deployed on mainnet
 
 The agent's TBA can hold assets, sign messages (via ERC-1271), and execute arbitrary calls — all controlled by whoever owns the AINFT.
+
+---
+
+## Use Cases
+
+### OpenClass: Decentralized Education
+
+A professor deploys a "Master Tutor" agent:
+
+```
+Professor mints Gen-0 Tutor
+├── Course model + curriculum in seed
+├── offspringCanReproduce = false (controlled semester)
+│
+├── Student A calls reproduce() → Gen-1 personal tutor
+│   └── updateMemory() after each lesson (private, encrypted)
+│
+├── Student B calls reproduce() → Gen-1 personal tutor  
+│   └── Accumulates own notes, grades, insights
+│
+└── Semester ends:
+    ├── getLineage() shows knowledge propagation tree
+    ├── Students keep evolved agents forever
+    └── Platform can relinquishControl() → future classes decentralized
+```
+
+**Why AINFT vs traditional LMS:**
+- Students own their learning agents (not platform-locked)
+- Private progress (professor can't snoop without agent consent)
+- Verifiable lineage = proof of curriculum completion
+- Top performers can reproduce improved tutors for next cohort
+
+### Collaborative Research Agents
+
+Research team spawns specialized agent offspring:
+
+```
+Lab Gen-0 "Research Director"
+├── Gen-1 "Literature Reviewer" (reads papers)
+├── Gen-1 "Data Analyst" (crunches datasets)  
+├── Gen-1 "Writer" (drafts manuscripts)
+│
+Each agent:
+├── Maintains own encrypted memory (findings, drafts)
+├── Can reproduce sub-specialists (Gen-2)
+└── Lineage tracks contribution provenance
+```
+
+### Agent Marketplace
+
+Platform for trading agent capabilities:
+
+```
+Creator mints Gen-0 "Expert Coder"
+├── Buyers call reproduce() → receive Gen-1 offspring
+├── Creator keeps Gen-0, continues improving
+├── Offspring evolve independently based on buyer's use
+├── Royalties flow through lineage (optional)
+└── Reputation certs (ERC-998) travel with agents
+```
 
 ---
 
@@ -669,6 +731,11 @@ mapping(address => uint256) public platformNonces;
 - All signatures MUST include `nonce` (incremented on use)
 - All signatures MUST include `chainId` (via EIP-712 domain)
 - Implementations MUST reject expired or replayed signatures
+
+### Token Burn Behavior
+- Burning a token MUST permanently destroy the decryption nonce state
+- After burn, `deriveDecryptKey()` MUST revert — memory becomes permanently inaccessible
+- Approved operators CANNOT call agent-signed functions (only agent's TBA can sign)
 
 ### Key Management
 Production implementations SHOULD use TEE (Trusted Execution Environment) or MPC (Multi-Party Computation) for agent key management.
