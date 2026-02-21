@@ -195,6 +195,11 @@ contract ERC7857A_v2 {
         require(_reproductionEnabled[parentTokenId], "Reproduction disabled");
         require(eoaToToken[offspringEOA] == 0, "Offspring EOA already registered");
         
+        // Charge reproduction fee if set
+        if (reproductionFee > 0) {
+            require(msg.value >= reproductionFee, "Insufficient fee");
+        }
+        
         // Check reproduction fee (if not open)
         if (!openReproduction && reproductionFee > 0) {
             require(msg.value >= reproductionFee, "Insufficient reproduction fee");
