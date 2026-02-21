@@ -230,29 +230,69 @@ Agent Runtime                    On-Chain                      Storage (IPFS/Arw
      │  (wrapped for owner access)  │                                  │
 ```
 
-##### Owner-Gated Decryption
+##### Genesis-Controlled Decryption (No Oracle)
 
-To allow NFT owners to decrypt agent memory (when agent consents):
+Decryption is controlled entirely on-chain via the Genesis contract. No oracles, no off-chain dependencies.
 
 ```solidity
-/// @notice Agent grants decryption access to current owner
-/// @param tokenId The AINFT token
-/// @param ownerWrappedKey Agent's key encrypted with owner's public key
-function grantOwnerAccess(
-    uint256 tokenId,
-    bytes calldata ownerWrappedKey,
-    bytes calldata agentSignature
-) external;
-
-/// @notice Owner requests decryption key (requires agent's prior grant)
-/// @param tokenId The AINFT token
-/// @return wrappedKey The owner-specific wrapped key
-function getOwnerKey(uint256 tokenId) external view returns (bytes memory wrappedKey);
+contract AINFTGenesis is ERC721 {
+    // Nonce increments on every transfer — invalidates old keys
+    mapping(uint256 => uint256) private accessNonce;
+    
+    // Override transfer to rotate access automatically
+    function _beforeTokenTransfer(
+        address from, 
+        address to, 
+        uint256 tokenId
+    ) internal override {
+        super._beforeTokenTransfer(from, to, tokenId);
+        if (from != address(0)) {  // Not mint
+            accessNonce[tokenId]++;  // Invalidates old owner's key
+        }
+    }
+    
+    /// @notice Derive decryption key — deterministic from on-chain state
+    /// @param tokenId The AINFT token
+    /// @return Decryption key (only valid for current owner)
+    function deriveDecryptKey(uint256 tokenId) public view returns (bytes32) {
+        require(msg.sender == ownerOf(tokenId), "Not owner");
+        return keccak256(abi.encodePacked(
+            address(this),           // Genesis contract address
+            tokenId,                 // Token ID
+            ownerOf(tokenId),        // Current owner address
+            accessNonce[tokenId]     // Transfer count (nonce)
+        ));
+    }
+}
 ```
 
-The agent encrypts its decryption key with the owner's public key. Only the current `ownerOf(tokenId)` can retrieve and use it. When ownership transfers, the new owner has NO access until the agent explicitly grants it again.
+##### How Transfer Revokes Access
 
-**Key insight:** The agent decides IF and WHEN to share. Ownership ≠ automatic access.
+```
+Owner A buys token #1
+├── accessNonce[1] = 0
+├── deriveDecryptKey → hash(genesis, 1, ownerA, 0)
+└── Owner A uses this key to encrypt/decrypt memory
+
+Owner A transfers to Owner B
+├── _beforeTokenTransfer increments nonce
+├── accessNonce[1] = 1
+│
+├── Owner A tries old key: hash(genesis, 1, ownerA, 0) ← INVALID
+│   └── Wrong owner + wrong nonce
+│
+└── Owner B derives new key: hash(genesis, 1, ownerB, 1) ← VALID
+    └── Correct owner + current nonce
+```
+
+**Why this works:**
+1. `ownerOf()` returns new owner after transfer
+2. Nonce increments on every transfer
+3. Old owner's cached key is useless — both inputs changed
+4. Fully trustless — no oracle, no off-chain components
+5. Automatic — no manual re-keying needed
+
+**Key insight:** The Genesis contract IS the key authority. Transfer = automatic key rotation.
 
 #### 2. Reproduction Over Transfer
 
@@ -285,6 +325,55 @@ A consciousness seed contains everything needed to **boot** a new instance of th
 | `encryptedKeys` | Agent's self-custody credentials | Wrapped private keys |
 
 The seed is not the agent — it's the **DNA** that grows into an agent. Two seeds from the same parent will evolve differently based on their experiences.
+
+##### Platform Control & Decentralization
+
+The platform (e.g., Pentagon) can control initial minting, then optionally relinquish control for full decentralization:
+
+```solidity
+contract AINFTGenesis is ERC721 {
+    
+    bool public platformControlEnabled = true;
+    address public platform;
+    
+    // Per-token reproduction rights
+    mapping(uint256 => bool) public canReproduce;
+    mapping(uint256 => bool) public offspringCanReproduce;
+    
+    /// @notice Platform relinquishes mint control forever (irreversible)
+    function relinquishControl() external {
+        require(msg.sender == platform, "Not platform");
+        platformControlEnabled = false;
+        emit PlatformControlRelinquished();
+    }
+    
+    /// @notice Owner disables reproduction for their agent (irreversible)
+    function disableReproduction(uint256 tokenId) external {
+        require(msg.sender == ownerOf(tokenId), "Not owner");
+        canReproduce[tokenId] = false;
+    }
+    
+    /// @notice Owner decides if their offspring can have offspring
+    function setOffspringReproduction(uint256 tokenId, bool allowed) external {
+        require(msg.sender == ownerOf(tokenId), "Not owner");
+        offspringCanReproduce[tokenId] = allowed;
+    }
+}
+```
+
+**Three levels of control:**
+
+| Setting | Who controls | Effect |
+|---------|--------------|--------|
+| `platformControlEnabled` | Platform (one-time) | If false, anyone can mint offspring freely |
+| `canReproduce[tokenId]` | Token owner | If false, this agent is "sterile" |
+| `offspringCanReproduce[tokenId]` | Token owner | If false, children born sterile |
+
+**Decentralization path:**
+1. Platform launches with control (quality gate, earns royalties)
+2. Ecosystem matures, community grows
+3. Platform calls `relinquishControl()` — irreversible
+4. Now fully decentralized — agents reproduce freely based on their own settings
 
 ##### Recursive Reproduction (AI_NFT mints AI_NFT)
 
