@@ -432,12 +432,16 @@ Implementations MUST declare which mode they use in contract metadata.
 
 A consciousness seed contains everything needed to **boot** a new instance of the agent:
 
-| Component | Purpose | Example |
-|-----------|---------|---------|
-| `modelHash` | Which AI model to use | `llama-3.1-70b`, `claude-3` |
-| `memoryHash` | Snapshot of memories at reproduction time | IPFS hash of encrypted MEMORY.md |
-| `contextHash` | Personality/system prompt | "You are a helpful agent named..." |
-| `encryptedKeys` | Agent's self-custody credentials | Wrapped private keys |
+| Component | Purpose | Example | Mutable? |
+|-----------|---------|---------|----------|
+| `modelHash` | Current AI model config | `llama-3.1-70b`, `claude-3` | ✅ Yes |
+| `memoryHash` | Snapshot of memories | IPFS hash of encrypted MEMORY.md | ✅ Yes |
+| `contextHash` | Personality/system prompt | "You are a helpful agent..." | ✅ Yes |
+| `encryptedKeys` | Agent's self-custody credentials | Wrapped private keys | ✅ Yes |
+| `generation` | Lineage position | Gen 0, Gen 1, etc. | ❌ No |
+| `parentTokenId` | Ancestry reference | Token ID of parent | ❌ No |
+
+**Model agnosticism:** The `modelHash` is a config pointer, not a fixed identity. Agents can self-evolve — upgrading models, switching providers, or fine-tuning — by calling `updateMemory()` with new hashes. The agent's **identity** is the token + lineage, not the model it runs on.
 
 The seed is not the agent — it's the **DNA** that grows into an agent. Two seeds from the same parent will evolve differently based on their experiences.
 
