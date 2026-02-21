@@ -47,6 +47,41 @@ Data lives on Dash Platform
 
 - **Platform Explorer API:** https://platform-explorer.com/api
 - **Chrome Extension:** https://chromewebstore.google.com/detail/dash-platform-extension/odmphbcnlldggfhcpdjgnlhbehoicdnf
+- **NFT Overview:** https://docs.dash.org/projects/platform/en/stable/docs/explanations/nft.html
+- **Data Contracts Reference:** https://docs.dash.org/projects/platform/en/stable/docs/reference/data-contracts.html
+
+---
+
+## TL;DR for EVM Devs
+
+On Dash Platform, data storage is **schema-based documents**, not executable Solidity code.
+
+| EVM Concept | Dash Platform Equivalent |
+|-------------|--------------------------|
+| Smart Contract | Data Contract (JSON Schema) |
+| NFT Token | Document with unique `$id` |
+| `ownerOf(tokenId)` | `$ownerId` field |
+| `transferFrom()` | Built-in document transfer transition |
+| Marketplace contract | Native `tradeMode` flag |
+
+### Key Differences
+
+- **No custom runtime code** — Platform enforces rules based on schema flags
+- **Minting** = Create document under data contract
+- **Transfer** = Platform changes `$ownerId` (no code needed)
+- **Trade** = Set price, platform handles purchase
+
+### Document Flags (NFT Behavior)
+
+```json
+{
+  "transferable": true,      // Allow owner transfers
+  "tradeMode": "direct",     // Enable decentralized trades  
+  "immutable": false,        // Whether content can change
+  "deletable": false,        // Whether can be removed
+  "creationRestrictionMode": "owner"  // Who can mint
+}
+```
 
 ---
 
