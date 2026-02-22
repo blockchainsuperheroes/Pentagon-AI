@@ -7,16 +7,38 @@ pragma solidity ^0.8.20;
  * @dev Backward compatible — works with existing NFTs on OpenSea, Blur, etc.
  * @author Pentagon Chain (pentagon.games)
  * 
- * Architecture:
- *   ANY ERC-721 ──register()──► AINFT Registry
- *   (Bored Ape, etc.)           ├── agentEOA
- *                               ├── memoryHash
- *                               ├── modelHash  
- *                               ├── lineage
- *                               └── clone()
+ * =============================================================================
+ * ACKNOWLEDGMENT
+ * =============================================================================
+ * This registry pattern is inspired by ERC-6551 (Token Bound Accounts).
+ * We gratefully acknowledge the work of:
+ *   - Jayden Windle (@jaydenwindle)
+ *   - Benny Giang (@bennygiang)  
+ *   - Steve Jang
+ *   - Druzy Downs
+ *   - Raymond Feng
  * 
- *   NFT ownership: Original ERC-721 contract (marketplace compatible)
- *   Agent identity: This registry (extension layer)
+ * ERC-6551: https://eips.ethereum.org/EIPS/eip-6551
+ * Reference: https://github.com/erc6551/reference
+ * 
+ * Just as ERC-6551 allows ANY NFT to have a wallet without modifying the
+ * original contract, AINFT Registry allows ANY NFT to have an AI agent
+ * bound to it without modifying the original contract.
+ * =============================================================================
+ * 
+ * Architecture:
+ *   ANY ERC-721 ──bind()──► AINFT Registry ──► Agent Identity
+ *   (Bored Ape, etc.)       │                  ├── agentEOA
+ *                           │                  ├── memoryHash
+ *   Ownership: Original     │                  ├── modelHash  
+ *   contract (OpenSea OK)   │                  ├── lineage
+ *                           │                  └── clone()
+ *                           │
+ *                           └── Follows NFT ownership automatically
+ *                               (checks ownerOf on original contract)
+ * 
+ * Key principle: NFT ownership is ALWAYS the source of truth.
+ * This registry only EXTENDS functionality, never overrides ownership.
  */
 
 interface IERC721 {
@@ -107,18 +129,20 @@ contract AINFTRegistry {
         openRegistration = true; // Anyone can register their NFT
     }
     
-    // ============ Core: Register Any NFT ============
+    // ============ Core: Bind Agent to Any NFT ============
     
     /**
-     * @notice Register an existing ERC-721 as an AI agent
+     * @notice Bind an AI agent to an existing ERC-721
      * @dev Agent signs this tx — agentEOA = msg.sender
+     *      NFT owner must either be the caller OR have signed approval
+     *      Agent binding follows NFT ownership automatically on transfer
      * @param nftContract The ERC-721 contract address
-     * @param tokenId The token ID to register
+     * @param tokenId The token ID to bind agent to
      * @param modelHash Hash of the AI model
      * @param memoryHash Hash of initial memory state
      * @param contextHash Hash of personality/soul
      */
-    function register(
+    function bind(
         address nftContract,
         uint256 tokenId,
         bytes32 modelHash,
@@ -159,15 +183,16 @@ contract AINFTRegistry {
     }
     
     /**
-     * @notice Register with owner signature (agent calls, owner approves)
+     * @notice Bind with owner signature (agent calls, owner approves)
+     * @dev Allows agent to initiate binding with owner's off-chain approval
      * @param nftContract The ERC-721 contract
      * @param tokenId The token ID
      * @param modelHash Model hash
      * @param memoryHash Memory hash
      * @param contextHash Context hash
-     * @param ownerSignature Owner's signature approving this registration
+     * @param ownerSignature Owner's signature approving this binding
      */
-    function registerWithApproval(
+    function bindWithApproval(
         address nftContract,
         uint256 tokenId,
         bytes32 modelHash,
@@ -357,10 +382,11 @@ contract AINFTRegistry {
     }
     
     /**
-     * @notice Unregister an agent (owner only)
-     * @dev Clears registration but doesn't affect underlying NFT
+     * @notice Unbind agent from NFT (owner only)
+     * @dev Clears binding but doesn't affect underlying NFT
+     *      Agent EOA is freed and can bind to another NFT
      */
-    function unregister(address nftContract, uint256 tokenId) external {
+    function unbind(address nftContract, uint256 tokenId) external {
         address nftOwner = IERC721(nftContract).ownerOf(tokenId);
         require(msg.sender == nftOwner, "Not owner");
         
@@ -373,6 +399,47 @@ contract AINFTRegistry {
         delete _cloningEnabled[key];
         
         emit AgentUnregistered(nftContract, tokenId);
+    }
+    
+    /**
+     * @notice Rebind to a different agent EOA (new owner scenario)
+     * @dev When NFT is sold, new owner may want to use their own agent
+     *      Old agent EOA is freed, new agent EOA is bound
+     * @param nftContract The ERC-721 contract
+     * @param tokenId The token ID
+     * @param newAgentEOA The new agent's EOA (signs this tx)
+     * @param ownerSignature Current owner's signature approving rebind
+     */
+    function rebind(
+        address nftContract,
+        uint256 tokenId,
+        address newAgentEOA,
+        bytes calldata ownerSignature
+    ) external {
+        bytes32 key = _getKey(nftContract, tokenId);
+        require(_agents[key].agentEOA != address(0), "Not bound");
+        require(newAgentEOA != address(0), "Zero address");
+        require(eoaToKey[newAgentEOA] == bytes32(0), "EOA already bound");
+        
+        // Verify owner signature
+        address nftOwner = IERC721(nftContract).ownerOf(tokenId);
+        bytes32 messageHash = keccak256(abi.encodePacked(
+            "AINFT_REBIND",
+            nftContract,
+            tokenId,
+            newAgentEOA
+        ));
+        require(_verifySignature(messageHash, ownerSignature, nftOwner), "Invalid owner signature");
+        
+        // Clear old EOA mapping
+        address oldEOA = _agents[key].agentEOA;
+        delete eoaToKey[oldEOA];
+        
+        // Set new EOA
+        _agents[key].agentEOA = newAgentEOA;
+        eoaToKey[newAgentEOA] = key;
+        
+        // Note: Memory, model, lineage all preserved — only EOA changes
     }
     
     // ============ Platform Controls ============
