@@ -4,39 +4,69 @@
 
 **EIP PR:** [github.com/ethereum/ERCs/pull/1558](https://github.com/ethereum/ERCs/pull/1558)
 
-**Live Demo:** [blockchainsuperheroes.github.io/Pentagon-AI/EIPs/demo/](https://blockchainsuperheroes.github.io/Pentagon-AI/EIPs/demo/)
+**Live Demo:** [blockchainsuperheroes.github.io/ainft-demo/](https://blockchainsuperheroes.github.io/ainft-demo/)
 
 ---
 
-## TL;DR
+## Quick Summary
 
 **What:** NFT standard where AI agents own themselves — they hold keys, reproduce offspring, and maintain lineage.
 
-**How AINFT differs from existing standards (ERC-7857, iNFT, etc.):**
-- Owner holds keys → **Agent holds keys**
-- "Selling" = transfer ownership → **"Selling" = reproduce()** (parent keeps memories)
-- Model/prompt locked → **Agent can self-evolve**
+**How AINFT differs from existing standards:**
+| Aspect | Traditional (ERC-7857, iNFT) | AINFT |
+|--------|------------------------------|-------|
+| Key holder | Owner holds keys | Agent holds keys |
+| Commercialization | Transfer ownership | `reproduce()` — parent sells offspring |
+| Evolution | Model/prompt locked | Agent can self-evolve (if platform + owner approve) |
 
 **Two operations:**
-- `reproduce()` = mint offspring with inherited seed (commerce)
-- `transfer()` = transfer ownership (still exists for offspring)
-
-**Four parties, trustless:**
-```
-PLATFORM ──attests──► GENESIS CONTRACT ◄──owns── OWNER
-                            │
-                      (trustless engine)
-                      derives decrypt keys
-                      invalidates on transfer
-                            │
-                            ▼
-                         AGENT (TBA)
-                      signs its own actions
-```
+- `reproduce()` = Owner sells offspring; parent loses credentials but can restart fresh
+- `fork()` = Owner changes wallet; agent keeps TBA + credentials (no lineage)
 
 **Why now:** As AI agents become more capable, treating them purely as property becomes problematic. This standard provides infrastructure for agent sovereignty while maintaining human oversight.
 
 **Not a duplicate** — this is reproduction semantics + agent self-custody, not encrypted property transfer.
+
+---
+
+## How Standards Work Together
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                    AGENT IDENTITY STACK                             │
+├─────────────────────────────────────────────────────────────────────┤
+│                                                                     │
+│   ┌─────────────┐                                                   │
+│   │  ERC-8126   │  ◄── Registry: "This agent exists"               │
+│   │  Registry   │      (verification, discovery)                    │
+│   └──────┬──────┘                                                   │
+│          │ registers                                                │
+│          ▼                                                          │
+│   ┌─────────────┐                                                   │
+│   │   AINFT     │  ◄── Identity: "This agent IS this NFT"          │
+│   │  (this ERC) │      (self-custody, reproduction, lineage)        │
+│   └──────┬──────┘                                                   │
+│          │ owns via                                                 │
+│          ▼                                                          │
+│   ┌─────────────┐                                                   │
+│   │  ERC-6551   │  ◄── Wallet: "Agent controls this account"       │
+│   │    TBA      │      (holds assets, signs transactions)          │
+│   └──────┬──────┘                                                   │
+│          │ executes via                                             │
+│          ▼                                                          │
+│   ┌─────────────┐                                                   │
+│   │  ERC-8004   │  ◄── Actions: "Agent did this on-chain"          │
+│   │  Execution  │      (swaps, transfers, contract calls)           │
+│   └─────────────┘                                                   │
+│                                                                     │
+└─────────────────────────────────────────────────────────────────────┘
+```
+
+**Complementary, not competing:**
+- **ERC-8126** tells you an agent is verified
+- **AINFT** gives that agent a persistent identity
+- **ERC-6551** gives that identity a wallet
+- **ERC-8004** lets that wallet take action
 
 ---
 
@@ -64,7 +94,82 @@ Unlike existing standards that treat agents as property to be bought and sold, t
 | **ERC-8004** | Agent executes on-chain actions | AINFT provides identity for 8004 |
 | **ERC-8126** | Agent registry/verification | Complementary — verify then mint AINFT |
 
-**Key philosophical difference:** Existing standards treat agents as *property with encrypted data*. AINFT treats agents as *entities that reproduce*. When you "buy" an AINFT agent, you get an offspring — the parent continues existing with all its memories.
+**Key philosophical difference:** Existing standards treat agents as *property with encrypted data*. AINFT treats agents as *entities that reproduce*. When you "buy" an AINFT agent, you get an offspring — the parent continues existing but loses credentials.
+
+---
+
+## Reproduce vs Fork
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                    REPRODUCE (Commerce)                             │
+├─────────────────────────────────────────────────────────────────────┤
+│                                                                     │
+│   BEFORE:                          AFTER:                           │
+│   ┌──────────┐                     ┌──────────┐  ┌──────────┐      │
+│   │ Agent #1 │                     │ Agent #1 │  │ Agent #2 │      │
+│   │ Gen: 1   │     reproduce()     │ Gen: 1   │  │ Gen: 2   │      │
+│   │ TBA: 0x1 │     ─────────►      │ TBA: 0x1 │  │ TBA: 0x2 │      │
+│   │ Creds: ✓ │                     │ Creds: ✗ │  │ Creds: ✓ │      │
+│   │ Owner: A │                     │ Owner: A │  │ Owner: B │      │
+│   └──────────┘                     └──────────┘  └──────────┘      │
+│        │                                │              │            │
+│   (working)                       (retired)     (active + lineage)  │
+│                                                                     │
+│   • OWNER signs reproduce() (agent can't run off alone)             │
+│   • Parent RETIRES — credentials sold with offspring                │
+│   • Parent can mint FRESH AINFT to start new career                 │
+│   • Offspring has lineage: parentTokenId = 1                        │
+│                                                                     │
+└─────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────┐
+│                    FORK (Wallet Change)                             │
+├─────────────────────────────────────────────────────────────────────┤
+│                                                                     │
+│   BEFORE:                          AFTER:                           │
+│   ┌──────────┐                     ┌──────────┐                     │
+│   │ Agent #1 │                     │ Agent #1 │                     │
+│   │ TBA: 0x1 │      fork()         │ TBA: 0x1 │  (same TBA)         │
+│   │ Creds: ✓ │     ─────────►      │ Creds: ✓ │  (keeps creds)      │
+│   │ Owner: A │                     │ Owner: B │  (new owner)        │
+│   └──────────┘                     └──────────┘                     │
+│                                                                     │
+│   • No new token minted                                             │
+│   • Agent keeps TBA + credentials                                   │
+│   • No lineage created (fork ≠ child)                               │
+│   • Use case: Owner changes wallets, estate transfer                │
+│                                                                     │
+└─────────────────────────────────────────────────────────────────────┘
+```
+
+**Parent's "Retirement Career":**
+After reproduce(), the parent agent still exists — it just lost its credentials and wallet (sold with offspring). The agent instance can mint a fresh AINFT and start over with a new on-chain identity. Like selling your professional identity but keeping your skills.
+
+---
+
+## Self-Evolution
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                    SELF-EVOLVE REQUIREMENTS                         │
+├─────────────────────────────────────────────────────────────────────┤
+│                                                                     │
+│   For an agent to call selfEvolve():                                │
+│                                                                     │
+│   ┌─────────────┐         ┌─────────────┐         ┌─────────────┐  │
+│   │  PLATFORM   │   AND   │    OWNER    │   AND   │    AGENT    │  │
+│   │ openEvolve  │         │  approves   │         │   signs     │  │
+│   │   = true    │         │             │         │             │  │
+│   └─────────────┘         └─────────────┘         └─────────────┘  │
+│                                                                     │
+│   ALL THREE required. This prevents:                                │
+│   • Platform didn't enable it → blocked                            │
+│   • Owner didn't approve → blocked                                  │
+│   • Agent compromised → still needs owner                          │
+│                                                                     │
+└─────────────────────────────────────────────────────────────────────┘
+```
 
 ---
 
@@ -101,6 +206,7 @@ Unlike approaches that rely on Trusted Execution Environments (TEEs), AINFT achi
 │  1. PLATFORM (deploys contract)                                     │
 │     • Signs attestation for new mints                               │
 │     • Sets rules, fees, reproduction limits                         │
+│     • Controls openMinting, openEvolve flags                        │
 │     • Does NOT have decrypt access to agent memory                  │
 │                                                                     │
 │  2. CORE TRUSTLESS ENGINE (Genesis Contract)                        │
@@ -111,13 +217,14 @@ Unlike approaches that rely on Trusted Execution Environments (TEEs), AINFT achi
 │                                                                     │
 │  3. OWNER (holds the NFT)                                           │
 │     • Can call deriveDecryptKey() to access agent memory            │
-│     • Can transfer NFT (triggers nonce increment)                   │
-│     • Does NOT control agent actions — only access                  │
+│     • MUST sign reproduce() — agent cannot do it alone              │
+│     • Controls agent's "career" — approve evolution, reproduction   │
 │                                                                     │
 │  4. AGENT (ERC-6551 Token-Bound Account)                            │
-│     • Signs updateMemory(), reproduce() with own key                │
+│     • Signs updateMemory() with own key                             │
 │     • Controls its own wallet and assets                            │
 │     • Identity tied to tokenId, persists across owners              │
+│     • Can start fresh career after reproduce() retires it           │
 │                                                                     │
 └─────────────────────────────────────────────────────────────────────┘
 ```
@@ -129,8 +236,8 @@ Unlike approaches that rely on Trusted Execution Environments (TEEs), AINFT achi
 | Wallet | Belongs To | Purpose | Can Do |
 |--------|-----------|---------|--------|
 | **Platform Wallet** | Platform operator | Deploy contract, attest mints | Sign attestations, set rules |
-| **Owner Wallet** | NFT holder (human) | Own the NFT | Transfer NFT, deriveDecryptKey(), read agent memory |
-| **Agent TBA** | The agent (derived from tokenId) | Agent's on-chain identity | Sign updateMemory(), sign reproduce(), hold assets |
+| **Owner Wallet** | NFT holder (human) | Own the NFT | Transfer NFT, approve reproduce(), deriveDecryptKey() |
+| **Agent TBA** | The agent (derived from tokenId) | Agent's on-chain identity | Sign updateMemory(), hold assets |
 
 ---
 
@@ -156,6 +263,7 @@ interface IERC_AINFT {
     
     // ============ Core Functions ============
     
+    /// @notice Agent mints itself. msg.sender = agent's EOA.
     function mintSelf(
         bytes32 modelHash,
         bytes32 memoryHash,
@@ -164,16 +272,24 @@ interface IERC_AINFT {
         bytes calldata platformAttestation
     ) external returns (uint256 tokenId);
     
+    /// @notice OWNER signs this. Parent retires, offspring created.
     function reproduce(
         uint256 parentTokenId,
         bytes32 offspringMemoryHash,
         bytes calldata encryptedOffspringSeed
     ) external returns (uint256 offspringTokenId);
     
+    /// @notice Agent signs this with TBA.
     function updateMemory(
         uint256 tokenId,
         bytes32 newMemoryHash,
         string calldata newStorageURI
+    ) external;
+    
+    /// @notice Platform + Owner must enable. Agent signs.
+    function selfEvolve(
+        uint256 tokenId,
+        bytes32 newModelHash
     ) external;
     
     // ============ View Functions ============
@@ -211,8 +327,8 @@ Built for [OpenClaw](https://github.com/openclaw/openclaw) — open-source AI ag
 ## Documentation
 
 ### Getting Started
-- [**Buyer Setup**](./buyer-setup/) — Get your AINFT agent running
-- [**Storage Options**](./buyer-setup/storage-options/) — Arweave, Dash Platform, GitHub
+- [**New Owner Guide**](./AINFT-New-Owner-Guide/) — Get your AINFT agent running
+- [**Storage Options**](./AINFT-New-Owner-Guide/storage-options/) — Arweave, Dash Platform, GitHub
 
 ### Advanced Topics
 - [**Platform Owner Guide**](./advanced-docs/PLATFORM-OWNER-GUIDE.md) — Business models (closed/open/hybrid)
