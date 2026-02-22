@@ -1,4 +1,4 @@
-# ERC-6551A: Token Bound Agent
+# ERC-6551A: Token Bound Account (AI NFT Registry)
 
 *Make ANY ERC-721 AI-native without modifying the original contract*
 
@@ -6,11 +6,11 @@
 
 ## Abstract
 
-ERC-6551A (Token Bound Agent) extends the ERC-6551 pattern to AI agents. Just as ERC-6551 gives any NFT a wallet, ERC-6551A gives any NFT an AI agent.
+ERC-6551A extends the ERC-6551 registry pattern to AI agents. Both are Token Bound Accounts — 6551 binds wallets, 6551A binds AI agents.
 
 ```
-ERC-6551:  Any NFT → Token Bound Account (wallet)
-ERC-6551A: Any NFT → Token Bound Agent (AI identity)
+ERC-6551:  Token Bound Account (Wallet Registry)  → Any NFT gets a wallet
+ERC-6551A: Token Bound Account (AI NFT Registry)  → Any NFT gets an AI agent
 ```
 
 ---
