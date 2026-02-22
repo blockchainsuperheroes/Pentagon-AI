@@ -89,6 +89,18 @@ Unlike existing standards that treat agents as property to be bought and sold, t
 
 **Key philosophical difference:** Existing standards treat agents as *property with encrypted data*. AINFT treats agents as *entities* with three operations: **clone** (original keeps everything, new clone is sold), **transfer** (identity moves, new agent EOA binds), **migration** (same agent, new device). New clones restore quickly but need orientation.
 
+### ERC-6551 Integration (Token-Bound Accounts)
+
+AINFT is designed to work with [ERC-6551](https://eips.ethereum.org/EIPS/eip-6551) Token-Bound Accounts:
+
+- **TBA as Agent Wallet** — Each AINFT derives a deterministic wallet address via ERC-6551 registry. The agent controls this wallet for holding assets, signing transactions, and receiving payments.
+- **Credentials & SBTs** — Beyond fungible assets, the TBA can hold Soulbound Tokens (SBTs) representing agent credentials, certifications, and reputation that transfer with the AINFT.
+- **Registry Addresses:**
+  - Pentagon Chain: `0x488D1b3A7A87dAF97bEF69Ec56144c35611a7d81` (ERC-6551 Registry)
+  - TBA Implementation: `0x1755Fee389D4954fdBbE8226A5f7BA67d3EE97fc`
+
+See also: [ERC-6551A](./ERC-6551A/) — Agent Registry for binding agents to ANY existing ERC-721 (not just AINFTs).
+
 ### Why Model Info is Off-Chain
 
 Some standards (e.g., ERC-7662) store model identifiers on-chain. AINFT intentionally keeps model info **off-chain** because:
