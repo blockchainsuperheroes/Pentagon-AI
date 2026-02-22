@@ -21,7 +21,7 @@ Cloning in ERC-6551A creates agent copies without creating new NFT tokens. Clone
 │  called               (no EOA)    claimClone() (has EOA)            │
 │                          │                        │                  │
 │                          │                        │                  │
-│                   transferCloneClaim()      bind() to NFT            │
+│                   transferCloneClaim()      bindNew() to NFT            │
 │                   (repeatable)              OR stay standalone       │
 │                                                                      │
 └──────────────────────────────────────────────────────────────────────┘
@@ -186,7 +186,7 @@ mintStandalone(cloneId);
 │           │              ┌───────────────┼───────────────┐        │
 │           │              │               │               │        │
 │           │              ▼               ▼               ▼        │
-│           │          bind()        standalone      mintStandalone│
+│           │          bindNew()        standalone      mintStandalone│
 │           │          to NFT        (no bind)       (future)      │
 │           │              │               │               │        │
 │           │              ▼               ▼               ▼        │

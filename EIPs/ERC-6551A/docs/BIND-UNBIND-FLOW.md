@@ -14,17 +14,17 @@ ERC-6551A allows agents to bind to any ERC-721 NFT. This document covers all bin
 
 | Method | Who Signs | Use Case |
 |--------|-----------|----------|
-| `bind()` | Agent (agentEOA) | Agent self-registers |
+| `bindNew()` | Agent (agentEOA) | Agent self-registers |
 | `bindWithApproval()` | Owner + Platform | Owner registers for agent |
 
 ---
 
-## Method 1: bind() — Agent Self-Registration
+## Method 1: bindNew() — Agent Self-Registration
 
 Agent calls bind directly. Agent's address becomes agentEOA.
 
 ```solidity
-function bind(
+function bindNew(
     address nftContract,
     uint256 tokenId,
     bytes32 modelHash,
@@ -66,7 +66,7 @@ function bind(
 
 ### Note: Agent ≠ Owner
 
-With `bind()`, the agent signs — NOT the NFT owner. This is intentional:
+With `bindNew()`, the agent signs — NOT the NFT owner. This is intentional:
 - Agent controls its own identity
 - Owner controls the NFT (can unbind, enable cloning, etc.)
 
@@ -126,7 +126,7 @@ function bindWithApproval(
 
 ---
 
-## unbind() — Detach Agent
+## unbindNew() — Detach Agent
 
 Owner detaches agent from NFT. Agent goes to limbo.
 
@@ -144,7 +144,7 @@ function unbind(
 │                                                                 │
 │  NFT + Agent (bound)                                           │
 │       │                                                         │
-│       │ unbind() — called by NFT owner                         │
+│       │ unbindNew() — called by NFT owner                         │
 │       ▼                                                         │
 │  ┌─────────────────────────────────────────────────────────┐   │
 │  │                                                          │   │
@@ -209,8 +209,8 @@ When NFT sells on OpenSea, registry doesn't receive callback. New owner must exp
 │       │                                                         │
 │       └──► Replace with new agent                              │
 │            │                                                    │
-│            │ unbind() — removes old agent                      │
-│            │ bind() — attaches new agent                       │
+│            │ unbindNew() — removes old agent                      │
+│            │ bindNew() — attaches new agent                       │
 │            ▼                                                    │
 │       New agent bound                                          │
 │                                                                 │
@@ -244,7 +244,7 @@ Both exist simultaneously. Owner controls the NFT; agent controls the identity.
 
 ## Validation Summary
 
-### bind()
+### bindNew()
 
 ```solidity
 require(!isRegistered(nftContract, tokenId), "NFT already has agent");
@@ -261,7 +261,7 @@ require(!isRegistered(nftContract, tokenId), "NFT already has agent");
 require(eoaToKey[agentEOA] == bytes32(0), "EOA already registered");
 ```
 
-### unbind()
+### unbindNew()
 
 ```solidity
 require(IERC721(nftContract).ownerOf(tokenId) == msg.sender, "Not owner");
