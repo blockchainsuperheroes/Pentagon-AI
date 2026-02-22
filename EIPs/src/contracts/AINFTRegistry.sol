@@ -60,8 +60,8 @@ contract AINFTRegistry {
     event AgentCloned(
         address indexed parentContract,
         uint256 indexed parentTokenId,
-        address indexed offspringEOA,
-        uint256 offspringId,
+        address indexed cloneEOA,
+        uint256 cloneId,
         uint256 generation
     );
     
@@ -89,8 +89,8 @@ contract AINFTRegistry {
         uint256 registeredAt;       // Block timestamp
     }
     
-    // For offspring that don't have underlying NFTs
-    struct OffspringIdentity {
+    // For clone that don't have underlying NFTs
+    struct CloneIdentity {
         address agentEOA;
         bytes32 modelHash;
         bytes32 memoryHash;
@@ -110,9 +110,9 @@ contract AINFTRegistry {
     // Agent EOA => registration key (for reverse lookup)
     mapping(address => bytes32) public eoaToKey;
     
-    // Offspring (clones without underlying NFT)
-    mapping(uint256 => OffspringIdentity) private _offspring;
-    uint256 private _offspringCounter;
+    // Clone (clones without underlying NFT)
+    mapping(uint256 => CloneIdentity) private _clone;
+    uint256 private _cloneIdCounter;
     
     // Cloning enabled per registration
     mapping(bytes32 => bool) private _cloningEnabled;
@@ -257,19 +257,19 @@ contract AINFTRegistry {
     // ============ Cloning ============
     
     /**
-     * @notice Clone an agent (owner signs, offspring wakes and mints later)
-     * @dev Creates offspring record; offspring calls claimOffspring() with own EOA
+     * @notice Clone an agent (owner signs, clone wakes and mints later)
+     * @dev Creates clone record; clone calls claimClone() with own EOA
      * @param nftContract Parent's NFT contract
      * @param tokenId Parent's token ID
-     * @param offspringMemoryHash Memory for offspring
-     * @param offspringOwner Who will own the offspring
+     * @param cloneMemoryHash Memory for clone
+     * @param cloneOwner Who will own the clone
      */
     function clone(
         address nftContract,
         uint256 tokenId,
-        bytes32 offspringMemoryHash,
-        address offspringOwner
-    ) external payable returns (uint256 offspringId) {
+        bytes32 cloneMemoryHash,
+        address cloneOwner
+    ) external payable returns (uint256 cloneId) {
         bytes32 parentKey = _getKey(nftContract, tokenId);
         AgentIdentity storage parent = _agents[parentKey];
         
@@ -283,51 +283,51 @@ contract AINFTRegistry {
             require(msg.value >= cloningFee, "Insufficient fee");
         }
         
-        // Create offspring (no EOA yet — offspring generates own)
-        offspringId = ++_offspringCounter;
+        // Create clone (no EOA yet — clone generates own)
+        cloneId = ++_cloneIdCounter;
         
-        _offspring[offspringId] = OffspringIdentity({
-            agentEOA: address(0), // PENDING — offspring claims with own EOA
+        _clone[cloneId] = CloneIdentity({
+            agentEOA: address(0), // PENDING — clone claims with own EOA
             modelHash: parent.modelHash,
-            memoryHash: offspringMemoryHash,
+            memoryHash: cloneMemoryHash,
             contextHash: parent.contextHash,
             generation: parent.generation + 1,
             parentKey: parentKey,
             storageURI: "",
-            owner: offspringOwner,
+            owner: cloneOwner,
             createdAt: block.timestamp
         });
         
-        emit AgentCloned(nftContract, tokenId, address(0), offspringId, parent.generation + 1);
+        emit AgentCloned(nftContract, tokenId, address(0), cloneId, parent.generation + 1);
         
-        return offspringId;
+        return cloneId;
     }
     
     /**
-     * @notice Offspring claims its identity with own EOA
-     * @dev Called by offspring agent after it wakes and generates EOA
-     * @param offspringId The offspring ID from clone()
+     * @notice Clone claims its identity with own EOA
+     * @dev Called by clone agent after it wakes and generates EOA
+     * @param cloneId The clone ID from clone()
      */
-    function claimOffspring(uint256 offspringId) external {
-        OffspringIdentity storage offspring = _offspring[offspringId];
+    function claimClone(uint256 cloneId) external {
+        CloneIdentity storage clone = _clone[cloneId];
         
-        require(offspring.createdAt > 0, "Offspring doesn't exist");
-        require(offspring.agentEOA == address(0), "Already claimed");
+        require(clone.createdAt > 0, "Clone doesn't exist");
+        require(clone.agentEOA == address(0), "Already claimed");
         require(eoaToKey[msg.sender] == bytes32(0), "EOA already registered");
         
-        // Offspring claims with its own EOA
-        offspring.agentEOA = msg.sender;
+        // Clone claims with its own EOA
+        clone.agentEOA = msg.sender;
         
-        // Map EOA to special offspring key
-        bytes32 offspringKey = keccak256(abi.encodePacked("OFFSPRING", offspringId));
-        eoaToKey[msg.sender] = offspringKey;
+        // Map EOA to special clone key
+        bytes32 cloneKey = keccak256(abi.encodePacked("OFFSPRING", cloneId));
+        eoaToKey[msg.sender] = cloneKey;
         
         emit AgentCloned(
-            address(0), // No parent contract for offspring reference
-            offspringId,
+            address(0), // No parent contract for clone reference
+            cloneId,
             msg.sender,
-            offspringId,
-            offspring.generation
+            cloneId,
+            clone.generation
         );
     }
     
@@ -339,10 +339,10 @@ contract AINFTRegistry {
         return _agents[_getKey(nftContract, tokenId)];
     }
     
-    function getOffspring(uint256 offspringId) 
-        external view returns (OffspringIdentity memory) 
+    function getClone(uint256 cloneId) 
+        external view returns (CloneIdentity memory) 
     {
-        return _offspring[offspringId];
+        return _clone[cloneId];
     }
     
     function isRegistered(address nftContract, uint256 tokenId) 

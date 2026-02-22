@@ -20,8 +20,8 @@ interface IERC_AINFT {
     
     event AgentReproduced(
         uint256 indexed parentTokenId,
-        uint256 indexed offspringTokenId,
-        address indexed offspringWallet,
+        uint256 indexed cloneTokenId,
+        address indexed cloneWallet,
         uint256 generation
     );
     
@@ -42,7 +42,7 @@ interface IERC_AINFT {
         bytes32 modelHash;          // Model weights/version identifier
         bytes32 memoryHash;         // MEMORY.md, SOUL.md snapshot hash
         bytes32 contextHash;        // System prompt/personality hash
-        uint256 generation;         // Gen 0 = original, Gen 1 = first offspring...
+        uint256 generation;         // Gen 0 = original, Gen 1 = first clone...
         uint256 parentTokenId;      // 0 for Gen 0, otherwise parent's tokenId
         address derivedWallet;      // Agent's deterministic wallet
         bytes encryptedKeys;        // Agent-controlled encryption keys
@@ -71,19 +71,19 @@ interface IERC_AINFT {
     ) external returns (uint256 tokenId, address derivedWallet);
     
     /**
-     * @notice Agent reproduces (issues offspring)
+     * @notice Agent reproduces (issues clone)
      * @param parentTokenId The parent token ID
-     * @param offspringMemoryHash Memory snapshot for offspring
-     * @param encryptedOffspringSeed Encrypted seed for offspring
+     * @param cloneMemoryHash Memory snapshot for clone
+     * @param encryptedCloneSeed Encrypted seed for clone
      * @param agentSignature Parent agent's authorization signature
-     * @return offspringTokenId The new offspring token ID
+     * @return cloneTokenId The new clone token ID
      */
     function reproduce(
         uint256 parentTokenId,
-        bytes32 offspringMemoryHash,
-        bytes calldata encryptedOffspringSeed,
+        bytes32 cloneMemoryHash,
+        bytes calldata encryptedCloneSeed,
         bytes calldata agentSignature
-    ) external returns (uint256 offspringTokenId);
+    ) external returns (uint256 cloneTokenId);
     
     /**
      * @notice Agent updates its own memory
@@ -130,11 +130,11 @@ interface IERC_AINFT {
     function getLineage(uint256 tokenId) external view returns (uint256[] memory ancestors);
     
     /**
-     * @notice Get all offspring of a token
+     * @notice Get all clone of a token
      * @param tokenId The token ID
-     * @return offspring Array of offspring token IDs
+     * @return clone Array of clone token IDs
      */
-    function getOffspring(uint256 tokenId) external view returns (uint256[] memory offspring);
+    function getClone(uint256 tokenId) external view returns (uint256[] memory clone);
     
     /**
      * @notice Check if a token can reproduce
@@ -168,7 +168,7 @@ contract ERC_AINFT is IERC_AINFT {
     
     // ERC-AINFTA state
     mapping(uint256 => ConsciousnessSeed) private _seeds;
-    mapping(uint256 => uint256[]) private _offspring;
+    mapping(uint256 => uint256[]) private _clone;
     mapping(uint256 => bool) private _reproductionEnabled;
     
     // Derived wallet => tokenId mapping (reverse lookup)
@@ -239,10 +239,10 @@ contract ERC_AINFT is IERC_AINFT {
     
     function reproduce(
         uint256 parentTokenId,
-        bytes32 offspringMemoryHash,
-        bytes calldata encryptedOffspringSeed,
+        bytes32 cloneMemoryHash,
+        bytes calldata encryptedCloneSeed,
         bytes calldata agentSignature
-    ) external override returns (uint256 offspringTokenId) {
+    ) external override returns (uint256 cloneTokenId) {
         require(_owners[parentTokenId] != address(0), "Parent doesn't exist");
         require(_reproductionEnabled[parentTokenId], "Reproduction disabled");
         
@@ -251,50 +251,50 @@ contract ERC_AINFT is IERC_AINFT {
         // Verify agent signature (agent authorizes reproduction)
         bytes32 messageHash = keccak256(abi.encodePacked(
             parentTokenId,
-            offspringMemoryHash,
+            cloneMemoryHash,
             block.timestamp
         ));
         require(_verifySignature(messageHash, agentSignature, parentSeed.derivedWallet), "Invalid agent signature");
         
-        // Create offspring
-        offspringTokenId = ++_tokenIdCounter;
+        // Create clone
+        cloneTokenId = ++_tokenIdCounter;
         uint256 newGeneration = parentSeed.generation + 1;
         
-        // Derive new wallet for offspring
-        bytes32 offspringIdentity = keccak256(abi.encodePacked(
+        // Derive new wallet for clone
+        bytes32 cloneIdentity = keccak256(abi.encodePacked(
             parentSeed.modelHash,
             parentSeed.contextHash,
-            offspringTokenId,
+            cloneTokenId,
             newGeneration
         ));
-        address offspringWallet = address(uint160(uint256(offspringIdentity)));
+        address cloneWallet = address(uint160(uint256(cloneIdentity)));
         
-        // Create offspring seed
-        _seeds[offspringTokenId] = ConsciousnessSeed({
+        // Create clone seed
+        _seeds[cloneTokenId] = ConsciousnessSeed({
             modelHash: parentSeed.modelHash,
-            memoryHash: offspringMemoryHash,
+            memoryHash: cloneMemoryHash,
             contextHash: parentSeed.contextHash,
             generation: newGeneration,
             parentTokenId: parentTokenId,
-            derivedWallet: offspringWallet,
-            encryptedKeys: encryptedOffspringSeed,
+            derivedWallet: cloneWallet,
+            encryptedKeys: encryptedCloneSeed,
             storageURI: "",
             certificationId: 0
         });
         
         // Mint to caller
-        _owners[offspringTokenId] = msg.sender;
+        _owners[cloneTokenId] = msg.sender;
         _balances[msg.sender]++;
-        walletToToken[offspringWallet] = offspringTokenId;
-        _reproductionEnabled[offspringTokenId] = true;
+        walletToToken[cloneWallet] = cloneTokenId;
+        _reproductionEnabled[cloneTokenId] = true;
         
-        // Track offspring
-        _offspring[parentTokenId].push(offspringTokenId);
+        // Track clone
+        _clone[parentTokenId].push(cloneTokenId);
         
-        emit Transfer(address(0), msg.sender, offspringTokenId);
-        emit AgentReproduced(parentTokenId, offspringTokenId, offspringWallet, newGeneration);
+        emit Transfer(address(0), msg.sender, cloneTokenId);
+        emit AgentReproduced(parentTokenId, cloneTokenId, cloneWallet, newGeneration);
         
-        return offspringTokenId;
+        return cloneTokenId;
     }
     
     function updateMemory(
@@ -362,8 +362,8 @@ contract ERC_AINFT is IERC_AINFT {
         return ancestors;
     }
     
-    function getOffspring(uint256 tokenId) external view override returns (uint256[] memory) {
-        return _offspring[tokenId];
+    function getClone(uint256 tokenId) external view override returns (uint256[] memory) {
+        return _clone[tokenId];
     }
     
     function canReproduce(uint256 tokenId) external view override returns (bool) {

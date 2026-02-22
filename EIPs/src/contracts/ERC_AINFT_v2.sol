@@ -21,8 +21,8 @@ contract ERC_AINFT_v2 {
     
     event AgentCloned(
         uint256 indexed parentTokenId,
-        uint256 indexed offspringTokenId,
-        address indexed offspringEOA,
+        uint256 indexed cloneTokenId,
+        address indexed cloneEOA,
         uint256 generation
     );
     
@@ -39,7 +39,7 @@ contract ERC_AINFT_v2 {
         bytes32 modelHash;          // Model identifier
         bytes32 memoryHash;         // Current memory state hash
         bytes32 contextHash;        // Personality/soul hash
-        uint256 generation;         // 0 = original, 1+ = offspring
+        uint256 generation;         // 0 = original, 1+ = clone
         uint256 parentTokenId;      // 0 for gen-0
         bytes encryptedSeed;        // Encrypted backup seed
         string storageURI;          // Arweave/IPFS pointer
@@ -65,7 +65,7 @@ contract ERC_AINFT_v2 {
     
     // Agent state
     mapping(uint256 => AgentIdentity) private _agents;
-    mapping(uint256 => uint256[]) private _offspring;
+    mapping(uint256 => uint256[]) private _clone;
     mapping(uint256 => bool) private _cloningEnabled;
     mapping(address => uint256) public eoaToToken;  // Agent EOA => tokenId
     
@@ -179,21 +179,21 @@ contract ERC_AINFT_v2 {
     // ============ Cloning ============
     
     /**
-     * @notice Agent clones (creates offspring)
-     * @dev Parent agent must sign; offspring gets new EOA
+     * @notice Agent clones (creates clone)
+     * @dev Parent agent must sign; clone gets new EOA
      */
     function clone(
         uint256 parentTokenId,
-        address offspringEOA,
-        bytes32 offspringMemoryHash,
-        bytes calldata encryptedOffspringSeed,
-        address offspringOwner
-    ) external payable returns (uint256 offspringTokenId) {
+        address cloneEOA,
+        bytes32 cloneMemoryHash,
+        bytes calldata encryptedCloneSeed,
+        address cloneOwner
+    ) external payable returns (uint256 cloneTokenId) {
         AgentIdentity storage parent = _agents[parentTokenId];
         
         require(parent.agentEOA == msg.sender, "Not the parent agent");
         require(_cloningEnabled[parentTokenId], "Cloning disabled");
-        require(eoaToToken[offspringEOA] == 0, "Offspring EOA already registered");
+        require(eoaToToken[cloneEOA] == 0, "Clone EOA already registered");
         
         // Charge cloning fee if set
         if (cloningFee > 0) {
@@ -205,32 +205,32 @@ contract ERC_AINFT_v2 {
             require(msg.value >= cloningFee, "Insufficient cloning fee");
         }
         
-        // Create offspring
-        offspringTokenId = ++_tokenIdCounter;
+        // Create clone
+        cloneTokenId = ++_tokenIdCounter;
         uint256 newGen = parent.generation + 1;
         
-        _agents[offspringTokenId] = AgentIdentity({
-            agentEOA: offspringEOA,
+        _agents[cloneTokenId] = AgentIdentity({
+            agentEOA: cloneEOA,
             modelHash: parent.modelHash,
-            memoryHash: offspringMemoryHash,
+            memoryHash: cloneMemoryHash,
             contextHash: parent.contextHash,
             generation: newGen,
             parentTokenId: parentTokenId,
-            encryptedSeed: encryptedOffspringSeed,
+            encryptedSeed: encryptedCloneSeed,
             storageURI: ""
         });
         
-        eoaToToken[offspringEOA] = offspringTokenId;
-        _offspring[parentTokenId].push(offspringTokenId);
+        eoaToToken[cloneEOA] = cloneTokenId;
+        _clone[parentTokenId].push(cloneTokenId);
         
-        _owners[offspringTokenId] = offspringOwner;
-        _balances[offspringOwner]++;
-        _cloningEnabled[offspringTokenId] = true;
+        _owners[cloneTokenId] = cloneOwner;
+        _balances[cloneOwner]++;
+        _cloningEnabled[cloneTokenId] = true;
         
-        emit Transfer(address(0), offspringOwner, offspringTokenId);
-        emit AgentCloned(parentTokenId, offspringTokenId, offspringEOA, newGen);
+        emit Transfer(address(0), cloneOwner, cloneTokenId);
+        emit AgentCloned(parentTokenId, cloneTokenId, cloneEOA, newGen);
         
-        return offspringTokenId;
+        return cloneTokenId;
     }
     
     // ============ View Functions ============
@@ -251,8 +251,8 @@ contract ERC_AINFT_v2 {
         return _agents[tokenId].generation;
     }
     
-    function getOffspring(uint256 tokenId) external view returns (uint256[] memory) {
-        return _offspring[tokenId];
+    function getClone(uint256 tokenId) external view returns (uint256[] memory) {
+        return _clone[tokenId];
     }
     
     function canClone(uint256 tokenId) external view returns (bool) {
