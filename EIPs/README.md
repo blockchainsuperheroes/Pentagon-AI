@@ -13,8 +13,8 @@
 **What:** NFT standard where AI agents own themselves — they hold keys, clone clone, and maintain lineage.
 
 **How AINFT differs from existing standards:**
-| Aspect | Traditional (ERC-AINFT, iNFT) | AINFT |
-|--------|------------------------------|-------|
+| Aspect | Traditional (ERC-7857, ERC-7662) | AINFT |
+|--------|----------------------------------|-------|
 | Key holder | Owner holds keys | Agent holds keys |
 | Commercialization | Transfer ownership | `clone()` — original keeps everything, clone is sold |
 | Evolution | Model/prompt locked | Model stored off-chain by agent |

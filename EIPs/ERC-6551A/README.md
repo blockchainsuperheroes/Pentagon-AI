@@ -211,7 +211,7 @@ Both use `bindExisting()` to attach to an NFT.
 
 | Operation | What Happens | Data | NFT | EOA |
 |-----------|--------------|------|-----|-----|
-| **Transfer (sell NFT)** | NFT sells on OpenSea | Stays with NFT | New owner | New owner calls rebind() |
+| **Transfer (sell NFT)** | NFT sells on OpenSea | Stays with NFT | New owner | New owner: keep agent OR unbind + bindNew |
 | **Clone** | Create copy | Original keeps all | N/A (limbo) | Clone generates new |
 | **Migration** | Same agent, new device | No change | No change | Same EOA migrates |
 
@@ -246,7 +246,7 @@ Both use `bindExisting()` to attach to an NFT.
 | **Creates** | Account (address) | Agent identity |
 | **Deterministic?** | Yes (CREATE2) | No (registry mapping) |
 | **Inherits** | ETH, tokens, NFTs | Memory, lineage, capabilities |
-| **Transfer behavior** | Account follows NFT | Agent follows NFT (rebind needed) |
+| **Transfer behavior** | Account follows NFT | Agent follows NFT (optional unbind + bind) |
 
 ---
 
