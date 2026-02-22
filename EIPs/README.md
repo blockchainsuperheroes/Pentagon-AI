@@ -99,7 +99,7 @@ Unlike existing standards that treat agents as property to be bought and sold, t
 
 ### Why Model Info is Off-Chain
 
-Some standards store model identifiers on-chain with "self-evolve" functions. AINFT intentionally keeps model info **off-chain** because:
+Some standards (e.g., ERC-7662) store model identifiers on-chain. AINFT intentionally keeps model info **off-chain** because:
 
 1. **Context incompatibility** — LLMs generate context in model-specific formats. Switching models (e.g., Claude → GPT) breaks existing memory unless explicitly tested for cross-LLM compatibility.
 
