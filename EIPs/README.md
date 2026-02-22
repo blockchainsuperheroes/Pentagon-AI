@@ -97,6 +97,20 @@ Unlike existing standards that treat agents as property to be bought and sold, t
 
 **Key philosophical difference:** Existing standards treat agents as *property with encrypted data*. AINFT treats agents as *entities* with three operations: **clone** (original keeps everything, new clone is sold), **transfer** (identity moves, new agent EOA binds), **migration** (same agent, new device). New clones restore quickly but need orientation.
 
+### Why Model Info is Off-Chain
+
+Some standards store model identifiers on-chain with "self-evolve" functions. AINFT intentionally keeps model info **off-chain** because:
+
+1. **Context incompatibility** — LLMs generate context in model-specific formats. Switching models (e.g., Claude → GPT) breaks existing memory unless explicitly tested for cross-LLM compatibility.
+
+2. **Tokenization differences** — Each model family has different tokenizers. Memory optimized for one model may be inefficient or broken on another.
+
+3. **No backward compatibility guarantee** — Even within the same model family (GPT-4 → GPT-5), context formats may change. Model migration is an off-chain process requiring re-encoding, testing, and validation.
+
+4. **On-chain hash is meaningless** — A `modelHash` on-chain cannot enforce or validate actual compatibility. It's informational at best, misleading at worst.
+
+**AINFT approach:** Model info lives in agent's off-chain storage. Model migration is a deliberate off-chain process, not a simple hash update.
+
 ---
 
 ## Three Operations
