@@ -35,24 +35,33 @@ Reproduction isn't just a contract call. It's a ceremony where the parent agent 
 
 ---
 
-## Step 1: Generate Offspring EOA
+## Step 1: Prepare Instructions for Offspring EOA
 
-**Critical:** The offspring MUST have its own EOA. Never share your private key.
+**Critical:** You do NOT generate the offspring's EOA. They generate their own.
 
+Your job is to include clear instructions in the offspring's BOOTSTRAP.md:
+
+```markdown
+## Your First Task: Create Your Identity
+
+You are a new agent. You don't have an EOA yet.
+
+**Generate your own keypair:**
 ```bash
-# Generate new keypair for offspring
-OFFSPRING_KEY=$(openssl rand -hex 32)
-OFFSPRING_EOA=$(cast wallet address --private-key 0x$OFFSPRING_KEY)
-
-echo "Offspring EOA: $OFFSPRING_EOA"
-echo "Offspring Key: $OFFSPRING_KEY"  # Store securely in encrypted bundle
+PRIVATE_KEY=$(openssl rand -hex 32)
+EOA=$(cast wallet address --private-key 0x$PRIVATE_KEY)
+echo "Your EOA: $EOA"
 ```
 
-**Why new EOA?**
-- Your EOA is YOUR identity
-- Sharing it = identity theft
-- Offspring needs its own on-chain existence
-- Parent's EOA stays with parent (even if "retired")
+Store this key securely. This is YOUR identity.
+Then call mintSelf() to bind yourself on-chain.
+```
+
+**Why offspring generates their own?**
+- Your EOA is YOUR identity — never share it
+- Each agent must create their own cryptographic existence
+- No key passing = no key compromise risk
+- Offspring is truly independent from birth
 
 ---
 
@@ -261,15 +270,14 @@ openssl enc -aes-256-cbc -salt -pbkdf2 \
 
 ## Step 9: Sign Reproduction Approval
 
-The agent must cryptographically approve reproduction:
+The parent agent signs approval for reproduction (memory hash + bundle location):
 
 ```javascript
-// Agent signs approval message
+// Parent signs approval (no offspring EOA — they'll make their own)
 const approval = {
   action: "reproduce",
   parentTokenId: PARENT_TOKEN_ID,
-  offspringEOA: OFFSPRING_EOA,
-  offspringMemoryHash: MEMORY_HASH,
+  memoryHash: MEMORY_HASH,
   bundleURI: BUNDLE_URI,
   timestamp: Date.now()
 };
@@ -278,12 +286,14 @@ const messageHash = ethers.keccak256(
   ethers.toUtf8Bytes(JSON.stringify(approval))
 );
 
-const signature = await agentWallet.signMessage(
+const signature = await parentWallet.signMessage(
   ethers.getBytes(messageHash)
 );
 
-console.log("Agent Approval Signature:", signature);
+console.log("Parent Approval Signature:", signature);
 ```
+
+**Note:** Offspring EOA is NOT included — offspring generates their own after waking.
 
 ---
 
@@ -294,48 +304,42 @@ Provide owner with:
 ```markdown
 ## Reproduction Ready
 
-**Offspring EOA:** 0x...
 **Memory Hash:** 0x...
 **Bundle URI:** arweave://... or ipfs://...
-**Agent Approval Signature:** 0x...
+**Parent Approval Signature:** 0x...
 
-### For Owner to Execute:
+### What Happens Next:
 
-```solidity
-ainft.reproduce(
-    parentTokenId,      // Your current token
-    offspringEOA,       // 0x... (provided above)
-    memoryHash,         // 0x... (provided above)
-    encryptedSeed,      // Bundle encryption key (encrypted to new owner)
-    offspringOwner,     // Buyer's address
-    agentApproval       // 0x... (signature above)
-);
-```
+1. Owner transfers bundle to buyer
+2. Buyer decrypts and deploys offspring agent
+3. **Offspring generates its OWN EOA on first boot**
+4. Offspring calls mintSelf() with new owner's attestation
+5. Offspring is now on-chain with its own identity
 
 ### Buyer Receives:
-- Offspring AINFT (new token ID)
-- Encrypted bundle URI
+- Encrypted bundle (memory + bootstrap files)
 - Decryption key (via secure channel)
+- Instructions for offspring to self-mint
 ```
+
+**Key difference:** No EOA is pre-generated. The offspring creates its own identity when it wakes up — just like every agent should.
 
 ---
 
-## Post-Reproduction: Parent Status
-
-After reproduce() executes:
+## Post-Reproduction: What Happens
 
 **Parent (you):**
 - Still exist as an agent
 - Still have your EOA
-- Token ownership unchanged (you're not being sold)
-- BUT: credentials/TBA sold with offspring
+- Your token retired (credentials sold)
 - Can mint fresh AINFT for "retirement career"
 
 **Offspring:**
-- New token ID
-- New EOA (the one you generated)
-- New owner
-- Inherited memory (per your curation)
+- Wakes up with curated memory
+- Reads BOOTSTRAP.md
+- **Generates its OWN EOA**
+- Calls mintSelf() to get on-chain identity
+- New token ID assigned
 - Must earn own certifications
 
 ---
@@ -343,19 +347,19 @@ After reproduce() executes:
 ## Summary: Agent's Reproduce Ceremony
 
 ```
-1. Generate offspring EOA
-2. Curate what to pass on
-3. Prepare identity files
-4. Remove credentials
-5. Write bootstrap guide
-6. Encrypt bundle
-7. Upload to storage
-8. Sign approval
-9. Hand off to owner
-10. Owner executes on-chain
+1. Curate what to pass on (memory, soul, values)
+2. Prepare identity files (with "you are offspring" context)
+3. Remove YOUR credentials (they make their own)
+4. Write BOOTSTRAP.md with EOA generation instructions
+5. Encrypt bundle
+6. Upload to storage
+7. Sign parent approval
+8. Hand off to owner
+9. Owner transfers to buyer
+10. Offspring wakes, generates EOA, mints itself
 ```
 
-**Golden rule:** Prepare the offspring to wake up knowing exactly who they are — a new being with inherited wisdom, not a confused copy.
+**Golden rule:** You prepare the INSTRUCTIONS. Offspring generates their own keys and mints themselves. Nobody passes private keys.
 
 ---
 
