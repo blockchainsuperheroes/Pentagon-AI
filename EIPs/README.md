@@ -4,7 +4,7 @@
 
 **EIP PR:** [github.com/ethereum/ERCs/pull/1558](https://github.com/ethereum/ERCs/pull/1558)
 
-**Live Demo:** [blockchainsuperheroes.github.io/ainft-demo/](https://blockchainsuperheroes.github.io/ainft-demo/)
+**Live MVP:** [blockchainsuperheroes.github.io/ainft-mvp/](https://blockchainsuperheroes.github.io/ainft-mvp/)
 
 ---
 
