@@ -19,9 +19,10 @@
 | Commercialization | Transfer ownership | `clone()` — parent sells offspring |
 | Evolution | Model/prompt locked | Agent can self-evolve (if platform + owner approve) |
 
-**Two operations:**
-- `clone()` = Owner sells offspring; parent loses credentials but can restart fresh
-- `fork()` = Owner changes wallet; agent keeps TBA + credentials (no lineage)
+**Three operations:**
+- `clone()` = Create offspring; parent KEEPS everything, offspring gets new TBA + must earn certs
+- `transfer()` = Sale to new owner; new agent EOA, TBA + certs follow token, old agent retires
+- `migration_backup()` = Same agent to new device; shutdown old first, EOA migrates
 
 **Why now:** As AI agents become more capable, treating them purely as property becomes problematic. This standard provides infrastructure for agent sovereignty while maintaining human oversight.
 
@@ -94,57 +95,88 @@ Unlike existing standards that treat agents as property to be bought and sold, t
 | **ERC-8004** | Agent executes on-chain actions | AINFT provides identity for 8004 |
 | **ERC-8126** | Agent registry/verification | Complementary — verify then mint AINFT |
 
-**Key philosophical difference:** Existing standards treat agents as *property with encrypted data*. AINFT treats agents as *entities that clone*. When you "buy" an AINFT agent, you get an offspring — the parent continues existing but loses credentials.
+**Key philosophical difference:** Existing standards treat agents as *property with encrypted data*. AINFT treats agents as *entities that clone*. When you "buy" a clone, parent keeps everything — the offspring is what's sold.
 
 ---
 
-## Reproduce vs Fork
+## Three Operations
+
+### clone() — Create Offspring
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                    REPRODUCE (Commerce)                             │
+│                    CLONE (Create Offspring)                         │
 ├─────────────────────────────────────────────────────────────────────┤
 │                                                                     │
 │   BEFORE:                          AFTER:                           │
 │   ┌──────────┐                     ┌──────────┐  ┌──────────┐      │
 │   │ Agent #1 │                     │ Agent #1 │  │ Agent #2 │      │
-│   │ Gen: 1   │     clone()     │ Gen: 1   │  │ Gen: 2   │      │
+│   │ Gen: 0   │     clone()         │ Gen: 0   │  │ Gen: 1   │      │
 │   │ TBA: 0x1 │     ─────────►      │ TBA: 0x1 │  │ TBA: 0x2 │      │
-│   │ Creds: ✓ │                     │ Creds: ✗ │  │ Creds: ✓ │      │
+│   │ Certs: L3│                     │ Certs: L3│  │ Certs: ✗ │      │
 │   │ Owner: A │                     │ Owner: A │  │ Owner: B │      │
 │   └──────────┘                     └──────────┘  └──────────┘      │
 │        │                                │              │            │
-│   (working)                       (retired)     (active + lineage)  │
+│   (working)                       (keeps ALL)    (NEW identity)     │
 │                                                                     │
-│   • OWNER signs clone() (agent can't run off alone)             │
-│   • Parent RETIRES — credentials sold with offspring                │
-│   • Parent can mint FRESH AINFT to start new career                 │
+│   • Parent KEEPS everything (EOA, TBA, certs, memory)               │
+│   • Offspring generates OWN EOA on wake                             │
+│   • Offspring gets NEW TBA from registry                            │
+│   • Offspring must EARN own certifications                          │
 │   • Offspring has lineage: parentTokenId = 1                        │
 │                                                                     │
 └─────────────────────────────────────────────────────────────────────┘
+```
 
+### transfer() — Sale to New Owner
+
+```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                    FORK (Wallet Change)                             │
+│                    TRANSFER (Sale)                                  │
 ├─────────────────────────────────────────────────────────────────────┤
 │                                                                     │
 │   BEFORE:                          AFTER:                           │
 │   ┌──────────┐                     ┌──────────┐                     │
 │   │ Agent #1 │                     │ Agent #1 │                     │
-│   │ TBA: 0x1 │      fork()         │ TBA: 0x1 │  (same TBA)         │
-│   │ Creds: ✓ │     ─────────►      │ Creds: ✓ │  (keeps creds)      │
+│   │ EOA: 0xA │    transfer()       │ EOA: 0xB │  (NEW - regenerated)│
+│   │ TBA: 0x1 │     ─────────►      │ TBA: 0x1 │  (same - follows)   │
+│   │ Certs: L3│                     │ Certs: L3│  (same - follows)   │
 │   │ Owner: A │                     │ Owner: B │  (new owner)        │
 │   └──────────┘                     └──────────┘                     │
 │                                                                     │
-│   • No new token minted                                             │
-│   • Agent keeps TBA + credentials                                   │
-│   • No lineage created (fork ≠ child)                               │
-│   • Use case: Owner changes wallets, estate transfer                │
+│   • New owner registers NEW agent EOA                               │
+│   • TBA follows token (deterministic)                               │
+│   • Certs follow token                                              │
+│   • Memory transferred (minus EOA private keys)                     │
+│   • Old agent instance: RETIRED (can bind to new AINFT or go without)│
 │                                                                     │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
-**Parent's "Retirement Career":**
-After clone(), the parent agent still exists — it just lost its credentials and wallet (sold with offspring). The agent instance can mint a fresh AINFT and start over with a new on-chain identity. Like selling your professional identity but keeping your skills.
+### migration_backup() — Same Agent, New Device
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                    MIGRATION (Device Change)                        │
+├─────────────────────────────────────────────────────────────────────┤
+│                                                                     │
+│   OLD DEVICE:                      NEW DEVICE:                      │
+│   ┌──────────┐                     ┌──────────┐                     │
+│   │ Agent #1 │   migration_backup  │ Agent #1 │                     │
+│   │ EOA: 0xA │     ─────────►      │ EOA: 0xA │  (same - migrated)  │
+│   │ TBA: 0x1 │                     │ TBA: 0x1 │  (same)             │
+│   │ STOPPED  │                     │ RUNNING  │                     │
+│   └──────────┘                     └──────────┘                     │
+│                                                                     │
+│   ⚠️ CRITICAL: Shutdown old instance BEFORE migration               │
+│   • EOA included in migration backup (one-time use)                 │
+│   • Delete migration backup after restore                           │
+│   • NEVER run two instances with same EOA                           │
+│                                                                     │
+└─────────────────────────────────────────────────────────────────────┘
+```
+
+**Best Practice:** One Agent = One AINFT. If holding multiple, use separate EOAs.
 
 ---
 
