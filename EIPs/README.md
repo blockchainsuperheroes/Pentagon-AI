@@ -111,6 +111,8 @@ Some standards (e.g., ERC-7662) store model identifiers on-chain. AINFT intentio
 
 **AINFT approach:** Model info lives in agent's off-chain storage. Model migration is a deliberate off-chain process, not a simple hash update.
 
+*These findings come from production experience operating AI agents. See [MODEL-MIGRATION-GUIDE.md](./advanced-docs/MODEL-MIGRATION-GUIDE.md) for detailed migration procedures and real-world failure cases.*
+
 ---
 
 ## Three Operations
