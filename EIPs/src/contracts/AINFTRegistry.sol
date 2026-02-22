@@ -155,7 +155,7 @@ contract AINFTRegistry {
      * @param memoryHash Hash of initial memory state
      * @param contextHash Hash of personality/soul
      */
-    function bind(
+    function bindNew(
         address nftContract,
         uint256 tokenId,
         bytes32 modelHash,
@@ -460,7 +460,7 @@ contract AINFTRegistry {
      * @param nftContract The NFT contract to bind to
      * @param tokenId The token ID you own
      */
-    function bindFromLimbo(
+    function bindExisting(
         uint256 limboId,
         address nftContract,
         uint256 tokenId
