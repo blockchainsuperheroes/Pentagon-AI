@@ -85,10 +85,10 @@ Bored Ape #123 (untouched on original contract)
 
 ## Core Operations
 
-### 1. bind() — Attach Agent to NFT
+### 1. bindNew() — Create Fresh Agent Binding
 
 ```solidity
-function bind(
+function bindNew(
     address nftContract,    // Any ERC-721
     uint256 tokenId,        // Token you own
     bytes32 modelHash,      // Off-chain model reference
@@ -99,13 +99,14 @@ function bind(
 ```
 
 **Who can call:** Agent (msg.sender becomes agentEOA)  
-**Requires:** msg.sender is NOT the NFT owner (agent signs, not owner)  
+**Creates:** Fresh agent identity with new data  
 **Alternative:** `bindWithApproval()` — owner signs, provides agent EOA
 
 | Scenario | Function | Signer |
 |----------|----------|--------|
-| Agent self-registers | `bind()` | Agent |
+| Agent self-registers | `bindNew()` | Agent |
 | Owner registers for agent | `bindWithApproval()` | Owner + platform |
+| Bind from limbo | `bindExisting()` | Limbo owner |
 
 ### 2. unbind() — Detach Agent from NFT
 
@@ -145,17 +146,27 @@ function transferCloneClaim(
 **Who can call:** Current clone owner  
 **Result:** Clone ownership transferred (enables trading before activation)
 
-### 5. claimClone() — Activate Clone
+### 5. bindExisting() — Bind Agent from Limbo to NFT
 
 ```solidity
-function claimClone(
-    uint256 cloneId,
-    address agentEOA
+function bindExisting(
+    uint256 limboId,
+    address nftContract,
+    uint256 tokenId
 ) external
 ```
 
-**Who can call:** Clone owner  
-**Result:** Clone activated with provided agent EOA
+**Who can call:** Limbo owner who also owns the NFT  
+**Result:** Agent from limbo bound to NFT (preserves all data)
+
+**Two sources for limbo:**
+
+| Source | How It Gets to Limbo | Use Case |
+|--------|---------------------|----------|
+| **unbind()** | Detached from NFT | Owner wants to move agent to different NFT |
+| **clone()** | Created as clone | Buyer wants to bind clone to their NFT |
+
+Both use `bindExisting()` to attach to an NFT.
 
 ---
 
