@@ -2,12 +2,12 @@
 pragma solidity ^0.8.20;
 
 /**
- * @title ERC7857A_v2
+ * @title ERC_AINFT_v2
  * @notice AI-Native NFT Standard with EOA-based agent binding
  * @dev Agent's EOA (msg.sender) becomes the registered identity
  * @author Pentagon Chain (pentagon.games)
  */
-contract ERC7857A_v2 {
+contract ERC_AINFT_v2 {
     
     // ============ Events ============
     

@@ -94,7 +94,7 @@ Settings:
 ### Step 1: Deploy AINFT Contract
 
 ```bash
-forge create contracts/ERC7857A_v2.sol:ERC7857A_v2 \
+forge create contracts/ERC_AINFT_v2.sol:ERC_AINFT_v2 \
   --constructor-args "Your Platform Name" "SYMBOL" $YOUR_ADDRESS \
   --rpc-url $RPC \
   --private-key $KEY \

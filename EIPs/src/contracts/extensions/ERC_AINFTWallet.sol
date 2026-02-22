@@ -1,14 +1,14 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-import "../ERC7857A.sol";
+import "../ERC_AINFT.sol";
 
 /**
- * @title IERC7857AWallet
+ * @title IERC_AINFTWallet
  * @notice Extension for agent-controlled wallet functionality
  * @dev Allows AI_NFT agents to hold assets and execute transactions
  */
-interface IERC7857AWallet {
+interface IERC_AINFTWallet {
     
     event WalletExecuted(uint256 indexed tokenId, address indexed target, uint256 value, bytes data);
     event WalletDeposit(uint256 indexed tokenId, address indexed from, uint256 amount);
@@ -62,13 +62,13 @@ interface IERC7857AWallet {
 }
 
 /**
- * @title ERC7857AWallet
+ * @title ERC_AINFTWallet
  * @notice Reference implementation of agent wallet extension
  * @dev Enables AI_NFT agents to hold and manage assets autonomously
  */
-contract ERC7857AWallet is IERC7857AWallet {
+contract ERC_AINFTWallet is IERC_AINFTWallet {
     
-    ERC7857A public immutable ainft;
+    ERC_AINFT public immutable ainft;
     
     // Token ID => ETH balance held for agent
     mapping(uint256 => uint256) private _balances;
@@ -77,7 +77,7 @@ contract ERC7857AWallet is IERC7857AWallet {
     mapping(uint256 => uint256) public nonces;
     
     constructor(address _ainft) {
-        ainft = ERC7857A(_ainft);
+        ainft = ERC_AINFT(_ainft);
     }
     
     function execute(

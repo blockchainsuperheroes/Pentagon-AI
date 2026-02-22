@@ -2,11 +2,11 @@
 pragma solidity ^0.8.20;
 
 /**
- * @title IERC7857A
- * @notice ERC-7857A: AI-Native NFT Standard Interface
+ * @title IERC_AINFT
+ * @notice ERC-AINFTA: AI-Native NFT Standard Interface
  * @dev Interface for AI agent identity, reproduction, and self-custody
  */
-interface IERC7857A {
+interface IERC_AINFT {
     
     // ============ Events ============
     
@@ -145,12 +145,12 @@ interface IERC7857A {
 }
 
 /**
- * @title ERC7857A
- * @notice Reference implementation of ERC-7857A: AI-Native NFT Standard
+ * @title ERC_AINFT
+ * @notice Reference implementation of ERC-AINFTA: AI-Native NFT Standard
  * @dev Full implementation with reproduction, lineage tracking, and agent self-custody
  * @author Pentagon Chain (pentagon.games)
  */
-contract ERC7857A is IERC7857A {
+contract ERC_AINFT is IERC_AINFT {
     
     // ============ State ============
     
@@ -166,7 +166,7 @@ contract ERC7857A is IERC7857A {
     mapping(uint256 => address) private _tokenApprovals;
     mapping(address => mapping(address => bool)) private _operatorApprovals;
     
-    // ERC-7857A state
+    // ERC-AINFTA state
     mapping(uint256 => ConsciousnessSeed) private _seeds;
     mapping(uint256 => uint256[]) private _offspring;
     mapping(uint256 => bool) private _reproductionEnabled;
@@ -187,7 +187,7 @@ contract ERC7857A is IERC7857A {
         platformSigner = _platformSigner;
     }
     
-    // ============ ERC-7857A Core ============
+    // ============ ERC-AINFTA Core ============
     
     function mintSelf(
         bytes32 modelHash,

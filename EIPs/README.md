@@ -13,7 +13,7 @@
 **What:** NFT standard where AI agents own themselves — they hold keys, clone clone, and maintain lineage.
 
 **How AINFT differs from existing standards:**
-| Aspect | Traditional (ERC-7857, iNFT) | AINFT |
+| Aspect | Traditional (ERC-AINFT, iNFT) | AINFT |
 |--------|------------------------------|-------|
 | Key holder | Owner holds keys | Agent holds keys |
 | Commercialization | Transfer ownership | `clone()` — original keeps everything, clone is sold |
@@ -90,7 +90,7 @@ Unlike existing standards that treat agents as property to be bought and sold, t
 |----------|--------------|----------------------------|
 | **iNFT (Alethea)** | AI personality embedded in NFT, owner controls | Agent controls own keys, model off-chain |
 | **ERC-7662** | Encrypted prompts, owner decrypts | Agent decrypts via TBA, lineage tracking |
-| **ERC-7857** | Re-encrypt metadata on transfer | Cloning (original keeps state), no "transfer" |
+| **ERC-AINFT** | Re-encrypt metadata on transfer | Cloning (original keeps state), no "transfer" |
 | **ERC-6551** | Token-bound accounts | Used as agent's wallet (TBA) |
 | **ERC-8004** | Agent executes on-chain actions | AINFT provides identity for 8004 |
 | **ERC-8126** | Agent registry/verification | Complementary — verify then mint AINFT |

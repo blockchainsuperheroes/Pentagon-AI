@@ -419,8 +419,8 @@ Most agents should remain at Level 1-2. Sovereignty is a feature for specific us
 
 ## References
 
-- [ERC-7857A: AI-Native NFT Standard](./ERC-AINFT.md)
-- [AINFT v2 Contract](./contracts/ERC7857A_v2.sol)
+- [ERC-AINFTA: AI-Native NFT Standard](./ERC-AINFT.md)
+- [AINFT v2 Contract](./contracts/ERC_AINFT_v2.sol)
 - [OpenClaw Bind Guide](./OPENCLAW-BIND-GUIDE.md)
 - [ERC-6551: Token Bound Accounts](https://eips.ethereum.org/EIPS/eip-6551)
 

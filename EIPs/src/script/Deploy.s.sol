@@ -2,7 +2,7 @@
 pragma solidity ^0.8.20;
 
 import "forge-std/Script.sol";
-import "../contracts/ERC7857A.sol";
+import "../contracts/ERC_AINFT.sol";
 
 contract DeployAINFT is Script {
     function run() external {
@@ -12,7 +12,7 @@ contract DeployAINFT is Script {
         
         // Platform signer = deployer initially (can transfer later)
         address platformSigner = vm.addr(deployerPrivateKey);
-        ERC7857A ainft = new ERC7857A("Pentagon AINFT", "PAINFT", platformSigner);
+        ERC_AINFT ainft = new ERC_AINFT("Pentagon AINFT", "PAINFT", platformSigner);
         
         console.log("AINFT deployed to:", address(ainft));
         

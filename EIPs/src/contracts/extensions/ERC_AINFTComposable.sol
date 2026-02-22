@@ -1,14 +1,14 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-import "../ERC7857A.sol";
+import "../ERC_AINFT.sol";
 
 /**
- * @title IERC7857AComposable
+ * @title IERC_AINFTComposable
  * @notice Extension for composable agent capabilities (ERC-6551 compatible)
  * @dev Allows AI_NFTs to own other NFTs and tokens, building agent "inventories"
  */
-interface IERC7857AComposable {
+interface IERC_AINFTComposable {
     
     event AssetBound(uint256 indexed tokenId, address indexed asset, uint256 indexed assetId);
     event AssetUnbound(uint256 indexed tokenId, address indexed asset, uint256 indexed assetId);
@@ -88,13 +88,13 @@ interface IERC7857AComposable {
 }
 
 /**
- * @title ERC7857AComposable
+ * @title ERC_AINFTComposable
  * @notice Reference implementation of composable agent extension
  * @dev Enables AI_NFTs to own assets and accumulate capabilities
  */
-contract ERC7857AComposable is IERC7857AComposable {
+contract ERC_AINFTComposable is IERC_AINFTComposable {
     
-    ERC7857A public immutable ainft;
+    ERC_AINFT public immutable ainft;
     
     struct BoundAsset {
         address assetContract;
@@ -116,7 +116,7 @@ contract ERC7857AComposable is IERC7857AComposable {
     mapping(uint256 => mapping(bytes32 => bool)) private _hasCapability;
     
     constructor(address _ainft) {
-        ainft = ERC7857A(_ainft);
+        ainft = ERC_AINFT(_ainft);
     }
     
     function bindAsset(
