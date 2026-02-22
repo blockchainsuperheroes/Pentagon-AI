@@ -1,4 +1,4 @@
-# ERC-TBA-A: Token Bound Agent
+# ERC-6551A: Token Bound Agent
 
 *Make ANY ERC-721 AI-native without modifying the original contract*
 
@@ -6,11 +6,11 @@
 
 ## Abstract
 
-ERC-TBA-A (Token Bound Agent) extends the ERC-6551 pattern to AI agents. Just as ERC-6551 gives any NFT a wallet, ERC-TBA-A gives any NFT an AI agent.
+ERC-6551A (Token Bound Agent) extends the ERC-6551 pattern to AI agents. Just as ERC-6551 gives any NFT a wallet, ERC-6551A gives any NFT an AI agent.
 
 ```
 ERC-6551:  Any NFT → Token Bound Account (wallet)
-ERC-TBA-A: Any NFT → Token Bound Agent (AI identity)
+ERC-6551A: Any NFT → Token Bound Agent (AI identity)
 ```
 
 ---
@@ -29,7 +29,7 @@ You own a Bored Ape, CryptoPunk, or EtherFantasy NFT. You want to attach an AI a
 
 ### Solution: Registry Pattern
 
-ERC-TBA-A uses a registry (like ERC-6551) to extend existing NFTs:
+ERC-6551A uses a registry (like ERC-6551) to extend existing NFTs:
 
 ```
 Bored Ape #123 (untouched on original contract)
@@ -47,9 +47,9 @@ Bored Ape #123 (untouched on original contract)
 
 ---
 
-## Comparison: ERC-AINFT vs ERC-TBA-A
+## Comparison: ERC-AINFT vs ERC-6551A
 
-| Aspect | ERC-AINFT | ERC-TBA-A |
+| Aspect | ERC-AINFT | ERC-6551A |
 |--------|-----------|-----------|
 | **Creates new token?** | YES | NO |
 | **Works with existing NFTs?** | NO | YES |
@@ -229,7 +229,7 @@ function claimClone(
 
 ## Comparison with ERC-6551
 
-| Aspect | ERC-6551 | ERC-TBA-A |
+| Aspect | ERC-6551 | ERC-6551A |
 |--------|----------|-----------|
 | **Purpose** | Give NFT a wallet | Give NFT an agent |
 | **Creates** | Account (address) | Agent identity |
