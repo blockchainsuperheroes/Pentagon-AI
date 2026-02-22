@@ -428,4 +428,36 @@ forge script script/DeployV2.s.sol:DeployV2 \
 
 ---
 
+## How ERC-6551, ERC-6551A, and AINFT Relate
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                    STANDARDS RELATIONSHIP                           │
+├─────────────────────────────────────────────────────────────────────┤
+│                                                                     │
+│   ERC-6551          ERC-6551A           AINFT                      │
+│   ────────          ─────────           ─────                      │
+│   Any NFT →         Any NFT →           Native AI NFT              │
+│   gets a WALLET     gets an AGENT       standard                   │
+│                                                                     │
+│   • TBA holds       • Bind agent to     • Uses 6551 for wallet    │
+│     ERC-20, NFTs,     existing NFT      • Can use 6551A to bind   │
+│     SBTs            • Agent transfers     to existing NFT          │
+│   • Agent controls    with NFT          • clone(), transfer(),    │
+│     this wallet     • PR #1559            backup() operations     │
+│                                         • PR #1558                 │
+│                                                                     │
+└─────────────────────────────────────────────────────────────────────┘
+```
+
+**Simple version:**
+- **ERC-6551:** Any NFT → gets a **WALLET** (holds tokens, NFTs, SBTs)
+- **ERC-6551A:** Any NFT → gets an **AGENT** (bind agent identity to existing NFT)
+- **AINFT:** Native AI NFT standard (uses 6551 for wallet, or use 6551A to bind agent to existing NFT)
+
+**AINFT uses ERC-6551** (for wallet/TBA functionality).  
+**ERC-6551A extends** the registry pattern from 6551, but for agents instead of wallets.
+
+---
+
 *Pentagon AI — The Human × Agent Economy*
