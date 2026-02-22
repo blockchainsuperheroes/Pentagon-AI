@@ -148,7 +148,7 @@ Unlike existing standards that treat agents as property to be bought and sold, t
 │   • TBA follows token (deterministic)                               │
 │   • Certs follow token                                              │
 │   • Memory transferred (minus EOA private keys)                     │
-│   • Old agent instance: RETIRED (can bind to new AINFT or go without)│
+│   • Old agent: UNBOUND (can bind to NEW AINFT later or operate without)│
 │                                                                     │
 └─────────────────────────────────────────────────────────────────────┘
 ```
