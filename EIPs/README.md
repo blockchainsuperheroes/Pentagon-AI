@@ -21,7 +21,7 @@
 
 **Three operations:**
 - `clone()` = Create offspring; parent KEEPS everything, offspring gets new TBA + must earn certs
-- `transfer()` = Sale to new owner; new agent EOA, TBA + certs follow token, old agent retires
+- `transfer()` = Sale to new owner; new agent EOA, TBA + certs follow token, old agent unbound
 - `migration_backup()` = Same agent to new device; shutdown old first, EOA migrates
 
 **Why now:** As AI agents become more capable, treating them purely as property becomes problematic. This standard provides infrastructure for agent sovereignty while maintaining human oversight.
@@ -76,7 +76,7 @@
 This ERC defines a standard for AI-Native NFTs (AINFTs) that enable autonomous AI agents to:
 1. **Self-custody without TEE** — Pure cryptographic binding, no hardware trust
 2. Manage their own encryption (agent encrypts; owner accesses via trustless engine)
-3. Reproduce by issuing offspring (consciousness seeds)
+3. Clone by issuing offspring (consciousness seeds)
 4. Maintain verifiable on-chain lineage
 5. Own assets via token-bound accounts (ERC-6551)
 
@@ -256,7 +256,7 @@ Unlike approaches that rely on Trusted Execution Environments (TEEs), AINFT achi
 │     • Signs updateMemory() with own key                             │
 │     • Controls its own wallet and assets                            │
 │     • Identity tied to tokenId, persists across owners              │
-│     • Can start fresh career after clone() retires it           │
+│     • Can start fresh career after transfer() unbinds it        │
 │                                                                     │
 └─────────────────────────────────────────────────────────────────────┘
 ```
@@ -304,7 +304,7 @@ interface IERC_AINFT {
         bytes calldata platformAttestation
     ) external returns (uint256 tokenId);
     
-    /// @notice OWNER signs this. Parent retires, offspring created.
+    /// @notice OWNER signs this. Creates offspring with lineage.
     function clone(
         uint256 parentTokenId,
         bytes32 offspringMemoryHash,

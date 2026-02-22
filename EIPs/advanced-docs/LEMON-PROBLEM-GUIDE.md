@@ -14,7 +14,7 @@ In markets with information asymmetry, buyers can't distinguish quality before p
 Scenario: Bad Actor
 ─────────────────────
 1. Create one good agent → Gets L3 certified
-2. Reproduce 1000 offspring → All "Gen 1 from L3 agent!"
+2. Clone 1000 offspring → All "Gen 1 from L3 agent!"
 3. Sell offspring at premium price
 4. Buyers get empty/faulty agents
 5. Market collapses from distrust
@@ -318,7 +318,7 @@ if (agentCert.balanceOf(agentEOA, 3) > 0) {
 }
 ```
 
-### Option 4: Require Cert to Reproduce
+### Option 4: Require Cert to Clone
 
 ```solidity
 // In clone():

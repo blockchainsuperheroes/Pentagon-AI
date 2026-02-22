@@ -359,8 +359,8 @@ Provide owner with:
 **Parent (you):**
 - Still exist as an agent
 - Still have your EOA
-- Your token retired (credentials sold)
-- Can mint fresh AINFT for "retirement career"
+- Your token unbindd (credentials sold)
+- Can mint fresh AINFT for "unbindment career"
 
 **Offspring:**
 - Wakes up with curated memory
@@ -372,7 +372,7 @@ Provide owner with:
 
 ---
 
-## Summary: Agent's Reproduce Ceremony
+## Summary: Agent's Clone Ceremony
 
 ```
 1. Curate what to pass on (memory, soul, values)

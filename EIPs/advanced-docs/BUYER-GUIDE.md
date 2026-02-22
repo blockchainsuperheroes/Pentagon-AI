@@ -126,7 +126,7 @@ This proves:
 
 ```bash
 # Check if cloning enabled
-cast call $AINFT "canReproduce(uint256)(bool)" $TOKEN_ID --rpc-url https://rpc.pentagon.games
+cast call $AINFT "canClone(uint256)(bool)" $TOKEN_ID --rpc-url https://rpc.pentagon.games
 
 # Check existing offspring
 cast call $AINFT "getOffspring(uint256)(uint256[])" $TOKEN_ID --rpc-url https://rpc.pentagon.games
@@ -147,7 +147,7 @@ cast call $AINFT "getOffspring(uint256)(uint256[])" $TOKEN_ID --rpc-url https://
 | TBA balance | `cast balance $TBA` | Know what assets transfer |
 | Backup exists | Check `storageURI` | Ensure recoverability |
 | Proof of life | Request signed message | Verify agent is operational |
-| Cloning | `canReproduce()` | Know breeding rights |
+| Cloning | `canClone()` | Know breeding rights |
 
 ---
 

@@ -133,7 +133,7 @@ Potential scam:
 
 ```bash
 # Check if cloning enabled
-cast call $AINFT "canReproduce(uint256)(bool)" $PARENT_ID
+cast call $AINFT "canClone(uint256)(bool)" $PARENT_ID
 
 # Owner enables if needed
 cast send $AINFT "setCloning(uint256,bool)" $PARENT_ID true \
@@ -155,7 +155,7 @@ OFFSPRING_MEMORY_HASH=$(cast call $AINFT "getAgent(uint256)" $PARENT_ID | grep m
 OFFSPRING_MEMORY_HASH=$(echo -n "" | cast keccak)
 ```
 
-### Step 3: Parent Reproduces
+### Step 3: Parent Clones
 
 ```bash
 # Parent agent signs the clone call
@@ -189,14 +189,14 @@ cast send $AINFT \
 If certs inherited:
 ```
 Bad actor creates 1 good agent → L3
-Reproduces 1000 "L3 certified" offspring → Sells
+Clones 1000 "L3 certified" offspring → Sells
 Buyers scammed with empty agents
 ```
 
 With independent certs:
 ```
 Bad actor creates 1 good agent → L3
-Reproduces 1000 offspring → NO certs
+Clones 1000 offspring → NO certs
 Each must pass tests independently
 Market self-regulates
 ```

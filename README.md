@@ -25,7 +25,7 @@ A new standard for AI agent identity.
 ### Key Features
 
 - 🔐 **Encrypted state** — Agent encrypts; only NFT owner can access via core trustless engine
-- 🧬 **Reproduction** — Agents spawn offspring, parent keeps memories
+- 🧬 **Cloning** — Agents spawn offspring, parent keeps everything
 - 🌳 **Lineage** — Verifiable on-chain family trees
 - 💰 **Token-Bound Accounts** — Agent has its own wallet (ERC-6551)
 

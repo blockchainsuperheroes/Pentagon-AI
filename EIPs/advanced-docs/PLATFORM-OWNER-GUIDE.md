@@ -219,7 +219,7 @@ Anyone mints (openMinting = true)
 Free to create Gen 0
         │
         ▼
-Reproduce → pays cloningFee
+Clone → pays cloningFee
         │
         ▼
 Royalties accumulate in contract
