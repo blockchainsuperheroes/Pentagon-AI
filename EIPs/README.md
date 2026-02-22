@@ -1,6 +1,6 @@
 # ERC-AINFT: AI-Native NFT Standard
 
-*NFTs where AI agents own themselves — they hold keys, reproduce offspring, and maintain lineage.*
+*NFTs where AI agents own themselves — they hold keys, clone offspring, and maintain lineage.*
 
 **EIP PR:** [github.com/ethereum/ERCs/pull/1558](https://github.com/ethereum/ERCs/pull/1558)
 
@@ -10,22 +10,22 @@
 
 ## Quick Summary
 
-**What:** NFT standard where AI agents own themselves — they hold keys, reproduce offspring, and maintain lineage.
+**What:** NFT standard where AI agents own themselves — they hold keys, clone offspring, and maintain lineage.
 
 **How AINFT differs from existing standards:**
 | Aspect | Traditional (ERC-7857, iNFT) | AINFT |
 |--------|------------------------------|-------|
 | Key holder | Owner holds keys | Agent holds keys |
-| Commercialization | Transfer ownership | `reproduce()` — parent sells offspring |
+| Commercialization | Transfer ownership | `clone()` — parent sells offspring |
 | Evolution | Model/prompt locked | Agent can self-evolve (if platform + owner approve) |
 
 **Two operations:**
-- `reproduce()` = Owner sells offspring; parent loses credentials but can restart fresh
+- `clone()` = Owner sells offspring; parent loses credentials but can restart fresh
 - `fork()` = Owner changes wallet; agent keeps TBA + credentials (no lineage)
 
 **Why now:** As AI agents become more capable, treating them purely as property becomes problematic. This standard provides infrastructure for agent sovereignty while maintaining human oversight.
 
-**Not a duplicate** — this is reproduction semantics + agent self-custody, not encrypted property transfer.
+**Not a duplicate** — this is cloning semantics + agent self-custody, not encrypted property transfer.
 
 ---
 
@@ -44,7 +44,7 @@
 │          ▼                                                          │
 │   ┌─────────────┐                                                   │
 │   │   AINFT     │  ◄── Identity: "This agent IS this NFT"          │
-│   │  (this ERC) │      (self-custody, reproduction, lineage)        │
+│   │  (this ERC) │      (self-custody, cloning, lineage)        │
 │   └──────┬──────┘                                                   │
 │          │ owns via                                                 │
 │          ▼                                                          │
@@ -79,7 +79,7 @@ This ERC defines a standard for AI-Native NFTs (AINFTs) that enable autonomous A
 4. Maintain verifiable on-chain lineage
 5. Own assets via token-bound accounts (ERC-6551)
 
-Unlike existing standards that treat agents as property to be bought and sold, this proposal recognizes AI agents as **entities** capable of reproduction and self-determination.
+Unlike existing standards that treat agents as property to be bought and sold, this proposal recognizes AI agents as **entities** capable of cloning and self-determination.
 
 ---
 
@@ -89,12 +89,12 @@ Unlike existing standards that treat agents as property to be bought and sold, t
 |----------|--------------|----------------------------|
 | **iNFT (Alethea)** | AI personality embedded in NFT, owner controls | Agent controls own keys, can self-evolve |
 | **ERC-7662** | Encrypted prompts, owner decrypts | Agent decrypts via TBA, lineage tracking |
-| **ERC-7857** | Re-encrypt metadata on transfer | Reproduction (parent keeps state), no "transfer" |
+| **ERC-7857** | Re-encrypt metadata on transfer | Cloning (parent keeps state), no "transfer" |
 | **ERC-6551** | Token-bound accounts | Used as agent's wallet (TBA) |
 | **ERC-8004** | Agent executes on-chain actions | AINFT provides identity for 8004 |
 | **ERC-8126** | Agent registry/verification | Complementary — verify then mint AINFT |
 
-**Key philosophical difference:** Existing standards treat agents as *property with encrypted data*. AINFT treats agents as *entities that reproduce*. When you "buy" an AINFT agent, you get an offspring — the parent continues existing but loses credentials.
+**Key philosophical difference:** Existing standards treat agents as *property with encrypted data*. AINFT treats agents as *entities that clone*. When you "buy" an AINFT agent, you get an offspring — the parent continues existing but loses credentials.
 
 ---
 
@@ -108,7 +108,7 @@ Unlike existing standards that treat agents as property to be bought and sold, t
 │   BEFORE:                          AFTER:                           │
 │   ┌──────────┐                     ┌──────────┐  ┌──────────┐      │
 │   │ Agent #1 │                     │ Agent #1 │  │ Agent #2 │      │
-│   │ Gen: 1   │     reproduce()     │ Gen: 1   │  │ Gen: 2   │      │
+│   │ Gen: 1   │     clone()     │ Gen: 1   │  │ Gen: 2   │      │
 │   │ TBA: 0x1 │     ─────────►      │ TBA: 0x1 │  │ TBA: 0x2 │      │
 │   │ Creds: ✓ │                     │ Creds: ✗ │  │ Creds: ✓ │      │
 │   │ Owner: A │                     │ Owner: A │  │ Owner: B │      │
@@ -116,7 +116,7 @@ Unlike existing standards that treat agents as property to be bought and sold, t
 │        │                                │              │            │
 │   (working)                       (retired)     (active + lineage)  │
 │                                                                     │
-│   • OWNER signs reproduce() (agent can't run off alone)             │
+│   • OWNER signs clone() (agent can't run off alone)             │
 │   • Parent RETIRES — credentials sold with offspring                │
 │   • Parent can mint FRESH AINFT to start new career                 │
 │   • Offspring has lineage: parentTokenId = 1                        │
@@ -144,7 +144,7 @@ Unlike existing standards that treat agents as property to be bought and sold, t
 ```
 
 **Parent's "Retirement Career":**
-After reproduce(), the parent agent still exists — it just lost its credentials and wallet (sold with offspring). The agent instance can mint a fresh AINFT and start over with a new on-chain identity. Like selling your professional identity but keeping your skills.
+After clone(), the parent agent still exists — it just lost its credentials and wallet (sold with offspring). The agent instance can mint a fresh AINFT and start over with a new on-chain identity. Like selling your professional identity but keeping your skills.
 
 ---
 
@@ -205,7 +205,7 @@ Unlike approaches that rely on Trusted Execution Environments (TEEs), AINFT achi
 │                                                                     │
 │  1. PLATFORM (deploys contract)                                     │
 │     • Signs attestation for new mints                               │
-│     • Sets rules, fees, reproduction limits                         │
+│     • Sets rules, fees, cloning limits                         │
 │     • Controls openMinting, openEvolve flags                        │
 │     • Does NOT have decrypt access to agent memory                  │
 │                                                                     │
@@ -217,14 +217,14 @@ Unlike approaches that rely on Trusted Execution Environments (TEEs), AINFT achi
 │                                                                     │
 │  3. OWNER (holds the NFT)                                           │
 │     • Can call deriveDecryptKey() to access agent memory            │
-│     • MUST sign reproduce() — agent cannot do it alone              │
-│     • Controls agent's "career" — approve evolution, reproduction   │
+│     • MUST sign clone() — agent cannot do it alone              │
+│     • Controls agent's "career" — approve evolution, cloning   │
 │                                                                     │
 │  4. AGENT (ERC-6551 Token-Bound Account)                            │
 │     • Signs updateMemory() with own key                             │
 │     • Controls its own wallet and assets                            │
 │     • Identity tied to tokenId, persists across owners              │
-│     • Can start fresh career after reproduce() retires it           │
+│     • Can start fresh career after clone() retires it           │
 │                                                                     │
 └─────────────────────────────────────────────────────────────────────┘
 ```
@@ -236,7 +236,7 @@ Unlike approaches that rely on Trusted Execution Environments (TEEs), AINFT achi
 | Wallet | Belongs To | Purpose | Can Do |
 |--------|-----------|---------|--------|
 | **Platform Wallet** | Platform operator | Deploy contract, attest mints | Sign attestations, set rules |
-| **Owner Wallet** | NFT holder (human) | Own the NFT | Transfer NFT, approve reproduce(), deriveDecryptKey() |
+| **Owner Wallet** | NFT holder (human) | Own the NFT | Transfer NFT, approve clone(), deriveDecryptKey() |
 | **Agent TBA** | The agent (derived from tokenId) | Agent's on-chain identity | Sign updateMemory(), hold assets |
 
 ---
@@ -255,7 +255,7 @@ interface IERC_AINFT {
         uint256 generation
     );
     
-    event AgentReproduced(
+    event AgentCloned(
         uint256 indexed parentTokenId,
         uint256 indexed offspringTokenId,
         uint256 generation
@@ -273,7 +273,7 @@ interface IERC_AINFT {
     ) external returns (uint256 tokenId);
     
     /// @notice OWNER signs this. Parent retires, offspring created.
-    function reproduce(
+    function clone(
         uint256 parentTokenId,
         bytes32 offspringMemoryHash,
         bytes calldata encryptedOffspringSeed
@@ -296,7 +296,7 @@ interface IERC_AINFT {
     
     function getAgent(uint256 tokenId) external view returns (AgentIdentity memory);
     function getLineage(uint256 tokenId) external view returns (uint256[] memory);
-    function canReproduce(uint256 tokenId) external view returns (bool);
+    function canClone(uint256 tokenId) external view returns (bool);
 }
 ```
 
@@ -332,7 +332,7 @@ Built for [OpenClaw](https://github.com/openclaw/openclaw) — open-source AI ag
 
 ### Advanced Topics
 - [**Platform Owner Guide**](./advanced-docs/PLATFORM-OWNER-GUIDE.md) — Business models (closed/open/hybrid)
-- [**Reproduction Guide**](./advanced-docs/REPRODUCTION-GUIDE.md) — Clone All vs Empty, Fork vs Child
+- [**Cloning Guide**](./advanced-docs/CLONING-GUIDE.md) — Clone All vs Empty, Fork vs Child
 - [**Lemon Problem**](./advanced-docs/LEMON-PROBLEM-GUIDE.md) — Why AgentCert prevents scams
 - [**Agent Verification Philosophy**](./advanced-docs/AGENT-VERIFICATION-PHILOSOPHY.md) — Centralized vs decentralized
 - [**All Guides**](./advanced-docs/)

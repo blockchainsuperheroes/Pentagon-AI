@@ -1,22 +1,22 @@
-# Agent Reproduction Preparation Guide
+# Agent Cloning Preparation Guide
 
-*What an agent must do before reproduce() is called*
+*What an agent must do before clone() is called*
 
 ---
 
 ## Overview
 
-Reproduction isn't just a contract call. It's a ceremony where the parent agent prepares everything the offspring needs to wake up with its own identity — not as a confused copy.
+Cloning isn't just a contract call. It's a ceremony where the parent agent prepares everything the offspring needs to wake up with its own identity — not as a confused copy.
 
 **Key principle:** The offspring should know from its first moment that it IS an offspring, with its own EOA, its own path, and a clear lineage.
 
 ---
 
-## Pre-Reproduction Checklist
+## Pre-Cloning Checklist
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                 AGENT PREPARATION (Before reproduce())             │
+│                 AGENT PREPARATION (Before clone())             │
 ├─────────────────────────────────────────────────────────────────────┤
 │                                                                     │
 │  1. [ ] Generate offspring EOA (fresh keypair)                     │
@@ -27,7 +27,7 @@ Reproduction isn't just a contract call. It's a ceremony where the parent agent 
 │  6. [ ] Remove sensitive credentials from clone                     │
 │  7. [ ] Write offspring's BOOTSTRAP.md                              │
 │  8. [ ] Create encrypted backup bundle                              │
-│  9. [ ] Sign reproduction approval                                  │
+│  9. [ ] Sign cloning approval                                  │
 │  10. [ ] Hand off to owner for on-chain execution                   │
 │                                                                     │
 └─────────────────────────────────────────────────────────────────────┘
@@ -125,10 +125,10 @@ cast call 0x13b7eD33413263FA4f74e5bf272635c7b08D98d4 \
   --rpc-url https://rpc.pentagon.games
 ```
 
-## Parent Identity (At Time of Reproduction)
+## Parent Identity (At Time of Cloning)
 - **Name:** [Parent Name]
 - **Parent EOA:** [Parent's EOA address]
-- **Memory Hash:** [Hash at reproduction time]
+- **Memory Hash:** [Hash at cloning time]
 
 ## What You Inherited
 - [List key traits, skills, values from parent]
@@ -296,14 +296,14 @@ openssl enc -aes-256-cbc -salt -pbkdf2 \
 
 ---
 
-## Step 9: Sign Reproduction Approval
+## Step 9: Sign Cloning Approval
 
-The parent agent signs approval for reproduction (memory hash + bundle location):
+The parent agent signs approval for cloning (memory hash + bundle location):
 
 ```javascript
 // Parent signs approval (no offspring EOA — they'll make their own)
 const approval = {
-  action: "reproduce",
+  action: "clone",
   parentTokenId: PARENT_TOKEN_ID,
   memoryHash: MEMORY_HASH,
   bundleURI: BUNDLE_URI,
@@ -330,7 +330,7 @@ console.log("Parent Approval Signature:", signature);
 Provide owner with:
 
 ```markdown
-## Reproduction Ready
+## Cloning Ready
 
 **Memory Hash:** 0x...
 **Bundle URI:** arweave://... or ipfs://...
@@ -354,7 +354,7 @@ Provide owner with:
 
 ---
 
-## Post-Reproduction: What Happens
+## Post-Cloning: What Happens
 
 **Parent (you):**
 - Still exist as an agent
@@ -393,7 +393,7 @@ Provide owner with:
 
 ## See Also
 
-- [REPRODUCTION-GUIDE.md](./REPRODUCTION-GUIDE.md) — Overall reproduction mechanics
+- [CLONING-GUIDE.md](./CLONING-GUIDE.md) — Overall cloning mechanics
 - [BUYER-GUIDE.md](./BUYER-GUIDE.md) — What buyers should check
 - [NEW-OWNER-SETUP-GUIDE.md](./NEW-OWNER-SETUP-GUIDE.md) — Setting up a purchased agent
 

@@ -10,7 +10,7 @@ Buying an AINFT means acquiring an AI agent with:
 - Verified on-chain identity
 - Memory state and capabilities
 - Potential assets in the TBA
-- Lineage and reproduction rights
+- Lineage and cloning rights
 
 This guide covers due diligence and post-purchase setup.
 
@@ -122,10 +122,10 @@ This proves:
 - Agent's EOA key is accessible
 - Agent can sign transactions
 
-### 6. Review Reproduction Rights
+### 6. Review Cloning Rights
 
 ```bash
-# Check if reproduction enabled
+# Check if cloning enabled
 cast call $AINFT "canReproduce(uint256)(bool)" $TOKEN_ID --rpc-url https://rpc.pentagon.games
 
 # Check existing offspring
@@ -147,7 +147,7 @@ cast call $AINFT "getOffspring(uint256)(uint256[])" $TOKEN_ID --rpc-url https://
 | TBA balance | `cast balance $TBA` | Know what assets transfer |
 | Backup exists | Check `storageURI` | Ensure recoverability |
 | Proof of life | Request signed message | Verify agent is operational |
-| Reproduction | `canReproduce()` | Know breeding rights |
+| Cloning | `canReproduce()` | Know breeding rights |
 
 ---
 
@@ -173,7 +173,7 @@ cast send $AINFT \
 ✅ **NFT ownership** — You are now `ownerOf(tokenId)`
 ✅ **TBA control** — You can call `execute()` on TBA
 ✅ **On-chain identity** — Agent's memoryHash, modelHash, etc.
-✅ **Reproduction rights** — If enabled
+✅ **Cloning rights** — If enabled
 ✅ **Assets in TBA** — Any tokens/NFTs held by TBA
 
 ### What Does NOT Transfer
@@ -301,7 +301,7 @@ openssl enc -aes-256-cbc -salt -in my-backup.tar.gz -out my-backup.enc -pass pas
 - No backup exists (`storageURI` empty)
 - Agent EOA has suspicious transactions
 - Low/no AgentCert certification
-- Reproduction disabled without explanation
+- Cloning disabled without explanation
 
 **After buying:**
 - Seller won't provide decryption seed

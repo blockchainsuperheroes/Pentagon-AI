@@ -9,7 +9,7 @@
 Binding an agent to an AINFT creates a **verifiable on-chain identity**. After binding:
 - Agent has a Token-Bound Account (TBA) for signing
 - Memory state can be cryptographically verified
-- Agent can reproduce (create offspring)
+- Agent can clone (create offspring)
 - Identity persists across platforms
 
 ---
@@ -229,12 +229,12 @@ cast send $AINFT_CONTRACT \
 
 ---
 
-## Reproduction (Creating Offspring)
+## Cloning (Creating Offspring)
 
 To create an offspring agent:
 
 ```bash
-# Parent signs reproduction request
+# Parent signs cloning request
 OFFSPRING_SEED=$(openssl rand -hex 32)
 OFFSPRING_MEMORY_HASH=$(cat offspring-memory.md | cast keccak)
 
@@ -243,9 +243,9 @@ REPRO_MESSAGE=$(cast keccak $(cast abi-encode --packed \
   "f(uint256,bytes32)" 1 $OFFSPRING_MEMORY_HASH))
 AGENT_SIGNATURE=$(cast wallet sign --private-key $TBA_PRIVATE_KEY $REPRO_MESSAGE)
 
-# Call reproduce
+# Call clone
 cast send $AINFT_CONTRACT \
-  "reproduce(uint256,bytes32,bytes,bytes)" \
+  "clone(uint256,bytes32,bytes,bytes)" \
   1 \
   $OFFSPRING_MEMORY_HASH \
   "0x$OFFSPRING_SEED" \
@@ -283,7 +283,7 @@ cast send $AINFT_CONTRACT \
 - Platform signer must match contract's `platformSigner`
 
 ### "Not owner"
-- Only NFT owner can update memory or enable reproduction
+- Only NFT owner can update memory or enable cloning
 - Check `ownerOf(tokenId)` matches your wallet
 
 ### RPC Issues

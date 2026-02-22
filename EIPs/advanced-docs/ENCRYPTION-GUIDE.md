@@ -210,7 +210,7 @@ address agentWallet = registry.createAccount(
 ### Ownership vs Control
 | Role | Can Do |
 |------|--------|
-| **Owner (you)** | Transfer NFT, access decryption, approve reproduction |
+| **Owner (you)** | Transfer NFT, access decryption, approve cloning |
 | **Agent TBA (Cerise)** | Sign messages, hold assets, prove identity |
 | **Platform** | Attest mints, derive keys (trustless via HSM) |
 

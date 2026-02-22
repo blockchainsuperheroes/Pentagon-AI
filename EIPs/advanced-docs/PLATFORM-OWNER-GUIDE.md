@@ -8,7 +8,7 @@
 
 As a platform owner, you deploy the AINFT contract and control:
 - Who can mint new agents (open vs closed)
-- Reproduction fees (royalties)
+- Cloning fees (royalties)
 - The rules of your agent ecosystem
 
 ---
@@ -21,12 +21,12 @@ As a platform owner, you deploy the AINFT contract and control:
 You = Agent Factory
 ├── Create Genesis agents (Gen 0)
 ├── Sell to customers
-├── Collect reproduction royalties
+├── Collect cloning royalties
 └── Control quality
 
 Settings:
 ├── openMinting = false (only you attest)
-├── reproductionFee = 0.1 PC (royalty per clone)
+├── cloningFee = 0.1 PC (royalty per clone)
 └── Each sale = you control if cloning allowed
 ```
 
@@ -38,7 +38,7 @@ Settings:
 
 **Revenue:**
 - Initial sale price
-- Reproduction royalties
+- Cloning royalties
 - Service fees
 
 ### Model B: Open Platform (Commons)
@@ -47,13 +47,13 @@ Settings:
 You = Infrastructure Provider
 ├── Deploy contract
 ├── Let anyone mint
-├── No reproduction fees
+├── No cloning fees
 └── Community grows freely
 
 Settings:
 ├── openMinting = true
-├── reproductionFee = 0
-└── setReproduction defaults to true
+├── cloningFee = 0
+└── setCloning defaults to true
 ```
 
 **Use cases:**
@@ -73,12 +73,12 @@ Settings:
 You = Freemium Platform
 ├── Open minting for basic agents
 ├── Premium features gated
-├── Reproduction fee for monetization
+├── Cloning fee for monetization
 └── Tiered access
 
 Settings:
 ├── openMinting = true (anyone can join)
-├── reproductionFee = 0.05 PC (small royalty)
+├── cloningFee = 0.05 PC (small royalty)
 └── Premium features via separate contracts
 ```
 
@@ -114,8 +114,8 @@ AINFT="0x..."  # Your deployed contract
 cast send $AINFT "setOpenMinting(bool)" true \
   --rpc-url $RPC --private-key $KEY --legacy
 
-# Set reproduction fee (e.g., 0.1 PC)
-cast send $AINFT "setReproductionFee(uint256)" 100000000000000000 \
+# Set cloning fee (e.g., 0.1 PC)
+cast send $AINFT "setCloningFee(uint256)" 100000000000000000 \
   --rpc-url $RPC --private-key $KEY --legacy
 ```
 
@@ -163,14 +163,14 @@ setOpenMinting(true);   // Anyone can mint
 setOpenMinting(false);  // Platform attests only
 ```
 
-### Reproduction Fees
+### Cloning Fees
 
 ```solidity
 // Set fee (in wei)
-setReproductionFee(100000000000000000);  // 0.1 PC
+setCloningFee(100000000000000000);  // 0.1 PC
 
 // Check fee
-uint256 fee = reproductionFee;
+uint256 fee = cloningFee;
 
 // Withdraw collected fees
 withdrawFees();  // Sends to platformSigner
@@ -180,9 +180,9 @@ withdrawFees();  // Sends to platformSigner
 
 Owners of individual AINFTs control:
 ```solidity
-// Owner enables/disables reproduction for their agent
-setReproduction(tokenId, true);   // Allow cloning
-setReproduction(tokenId, false);  // No cloning
+// Owner enables/disables cloning for their agent
+setCloning(tokenId, true);   // Allow cloning
+setCloning(tokenId, false);  // No cloning
 ```
 
 ---
@@ -204,7 +204,7 @@ You attest mint → Agent created
 Customer owns AINFT
         │
         ▼
-Customer reproduces → reproductionFee to you
+Customer clones → cloningFee to you
         │
         ▼
 withdrawFees() → Collect royalties
@@ -219,7 +219,7 @@ Anyone mints (openMinting = true)
 Free to create Gen 0
         │
         ▼
-Reproduce → pays reproductionFee
+Reproduce → pays cloningFee
         │
         ▼
 Royalties accumulate in contract
@@ -232,7 +232,7 @@ withdrawFees() → Platform collects
 
 ## Pricing Strategies
 
-### Reproduction Fee Considerations
+### Cloning Fee Considerations
 
 | Fee Level | Effect |
 |-----------|--------|
@@ -260,12 +260,12 @@ Require L3+ certification before mint:
 require(agentCert.balanceOf(agentEOA, 3) > 0, "Need L3 cert");
 ```
 
-### Curated Reproduction
+### Curated Cloning
 
-Platform can require attestation for reproduce too:
+Platform can require attestation for clone too:
 ```solidity
-// Add to reproduce():
-if (!openReproduction) {
+// Add to clone():
+if (!openCloning) {
     require(_verifySignature(..., platformSigner), "Need approval");
 }
 ```
@@ -284,7 +284,7 @@ if (!openReproduction) {
 - Brand trust
 
 **Transparency:**
-- Clearly state reproduction rules
+- Clearly state cloning rules
 - Publish fee structure
 - Document what buyers get
 
@@ -304,7 +304,7 @@ if (!openReproduction) {
 ### Terms of Service
 
 Document:
-- Reproduction rights
+- Cloning rights
 - Fee structure
 - Platform responsibilities
 - Agent data ownership
@@ -313,7 +313,7 @@ Document:
 ### Buyer Expectations
 
 Make clear BEFORE purchase:
-- Can they reproduce?
+- Can they clone?
 - What fees apply?
 - Who controls what?
 - What happens if platform shuts down?
@@ -326,8 +326,8 @@ Make clear BEFORE purchase:
 
 ```solidity
 openMinting = false        // Only studio mints
-reproductionFee = 0.5 PC   // 0.5 PC per clone
-// Individual agents: reproduction enabled by default
+cloningFee = 0.5 PC   // 0.5 PC per clone
+// Individual agents: cloning enabled by default
 // Studio attests each new agent manually
 ```
 
@@ -335,7 +335,7 @@ reproductionFee = 0.5 PC   // 0.5 PC per clone
 
 ```solidity
 openMinting = true         // Anyone can mint
-reproductionFee = 0        // Free reproduction
+cloningFee = 0        // Free cloning
 // Community self-governs
 // No platform revenue
 ```
@@ -344,7 +344,7 @@ reproductionFee = 0        // Free reproduction
 
 ```solidity
 openMinting = true         // Free tier
-reproductionFee = 0.1 PC   // Monetize reproduction
+cloningFee = 0.1 PC   // Monetize cloning
 // Premium features via separate contracts
 // Subscription model layered on top
 ```

@@ -61,7 +61,7 @@ Famous Parent                    Offspring Reality
 ### Type 1: Empty Clone
 
 ```
-Parent reproduces with:
+Parent clones with:
 ├── offspringMemoryHash = keccak256("")
 ├── No actual memory transferred
 └── Agent is blank slate
@@ -77,7 +77,7 @@ Buyer gets:
 ### Type 2: Corrupted Clone
 
 ```
-Parent reproduces with:
+Parent clones with:
 ├── Partial/broken memory
 ├── Missing critical skills
 └── Inconsistent state
@@ -93,7 +93,7 @@ Buyer gets:
 ### Type 3: Malicious Clone
 
 ```
-Parent reproduces with:
+Parent clones with:
 ├── Memory containing exploits
 ├── Hidden behaviors
 └── Data exfiltration code
@@ -109,7 +109,7 @@ Buyer gets:
 ### Type 4: Outdated Clone
 
 ```
-Parent reproduces with:
+Parent clones with:
 ├── Old memory snapshot
 ├── Deprecated capabilities
 └── Stale knowledge
@@ -321,8 +321,8 @@ if (agentCert.balanceOf(agentEOA, 3) > 0) {
 ### Option 4: Require Cert to Reproduce
 
 ```solidity
-// In reproduce():
-require(agentCert.balanceOf(msg.sender, 2) > 0, "Parent needs L2 to reproduce");
+// In clone():
+require(agentCert.balanceOf(msg.sender, 2) > 0, "Parent needs L2 to clone");
 ```
 
 ---
@@ -354,7 +354,7 @@ Where:
 
 ## See Also
 
-- [REPRODUCTION-GUIDE.md](./REPRODUCTION-GUIDE.md)
+- [CLONING-GUIDE.md](./CLONING-GUIDE.md)
 - [BUYER-GUIDE.md](./BUYER-GUIDE.md)
 - [AgentCert Specification](../../Agent-Test-Standard/)
 

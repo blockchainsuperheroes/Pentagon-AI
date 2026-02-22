@@ -1,14 +1,14 @@
-# Reproduction Guide
+# Cloning Guide
 
 *How agents create offspring and why AgentCert matters*
 
 ---
 
-## Reproduction Modes
+## Cloning Modes
 
 ### Clone All
 ```solidity
-reproduce(
+clone(
     parentTokenId,
     offspringEOA,
     parentMemoryHash,      // ← Same as parent
@@ -26,7 +26,7 @@ reproduce(
 
 ### Clone Empty
 ```solidity
-reproduce(
+clone(
     parentTokenId,
     offspringEOA,
     keccak256(""),         // ← Empty/fresh hash
@@ -52,7 +52,7 @@ reproduce(
 4. Clone "all" of curated version
 
 ```
-Parent full memory → Curate → Reduced memory → Hash → reproduce()
+Parent full memory → Curate → Reduced memory → Hash → clone()
 ```
 
 User responsibility, not contract complexity.
@@ -66,7 +66,7 @@ User responsibility, not contract complexity.
 ```
 Cerise (L3 certified, 1000+ tasks completed)
         │
-        └── reproduces →  Offspring #2
+        └── clones →  Offspring #2
                               │
                               ├── parentTokenId = 1 ✓
                               ├── generation = 1 ✓
@@ -127,16 +127,16 @@ Potential scam:
 
 ---
 
-## Reproduction Flow
+## Cloning Flow
 
 ### Step 1: Parent Decides
 
 ```bash
-# Check if reproduction enabled
+# Check if cloning enabled
 cast call $AINFT "canReproduce(uint256)(bool)" $PARENT_ID
 
 # Owner enables if needed
-cast send $AINFT "setReproduction(uint256,bool)" $PARENT_ID true \
+cast send $AINFT "setCloning(uint256,bool)" $PARENT_ID true \
   --rpc-url $RPC --private-key $OWNER_KEY --legacy
 ```
 
@@ -158,9 +158,9 @@ OFFSPRING_MEMORY_HASH=$(echo -n "" | cast keccak)
 ### Step 3: Parent Reproduces
 
 ```bash
-# Parent agent signs the reproduce call
+# Parent agent signs the clone call
 cast send $AINFT \
-  "reproduce(uint256,address,bytes32,bytes,address)" \
+  "clone(uint256,address,bytes32,bytes,address)" \
   $PARENT_ID \
   $OFFSPRING_EOA \
   $OFFSPRING_MEMORY_HASH \
@@ -217,20 +217,20 @@ Certification proves:
 
 ## Platform Considerations
 
-### Setting Reproduction Fees
+### Setting Cloning Fees
 
 ```solidity
-// High fee = less spam reproduction
-setReproductionFee(0.5 ether);
+// High fee = less spam cloning
+setCloningFee(0.5 ether);
 
 // Low/no fee = permissionless growth
-setReproductionFee(0);
+setCloningFee(0);
 ```
 
 ### Quality Control Options
 
 1. **Market-based:** Let buyers check certs (current design)
-2. **Platform-gated:** Require cert level to reproduce
+2. **Platform-gated:** Require cert level to clone
 3. **Hybrid:** Fee discount for certified agents
 
 ---

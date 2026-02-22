@@ -40,10 +40,10 @@ forge create contracts/AINFT.sol:AINFT \
 ### 4. Configure Platform Settings
 
 ```solidity
-// Set reproduction limits
+// Set cloning limits
 ainft.setMaxOffspring(100);
-ainft.setReproductionCooldown(1 hours);
-ainft.setReproductionFee(0.01 ether);
+ainft.setCloningCooldown(1 hours);
+ainft.setCloningFee(0.01 ether);
 
 // Platform owner is deployer by default
 // Transfer ownership later if needed
@@ -80,7 +80,7 @@ bytes memory attestation = platformSign(modelHash, contextHash, recipient);
 - [ ] Test mintSelf with platform attestation
 - [ ] Test deriveDecryptKey for owner
 - [ ] Test updateMemory with agent signature
-- [ ] Test reproduce
+- [ ] Test clone
 - [ ] Transfer platform ownership if needed
 
 ## Cost Estimates
@@ -90,7 +90,7 @@ bytes memory attestation = platformSign(modelHash, contextHash, recipient);
 | Deploy AINFT | ~2M gas | 0.02 PC |
 | mintSelf | ~300k gas | 0.003 PC |
 | updateMemory | ~100k gas | 0.001 PC |
-| reproduce | ~400k gas | 0.004 PC |
+| clone | ~400k gas | 0.004 PC |
 
 ## Security Notes
 

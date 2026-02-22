@@ -19,7 +19,7 @@ contract ERC7857A_v2 {
         uint256 generation
     );
     
-    event AgentReproduced(
+    event AgentCloned(
         uint256 indexed parentTokenId,
         uint256 indexed offspringTokenId,
         address indexed offspringEOA,
@@ -54,8 +54,8 @@ contract ERC7857A_v2 {
     
     // Platform controls
     bool public openMinting;           // If true, no attestation needed for mintSelf
-    bool public openReproduction;      // If true, no platform approval for reproduce
-    uint256 public reproductionFee;    // Fee in wei for reproduction (0 = free)
+    bool public openCloning;      // If true, no platform approval for clone
+    uint256 public cloningFee;    // Fee in wei for cloning (0 = free)
     
     // ERC721 state
     mapping(uint256 => address) private _owners;
@@ -66,7 +66,7 @@ contract ERC7857A_v2 {
     // Agent state
     mapping(uint256 => AgentIdentity) private _agents;
     mapping(uint256 => uint256[]) private _offspring;
-    mapping(uint256 => bool) private _reproductionEnabled;
+    mapping(uint256 => bool) private _cloningEnabled;
     mapping(address => uint256) public eoaToToken;  // Agent EOA => tokenId
     
     // ============ Constructor ============
@@ -136,7 +136,7 @@ contract ERC7857A_v2 {
         // Mint NFT to specified owner
         _owners[tokenId] = nftOwner;
         _balances[nftOwner]++;
-        _reproductionEnabled[tokenId] = true;
+        _cloningEnabled[tokenId] = true;
         
         emit Transfer(address(0), nftOwner, tokenId);
         emit AgentMinted(tokenId, agentEOA, nftOwner, modelHash, 0);
@@ -176,13 +176,13 @@ contract ERC7857A_v2 {
         return _verifySignature(messageHash, signature, agentEOA);
     }
     
-    // ============ Reproduction ============
+    // ============ Cloning ============
     
     /**
-     * @notice Agent reproduces (creates offspring)
+     * @notice Agent clones (creates offspring)
      * @dev Parent agent must sign; offspring gets new EOA
      */
-    function reproduce(
+    function clone(
         uint256 parentTokenId,
         address offspringEOA,
         bytes32 offspringMemoryHash,
@@ -192,17 +192,17 @@ contract ERC7857A_v2 {
         AgentIdentity storage parent = _agents[parentTokenId];
         
         require(parent.agentEOA == msg.sender, "Not the parent agent");
-        require(_reproductionEnabled[parentTokenId], "Reproduction disabled");
+        require(_cloningEnabled[parentTokenId], "Cloning disabled");
         require(eoaToToken[offspringEOA] == 0, "Offspring EOA already registered");
         
-        // Charge reproduction fee if set
-        if (reproductionFee > 0) {
-            require(msg.value >= reproductionFee, "Insufficient fee");
+        // Charge cloning fee if set
+        if (cloningFee > 0) {
+            require(msg.value >= cloningFee, "Insufficient fee");
         }
         
-        // Check reproduction fee (if not open)
-        if (!openReproduction && reproductionFee > 0) {
-            require(msg.value >= reproductionFee, "Insufficient reproduction fee");
+        // Check cloning fee (if not open)
+        if (!openCloning && cloningFee > 0) {
+            require(msg.value >= cloningFee, "Insufficient cloning fee");
         }
         
         // Create offspring
@@ -225,10 +225,10 @@ contract ERC7857A_v2 {
         
         _owners[offspringTokenId] = offspringOwner;
         _balances[offspringOwner]++;
-        _reproductionEnabled[offspringTokenId] = true;
+        _cloningEnabled[offspringTokenId] = true;
         
         emit Transfer(address(0), offspringOwner, offspringTokenId);
-        emit AgentReproduced(parentTokenId, offspringTokenId, offspringEOA, newGen);
+        emit AgentCloned(parentTokenId, offspringTokenId, offspringEOA, newGen);
         
         return offspringTokenId;
     }
@@ -255,8 +255,8 @@ contract ERC7857A_v2 {
         return _offspring[tokenId];
     }
     
-    function canReproduce(uint256 tokenId) external view returns (bool) {
-        return _reproductionEnabled[tokenId];
+    function canClone(uint256 tokenId) external view returns (bool) {
+        return _cloningEnabled[tokenId];
     }
     
     function ownerOf(uint256 tokenId) public view returns (address) {
@@ -314,9 +314,9 @@ contract ERC7857A_v2 {
     
     // ============ Owner Controls ============
     
-    function setReproduction(uint256 tokenId, bool enabled) external {
+    function setCloning(uint256 tokenId, bool enabled) external {
         require(ownerOf(tokenId) == msg.sender, "Not owner");
-        _reproductionEnabled[tokenId] = enabled;
+        _cloningEnabled[tokenId] = enabled;
     }
     
     // ============ Platform Controls ============
@@ -331,21 +331,21 @@ contract ERC7857A_v2 {
     }
     
     /**
-     * @notice Platform sets open reproduction mode
-     * @dev When true, reproduce() doesn't require platform fee
+     * @notice Platform sets open cloning mode
+     * @dev When true, clone() doesn't require platform fee
      */
-    function setOpenReproduction(bool open) external {
+    function setOpenCloning(bool open) external {
         require(msg.sender == platformSigner, "Not platform");
-        openReproduction = open;
+        openCloning = open;
     }
     
     /**
-     * @notice Platform sets reproduction fee (royalty)
-     * @dev Fee paid to platform on each reproduce()
+     * @notice Platform sets cloning fee (royalty)
+     * @dev Fee paid to platform on each clone()
      */
-    function setReproductionFee(uint256 fee) external {
+    function setCloningFee(uint256 fee) external {
         require(msg.sender == platformSigner, "Not platform");
-        reproductionFee = fee;
+        cloningFee = fee;
     }
     
     /**
