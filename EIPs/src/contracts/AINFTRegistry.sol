@@ -76,6 +76,12 @@ contract AINFTRegistry {
         uint256 indexed tokenId
     );
     
+    event CloneClaimTransferred(
+        uint256 indexed cloneId,
+        address indexed from,
+        address indexed to
+    );
+    
     // ============ Structs ============
     
     struct AgentIdentity {
@@ -304,28 +310,48 @@ contract AINFTRegistry {
     }
     
     /**
-     * @notice Clone claims its identity with own EOA
-     * @dev Called by clone agent after it wakes and generates EOA
-     * @param cloneId The clone ID from clone()
+     * @notice Transfer clone ownership before claiming
+     * @dev Enables trading clones before activation
+     * @param cloneId The clone ID
+     * @param newOwner New owner address
      */
-    function claimClone(uint256 cloneId) external {
+    function transferCloneClaim(uint256 cloneId, address newOwner) external {
         CloneIdentity storage clone = _clone[cloneId];
         
         require(clone.createdAt > 0, "Clone doesn't exist");
-        require(clone.agentEOA == address(0), "Already claimed");
-        require(eoaToKey[msg.sender] == bytes32(0), "EOA already registered");
+        require(msg.sender == clone.owner, "Not clone owner");
+        require(newOwner != address(0), "Invalid new owner");
         
-        // Clone claims with its own EOA
-        clone.agentEOA = msg.sender;
+        clone.owner = newOwner;
+        
+        emit CloneClaimTransferred(cloneId, msg.sender, newOwner);
+    }
+    
+    /**
+     * @notice Clone claims its identity with own EOA
+     * @dev Only clone owner can call; agent provides EOA
+     * @param cloneId The clone ID from clone()
+     * @param agentEOA The agent's EOA address
+     */
+    function claimClone(uint256 cloneId, address agentEOA) external {
+        CloneIdentity storage clone = _clone[cloneId];
+        
+        require(clone.createdAt > 0, "Clone doesn't exist");
+        require(msg.sender == clone.owner, "Not clone owner");
+        require(clone.agentEOA == address(0), "Already claimed");
+        require(eoaToKey[agentEOA] == bytes32(0), "EOA already registered");
+        
+        // Set clone's EOA
+        clone.agentEOA = agentEOA;
         
         // Map EOA to special clone key
-        bytes32 cloneKey = keccak256(abi.encodePacked("OFFSPRING", cloneId));
-        eoaToKey[msg.sender] = cloneKey;
+        bytes32 cloneKey = keccak256(abi.encodePacked("CLONE", cloneId));
+        eoaToKey[agentEOA] = cloneKey;
         
         emit AgentCloned(
             address(0), // No parent contract for clone reference
             cloneId,
-            msg.sender,
+            agentEOA,
             cloneId,
             clone.generation
         );
