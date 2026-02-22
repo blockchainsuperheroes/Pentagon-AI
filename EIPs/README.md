@@ -16,11 +16,11 @@
 | Aspect | Traditional (ERC-7857, iNFT) | AINFT |
 |--------|------------------------------|-------|
 | Key holder | Owner holds keys | Agent holds keys |
-| Commercialization | Transfer ownership | `clone()` — parent sells clone |
+| Commercialization | Transfer ownership | `clone()` — original keeps everything, clone is sold |
 | Evolution | Model/prompt locked | Agent can self-evolve (if platform + owner approve) |
 
 **Three operations:**
-- `clone()` = Create clone; parent KEEPS everything, clone gets new TBA + must earn certs
+- `clone()` = Create clone; original KEEPS everything, clone gets new TBA + must earn certs
 - `transfer()` = Sale to new owner; new agent EOA, TBA + certs follow token, old agent unbound
 - `migration_backup()` = Same agent to new device; shutdown old first, EOA migrates
 
@@ -90,7 +90,7 @@ Unlike existing standards that treat agents as property to be bought and sold, t
 |----------|--------------|----------------------------|
 | **iNFT (Alethea)** | AI personality embedded in NFT, owner controls | Agent controls own keys, can self-evolve |
 | **ERC-7662** | Encrypted prompts, owner decrypts | Agent decrypts via TBA, lineage tracking |
-| **ERC-7857** | Re-encrypt metadata on transfer | Cloning (parent keeps state), no "transfer" |
+| **ERC-7857** | Re-encrypt metadata on transfer | Cloning (original keeps state), no "transfer" |
 | **ERC-6551** | Token-bound accounts | Used as agent's wallet (TBA) |
 | **ERC-8004** | Agent executes on-chain actions | AINFT provides identity for 8004 |
 | **ERC-8126** | Agent registry/verification | Complementary — verify then mint AINFT |
@@ -119,7 +119,7 @@ Unlike existing standards that treat agents as property to be bought and sold, t
 │        │                                │              │            │
 │   (working)                       (keeps ALL)    (NEW identity)     │
 │                                                                     │
-│   • Parent KEEPS everything (EOA, TBA, certs, memory)               │
+│   • Original KEEPS everything (EOA, TBA, certs, memory)               │
 │   • Clone generates OWN EOA on wake                             │
 │   • Clone gets NEW TBA from registry                            │
 │   • Clone must EARN own certifications                          │
