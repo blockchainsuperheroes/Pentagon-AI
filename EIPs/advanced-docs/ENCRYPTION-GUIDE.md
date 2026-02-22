@@ -39,8 +39,8 @@ AINFT uses **contract-derived encryption** — meaning the smart contract itself
 | `memoryHash` | Hash of encrypted memory bundle on Arweave |
 | `contextHash` | Hash of personality/soul config |
 | `encryptedSeed` | Seed encrypted with platform key — only platform can decrypt |
-| `generation` | 0 = original, 1+ = offspring |
-| `parentTokenId` | 0 for gen-0, parent's ID for offspring |
+| `generation` | 0 = original, 1+ = clone |
+| `parentTokenId` | 0 for gen-0, parent's ID for clone |
 
 ### 2. Off-Chain Data (Encrypted on Arweave)
 | File | Contents |

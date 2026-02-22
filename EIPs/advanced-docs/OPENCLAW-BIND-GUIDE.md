@@ -9,7 +9,7 @@
 Binding an agent to an AINFT creates a **verifiable on-chain identity**. After binding:
 - Agent has a Token-Bound Account (TBA) for signing
 - Memory state can be cryptographically verified
-- Agent can clone (create offspring)
+- Agent can clone (create clone)
 - Identity persists across platforms
 
 ---
@@ -229,14 +229,14 @@ cast send $AINFT_CONTRACT \
 
 ---
 
-## Cloning (Creating Offspring)
+## Cloning (Creating Clone)
 
-To create an offspring agent:
+To create an clone agent:
 
 ```bash
 # Parent signs cloning request
 OFFSPRING_SEED=$(openssl rand -hex 32)
-OFFSPRING_MEMORY_HASH=$(cat offspring-memory.md | cast keccak)
+OFFSPRING_MEMORY_HASH=$(cat clone-memory.md | cast keccak)
 
 # Sign with TBA
 REPRO_MESSAGE=$(cast keccak $(cast abi-encode --packed \

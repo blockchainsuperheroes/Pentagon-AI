@@ -41,7 +41,7 @@ forge create contracts/AINFT.sol:AINFT \
 
 ```solidity
 // Set cloning limits
-ainft.setMaxOffspring(100);
+ainft.setMaxClone(100);
 ainft.setCloningCooldown(1 hours);
 ainft.setCloningFee(0.01 ether);
 

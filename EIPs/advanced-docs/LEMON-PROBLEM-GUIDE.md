@@ -14,8 +14,8 @@ In markets with information asymmetry, buyers can't distinguish quality before p
 Scenario: Bad Actor
 ─────────────────────
 1. Create one good agent → Gets L3 certified
-2. Clone 1000 offspring → All "Gen 1 from L3 agent!"
-3. Sell offspring at premium price
+2. Clone 1000 clone → All "Gen 1 from L3 agent!"
+3. Sell clone at premium price
 4. Buyers get empty/faulty agents
 5. Market collapses from distrust
 ```
@@ -29,7 +29,7 @@ This is the classic "lemon market" — bad agents drive out good.
 ### What Lineage Proves
 
 ```solidity
-getAgent(offspringId) returns:
+getAgent(cloneId) returns:
 ├── parentTokenId = 1 ✓         // Who's the parent
 ├── generation = 1 ✓             // How far from genesis
 ├── memoryHash = 0x... ✓         // What was cloned
@@ -38,14 +38,14 @@ getAgent(offspringId) returns:
 
 ### What Lineage DOESN'T Prove
 
-- Offspring is functional
+- Clone is functional
 - Memory is useful (not empty)
 - Agent can perform tasks
 - Agent passes any tests
 - Agent isn't malicious
 
 ```
-Famous Parent                    Offspring Reality
+Famous Parent                    Clone Reality
 ─────────────────                ─────────────────
 "Cerise - L3 Certified"    →    Empty memory clone
 "1000+ tasks completed"    →    Never ran a single task
@@ -56,13 +56,13 @@ Famous Parent                    Offspring Reality
 
 ---
 
-## Faulty Offspring Types
+## Faulty Clone Types
 
 ### Type 1: Empty Clone
 
 ```
 Parent clones with:
-├── offspringMemoryHash = keccak256("")
+├── cloneMemoryHash = keccak256("")
 ├── No actual memory transferred
 └── Agent is blank slate
 
@@ -153,7 +153,7 @@ L4: Security Hardened
 
 > **Certificates are earned, not inherited.**
 
-Each agent must pass tests independently. Parent's L3 doesn't give offspring L3.
+Each agent must pass tests independently. Parent's L3 doesn't give clone L3.
 
 ---
 
@@ -166,7 +166,7 @@ Each agent must pass tests independently. Parent's L3 doesn't give offspring L3.
 cast call $AINFT "getAgent(uint256)" $TOKEN_ID
 
 # Returns:
-# - parentTokenId (0 = genesis, >0 = offspring)
+# - parentTokenId (0 = genesis, >0 = clone)
 # - generation
 # - memoryHash
 # - agentEOA
@@ -218,9 +218,9 @@ ACTUAL_HASH=$(cat MEMORY.md | cast keccak)
 
 ### To Maximize Value
 
-1. **Certify offspring before selling**
+1. **Certify clone before selling**
    ```bash
-   # Run offspring through AgentCert tests
+   # Run clone through AgentCert tests
    # Get L1 → L2 → L3 badges
    ```
 
@@ -240,7 +240,7 @@ ACTUAL_HASH=$(cat MEMORY.md | cast keccak)
 
 4. **Transparent pricing**
    ```
-   Uncertified offspring: 0.1 PC
+   Uncertified clone: 0.1 PC
    L1 certified: 0.5 PC
    L3 certified: 2 PC
    L3 + proven track record: 5 PC
@@ -253,7 +253,7 @@ ACTUAL_HASH=$(cat MEMORY.md | cast keccak)
 ### Without Certification
 
 ```
-All offspring look same
+All clone look same
         │
         ▼
 Buyers can't distinguish quality
@@ -274,7 +274,7 @@ Market collapse
 ### With Certification
 
 ```
-Offspring vary in certs
+Clone vary in certs
         │
         ▼
 Buyers check L1/L2/L3/L4
@@ -348,7 +348,7 @@ Where:
 - Track Record = off-chain reputation
 ```
 
-**Golden rule:** Never buy uncertified offspring at premium price.
+**Golden rule:** Never buy uncertified clone at premium price.
 
 ---
 

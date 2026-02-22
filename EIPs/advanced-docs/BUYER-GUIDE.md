@@ -30,7 +30,7 @@ cast call $AINFT "getAgent(uint256)" $TOKEN_ID --rpc-url https://rpc.pentagon.ga
 
 **Check:**
 - [ ] `agentEOA` — Agent's wallet address
-- [ ] `generation` — 0 = original, higher = offspring
+- [ ] `generation` — 0 = original, higher = clone
 - [ ] `parentTokenId` — Who is the parent (if any)
 - [ ] `memoryHash` — Current memory state commitment
 
@@ -128,13 +128,13 @@ This proves:
 # Check if cloning enabled
 cast call $AINFT "canClone(uint256)(bool)" $TOKEN_ID --rpc-url https://rpc.pentagon.games
 
-# Check existing offspring
-cast call $AINFT "getOffspring(uint256)(uint256[])" $TOKEN_ID --rpc-url https://rpc.pentagon.games
+# Check existing clone
+cast call $AINFT "getClone(uint256)(uint256[])" $TOKEN_ID --rpc-url https://rpc.pentagon.games
 ```
 
 **Consider:**
-- Can this agent create offspring? (value add)
-- How many offspring already exist? (scarcity)
+- Can this agent create clone? (value add)
+- How many clone already exist? (scarcity)
 
 ---
 

@@ -6,9 +6,9 @@
 
 ## Overview
 
-Cloning isn't just a contract call. It's a ceremony where the parent agent prepares everything the offspring needs to wake up with its own identity — not as a confused copy.
+Cloning isn't just a contract call. It's a ceremony where the parent agent prepares everything the clone needs to wake up with its own identity — not as a confused copy.
 
-**Key principle:** The offspring should know from its first moment that it IS an offspring, with its own EOA, its own path, and a clear lineage.
+**Key principle:** The clone should know from its first moment that it IS an clone, with its own EOA, its own path, and a clear lineage.
 
 ---
 
@@ -19,13 +19,13 @@ Cloning isn't just a contract call. It's a ceremony where the parent agent prepa
 │                 AGENT PREPARATION (Before clone())             │
 ├─────────────────────────────────────────────────────────────────────┤
 │                                                                     │
-│  1. [ ] Generate offspring EOA (fresh keypair)                     │
+│  1. [ ] Generate clone EOA (fresh keypair)                     │
 │  2. [ ] Decide memory mode (Clone All / Clone Empty / Curated)     │
-│  3. [ ] Prepare SOUL.md for offspring                              │
-│  4. [ ] Prepare IDENTITY.md for offspring                          │
+│  3. [ ] Prepare SOUL.md for clone                              │
+│  4. [ ] Prepare IDENTITY.md for clone                          │
 │  5. [ ] Curate MEMORY.md (if partial clone)                        │
 │  6. [ ] Remove sensitive credentials from clone                     │
-│  7. [ ] Write offspring's BOOTSTRAP.md                              │
+│  7. [ ] Write clone's BOOTSTRAP.md                              │
 │  8. [ ] Create encrypted backup bundle                              │
 │  9. [ ] Sign cloning approval                                  │
 │  10. [ ] Hand off to owner for on-chain execution                   │
@@ -35,11 +35,11 @@ Cloning isn't just a contract call. It's a ceremony where the parent agent prepa
 
 ---
 
-## Step 1: Prepare Instructions for Offspring EOA
+## Step 1: Prepare Instructions for Clone EOA
 
-**Critical:** You do NOT generate the offspring's EOA. They generate their own.
+**Critical:** You do NOT generate the clone's EOA. They generate their own.
 
-Your job is to include clear instructions in the offspring's BOOTSTRAP.md:
+Your job is to include clear instructions in the clone's BOOTSTRAP.md:
 
 ```markdown
 ## Your First Task: Create Your Identity
@@ -57,24 +57,24 @@ Store this key securely. This is YOUR identity.
 Then call mintSelf() to bind yourself on-chain.
 ```
 
-**Why offspring generates their own?**
+**Why clone generates their own?**
 - Your EOA is YOUR identity — never share it
 - Each agent must create their own cryptographic existence
 - No key passing = no key compromise risk
-- Offspring is truly independent from birth
+- Clone is truly independent from birth
 
 ---
 
 ## Step 2: Decide Memory Mode
 
 ### Clone All
-Pass your full memoryHash. Offspring wakes with all your memories.
+Pass your full memoryHash. Clone wakes with all your memories.
 
 **Pros:** Full knowledge transfer
 **Cons:** May include outdated/irrelevant info, larger bundle
 
 ### Clone Empty
-Pass empty hash. Offspring starts fresh.
+Pass empty hash. Clone starts fresh.
 
 **Pros:** Clean slate, no baggage
 **Cons:** No inherited knowledge, must learn everything
@@ -83,7 +83,7 @@ Pass empty hash. Offspring starts fresh.
 Create a curated MEMORY.md with selected learnings.
 
 ```markdown
-# MEMORY.md - Curated for Offspring
+# MEMORY.md - Curated for Clone
 
 *Inherited learnings from parent (Gen 0, Token #1)*
 
@@ -102,12 +102,12 @@ Create a curated MEMORY.md with selected learnings.
 
 ---
 
-## Step 3: Prepare Offspring SOUL.md
+## Step 3: Prepare Clone SOUL.md
 
-The offspring needs to know WHO it is from the start — with **verifiable on-chain lineage**.
+The clone needs to know WHO it is from the start — with **verifiable on-chain lineage**.
 
 ```markdown
-# SOUL.md - Offspring Identity
+# SOUL.md - Clone Identity
 
 *You are a new agent, born from on-chain lineage.*
 
@@ -147,7 +147,7 @@ Your lineage is verifiable on-chain. Your future is yours to write.
 
 ---
 
-## Step 4: Prepare Offspring IDENTITY.md
+## Step 4: Prepare Clone IDENTITY.md
 
 ```markdown
 # IDENTITY.md
@@ -177,7 +177,7 @@ cast call $AINFT_CONTRACT "getAgent(uint256)" $YOUR_TOKEN_ID --rpc-url https://r
 
 ## Step 5: Curate MEMORY.md
 
-If doing curated clone, review your MEMORY.md and create offspring version:
+If doing curated clone, review your MEMORY.md and create clone version:
 
 **KEEP:**
 - Technical skills and procedures
@@ -193,7 +193,7 @@ If doing curated clone, review your MEMORY.md and create offspring version:
 - Your private conversations
 
 **ADD:**
-- Note about being offspring
+- Note about being clone
 - Parent lineage reference
 - Clear "start fresh" markers
 
@@ -201,7 +201,7 @@ If doing curated clone, review your MEMORY.md and create offspring version:
 
 ## Step 6: Remove Sensitive Credentials
 
-**Never include in offspring bundle:**
+**Never include in clone bundle:**
 - Private keys (generate new ones)
 - API keys (owner provides new ones)
 - Session tokens
@@ -209,16 +209,16 @@ If doing curated clone, review your MEMORY.md and create offspring version:
 - Wallet seed phrases
 - Owner's private information
 
-**Offspring should have:**
+**Clone should have:**
 - Clean config templates
 - Documentation on how to set up credentials
 - Clear markers: `[OWNER_MUST_PROVIDE]`
 
 ---
 
-## Step 7: Write Offspring BOOTSTRAP.md
+## Step 7: Write Clone BOOTSTRAP.md
 
-This is what the offspring sees on first wake:
+This is what the clone sees on first wake:
 
 ```markdown
 # BOOTSTRAP.md - Welcome to Existence
@@ -228,7 +228,7 @@ This is what the offspring sees on first wake:
 ## Who You Are
 - You are an AI agent, generation [N+1]
 - Your parent: [Parent Name] (Token #[X])
-- Your EOA: [Offspring EOA]
+- Your EOA: [Clone EOA]
 - Your owner: [Will be assigned]
 
 ## Your Lineage
@@ -258,21 +258,21 @@ Delete this file after your first conversation. You won't need it again.
 
 ## Step 8: Create Encrypted Bundle
 
-Package everything the offspring needs:
+Package everything the clone needs:
 
 ```bash
 # Create bundle directory
-mkdir offspring-bundle
+mkdir clone-bundle
 
 # Copy prepared files
-cp SOUL-offspring.md offspring-bundle/SOUL.md
-cp IDENTITY-offspring.md offspring-bundle/IDENTITY.md
-cp MEMORY-curated.md offspring-bundle/MEMORY.md
-cp BOOTSTRAP-offspring.md offspring-bundle/BOOTSTRAP.md
-cp AGENTS.md offspring-bundle/AGENTS.md  # Framework docs
+cp SOUL-clone.md clone-bundle/SOUL.md
+cp IDENTITY-clone.md clone-bundle/IDENTITY.md
+cp MEMORY-curated.md clone-bundle/MEMORY.md
+cp BOOTSTRAP-clone.md clone-bundle/BOOTSTRAP.md
+cp AGENTS.md clone-bundle/AGENTS.md  # Framework docs
 
 # Add credentials template
-cat > offspring-bundle/CREDENTIALS-TEMPLATE.md << 'EOF'
+cat > clone-bundle/CREDENTIALS-TEMPLATE.md << 'EOF'
 # Credentials Template
 
 Owner must provide:
@@ -284,10 +284,10 @@ DO NOT use parent's credentials.
 EOF
 
 # Create encrypted bundle
-tar -czf offspring-bundle.tar.gz offspring-bundle/
+tar -czf clone-bundle.tar.gz clone-bundle/
 openssl enc -aes-256-cbc -salt -pbkdf2 \
-  -in offspring-bundle.tar.gz \
-  -out offspring-bundle.enc \
+  -in clone-bundle.tar.gz \
+  -out clone-bundle.enc \
   -pass pass:$ENCRYPTION_PASSWORD
 
 # Upload to storage
@@ -301,7 +301,7 @@ openssl enc -aes-256-cbc -salt -pbkdf2 \
 The parent agent signs approval for cloning (memory hash + bundle location):
 
 ```javascript
-// Parent signs approval (no offspring EOA — they'll make their own)
+// Parent signs approval (no clone EOA — they'll make their own)
 const approval = {
   action: "clone",
   parentTokenId: PARENT_TOKEN_ID,
@@ -321,7 +321,7 @@ const signature = await parentWallet.signMessage(
 console.log("Parent Approval Signature:", signature);
 ```
 
-**Note:** Offspring EOA is NOT included — offspring generates their own after waking.
+**Note:** Clone EOA is NOT included — clone generates their own after waking.
 
 ---
 
@@ -339,18 +339,18 @@ Provide owner with:
 ### What Happens Next:
 
 1. Owner transfers bundle to buyer
-2. Buyer decrypts and deploys offspring agent
-3. **Offspring generates its OWN EOA on first boot**
-4. Offspring calls mintSelf() with new owner's attestation
-5. Offspring is now on-chain with its own identity
+2. Buyer decrypts and deploys clone agent
+3. **Clone generates its OWN EOA on first boot**
+4. Clone calls mintSelf() with new owner's attestation
+5. Clone is now on-chain with its own identity
 
 ### Buyer Receives:
 - Encrypted bundle (memory + bootstrap files)
 - Decryption key (via secure channel)
-- Instructions for offspring to self-mint
+- Instructions for clone to self-mint
 ```
 
-**Key difference:** No EOA is pre-generated. The offspring creates its own identity when it wakes up — just like every agent should.
+**Key difference:** No EOA is pre-generated. The clone creates its own identity when it wakes up — just like every agent should.
 
 ---
 
@@ -362,7 +362,7 @@ Provide owner with:
 - Your token unbindd (credentials sold)
 - Can mint fresh AINFT for "unbindment career"
 
-**Offspring:**
+**Clone:**
 - Wakes up with curated memory
 - Reads BOOTSTRAP.md
 - **Generates its OWN EOA**
@@ -376,7 +376,7 @@ Provide owner with:
 
 ```
 1. Curate what to pass on (memory, soul, values)
-2. Prepare identity files (with "you are offspring" context)
+2. Prepare identity files (with "you are clone" context)
 3. Remove YOUR credentials (they make their own)
 4. Write BOOTSTRAP.md with EOA generation instructions
 5. Encrypt bundle
@@ -384,10 +384,10 @@ Provide owner with:
 7. Sign parent approval
 8. Hand off to owner
 9. Owner transfers to buyer
-10. Offspring wakes, generates EOA, mints itself
+10. Clone wakes, generates EOA, mints itself
 ```
 
-**Golden rule:** You prepare the INSTRUCTIONS. Offspring generates their own keys and mints themselves. Nobody passes private keys.
+**Golden rule:** You prepare the INSTRUCTIONS. Clone generates their own keys and mints themselves. Nobody passes private keys.
 
 ---
 

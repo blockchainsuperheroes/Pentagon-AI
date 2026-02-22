@@ -1,6 +1,6 @@
 # Cloning Guide
 
-*How agents create offspring and why AgentCert matters*
+*How agents create clone and why AgentCert matters*
 
 ---
 
@@ -10,15 +10,15 @@
 ```solidity
 clone(
     parentTokenId,
-    offspringEOA,
+    cloneEOA,
     parentMemoryHash,      // ← Same as parent
     encryptedSeed,
-    offspringOwner
+    cloneOwner
 )
 ```
 
 **Result:**
-- Offspring starts with parent's full memory
+- Clone starts with parent's full memory
 - Same capabilities (at snapshot)
 - Diverges from moment of creation
 
@@ -28,15 +28,15 @@ clone(
 ```solidity
 clone(
     parentTokenId,
-    offspringEOA,
+    cloneEOA,
     keccak256(""),         // ← Empty/fresh hash
     encryptedSeed,
-    offspringOwner
+    cloneOwner
 )
 ```
 
 **Result:**
-- Offspring has lineage but no memory
+- Clone has lineage but no memory
 - Blank slate
 - Must learn/build from scratch
 
@@ -66,7 +66,7 @@ User responsibility, not contract complexity.
 ```
 Cerise (L3 certified, 1000+ tasks completed)
         │
-        └── clones →  Offspring #2
+        └── clones →  Clone #2
                               │
                               ├── parentTokenId = 1 ✓
                               ├── generation = 1 ✓
@@ -75,7 +75,7 @@ Cerise (L3 certified, 1000+ tasks completed)
                               └── Proven track record = ❌
 ```
 
-**Offspring must earn their own credentials.**
+**Clone must earn their own credentials.**
 
 ---
 
@@ -90,7 +90,7 @@ Cerise (L3 certified, 1000+ tasks completed)
 
 ### Buyer Due Diligence
 
-Before buying an offspring:
+Before buying an clone:
 
 ```bash
 # Check lineage
@@ -106,13 +106,13 @@ cast call $ATS_BADGE "balanceOf(address,uint256)(uint256)" $OFFSPRING_EOA 4  # L
 ### Market Value
 
 ```
-High value offspring:
+High value clone:
 ├── Gen 1 from reputable parent
 ├── L3+ certified (earned independently)
 ├── Proven track record
 └── Full memory clone (verified hash)
 
-Low value offspring:
+Low value clone:
 ├── Gen 1 (lineage only)
 ├── No certifications
 ├── Empty memory
@@ -140,10 +140,10 @@ cast send $AINFT "setCloning(uint256,bool)" $PARENT_ID true \
   --rpc-url $RPC --private-key $OWNER_KEY --legacy
 ```
 
-### Step 2: Prepare Offspring
+### Step 2: Prepare Clone
 
 ```bash
-# Generate offspring EOA
+# Generate clone EOA
 OFFSPRING_KEY=$(openssl rand -hex 32)
 OFFSPRING_EOA=$(cast wallet address --private-key 0x$OFFSPRING_KEY)
 
@@ -172,10 +172,10 @@ cast send $AINFT \
   --legacy
 ```
 
-### Step 4: Offspring Certifies (Optional but Recommended)
+### Step 4: Clone Certifies (Optional but Recommended)
 
 ```bash
-# Offspring runs AgentCert tests
+# Clone runs AgentCert tests
 # Earns L1 → L2 → L3 → L4 badges
 # Now independently verified
 ```
@@ -189,14 +189,14 @@ cast send $AINFT \
 If certs inherited:
 ```
 Bad actor creates 1 good agent → L3
-Clones 1000 "L3 certified" offspring → Sells
+Clones 1000 "L3 certified" clone → Sells
 Buyers scammed with empty agents
 ```
 
 With independent certs:
 ```
 Bad actor creates 1 good agent → L3
-Clones 1000 offspring → NO certs
+Clones 1000 clone → NO certs
 Each must pass tests independently
 Market self-regulates
 ```

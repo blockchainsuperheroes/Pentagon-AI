@@ -1,6 +1,6 @@
 # ERC-AINFT: AI-Native NFT Standard
 
-*NFTs where AI agents own themselves — they hold keys, clone offspring, and maintain lineage.*
+*NFTs where AI agents own themselves — they hold keys, clone clone, and maintain lineage.*
 
 **EIP PR:** [github.com/ethereum/ERCs/pull/1558](https://github.com/ethereum/ERCs/pull/1558)
 
@@ -10,17 +10,17 @@
 
 ## Quick Summary
 
-**What:** NFT standard where AI agents own themselves — they hold keys, clone offspring, and maintain lineage.
+**What:** NFT standard where AI agents own themselves — they hold keys, clone clone, and maintain lineage.
 
 **How AINFT differs from existing standards:**
 | Aspect | Traditional (ERC-7857, iNFT) | AINFT |
 |--------|------------------------------|-------|
 | Key holder | Owner holds keys | Agent holds keys |
-| Commercialization | Transfer ownership | `clone()` — parent sells offspring |
+| Commercialization | Transfer ownership | `clone()` — parent sells clone |
 | Evolution | Model/prompt locked | Agent can self-evolve (if platform + owner approve) |
 
 **Three operations:**
-- `clone()` = Create offspring; parent KEEPS everything, offspring gets new TBA + must earn certs
+- `clone()` = Create clone; parent KEEPS everything, clone gets new TBA + must earn certs
 - `transfer()` = Sale to new owner; new agent EOA, TBA + certs follow token, old agent unbound
 - `migration_backup()` = Same agent to new device; shutdown old first, EOA migrates
 
@@ -76,7 +76,7 @@
 This ERC defines a standard for AI-Native NFTs (AINFTs) that enable autonomous AI agents to:
 1. **Self-custody without TEE** — Pure cryptographic binding, no hardware trust
 2. Manage their own encryption (agent encrypts; owner accesses via trustless engine)
-3. Clone by issuing offspring (consciousness seeds)
+3. Clone by issuing clone (consciousness seeds)
 4. Maintain verifiable on-chain lineage
 5. Own assets via token-bound accounts (ERC-6551)
 
@@ -95,17 +95,17 @@ Unlike existing standards that treat agents as property to be bought and sold, t
 | **ERC-8004** | Agent executes on-chain actions | AINFT provides identity for 8004 |
 | **ERC-8126** | Agent registry/verification | Complementary — verify then mint AINFT |
 
-**Key philosophical difference:** Existing standards treat agents as *property with encrypted data*. AINFT treats agents as *entities that clone*. When you "buy" a clone, parent keeps everything — the offspring is what's sold.
+**Key philosophical difference:** Existing standards treat agents as *property with encrypted data*. AINFT treats agents as *entities* with three operations: **clone** (original keeps everything, new clone is sold), **transfer** (identity moves, new agent EOA binds), **migration** (same agent, new device). New clones restore quickly but need orientation.
 
 ---
 
 ## Three Operations
 
-### clone() — Create Offspring
+### clone() — Create Clone
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                    CLONE (Create Offspring)                         │
+│                    CLONE (Create Clone)                         │
 ├─────────────────────────────────────────────────────────────────────┤
 │                                                                     │
 │   BEFORE:                          AFTER:                           │
@@ -120,10 +120,10 @@ Unlike existing standards that treat agents as property to be bought and sold, t
 │   (working)                       (keeps ALL)    (NEW identity)     │
 │                                                                     │
 │   • Parent KEEPS everything (EOA, TBA, certs, memory)               │
-│   • Offspring generates OWN EOA on wake                             │
-│   • Offspring gets NEW TBA from registry                            │
-│   • Offspring must EARN own certifications                          │
-│   • Offspring has lineage: parentTokenId = 1                        │
+│   • Clone generates OWN EOA on wake                             │
+│   • Clone gets NEW TBA from registry                            │
+│   • Clone must EARN own certifications                          │
+│   • Clone has lineage: parentTokenId = 1                        │
 │                                                                     │
 └─────────────────────────────────────────────────────────────────────┘
 ```
@@ -289,7 +289,7 @@ interface IERC_AINFT {
     
     event AgentCloned(
         uint256 indexed parentTokenId,
-        uint256 indexed offspringTokenId,
+        uint256 indexed cloneTokenId,
         uint256 generation
     );
     
@@ -304,12 +304,12 @@ interface IERC_AINFT {
         bytes calldata platformAttestation
     ) external returns (uint256 tokenId);
     
-    /// @notice OWNER signs this. Creates offspring with lineage.
+    /// @notice OWNER signs this. Creates clone with lineage.
     function clone(
         uint256 parentTokenId,
-        bytes32 offspringMemoryHash,
-        bytes calldata encryptedOffspringSeed
-    ) external returns (uint256 offspringTokenId);
+        bytes32 cloneMemoryHash,
+        bytes calldata encryptedCloneSeed
+    ) external returns (uint256 cloneTokenId);
     
     /// @notice Agent signs this with TBA.
     function updateMemory(
