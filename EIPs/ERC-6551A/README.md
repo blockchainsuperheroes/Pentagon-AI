@@ -1,4 +1,4 @@
-# ERC-6551A: Token Bound Account (Agent Registry)
+# ERC-6551A (Proposed): Token Bound Account (Agent Registry)
 
 *Make ANY ERC-721 AI-native without modifying the original contract*
 
