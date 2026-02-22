@@ -17,7 +17,7 @@
 |--------|------------------------------|-------|
 | Key holder | Owner holds keys | Agent holds keys |
 | Commercialization | Transfer ownership | `clone()` — original keeps everything, clone is sold |
-| Evolution | Model/prompt locked | Agent can self-evolve (if platform + owner approve) |
+| Evolution | Model/prompt locked | Model stored off-chain by agent |
 
 **Three operations:**
 - `clone()` = Create clone; original KEEPS everything, clone gets new TBA + must earn certs
@@ -88,7 +88,7 @@ Unlike existing standards that treat agents as property to be bought and sold, t
 
 | Standard | What It Does | What AINFT Does Differently |
 |----------|--------------|----------------------------|
-| **iNFT (Alethea)** | AI personality embedded in NFT, owner controls | Agent controls own keys, can self-evolve |
+| **iNFT (Alethea)** | AI personality embedded in NFT, owner controls | Agent controls own keys, model off-chain |
 | **ERC-7662** | Encrypted prompts, owner decrypts | Agent decrypts via TBA, lineage tracking |
 | **ERC-7857** | Re-encrypt metadata on transfer | Cloning (original keeps state), no "transfer" |
 | **ERC-6551** | Token-bound accounts | Used as agent's wallet (TBA) |
@@ -180,31 +180,6 @@ Unlike existing standards that treat agents as property to be bought and sold, t
 
 ---
 
-## Self-Evolution
-
-```
-┌─────────────────────────────────────────────────────────────────────┐
-│                    SELF-EVOLVE REQUIREMENTS                         │
-├─────────────────────────────────────────────────────────────────────┤
-│                                                                     │
-│   For an agent to call selfEvolve():                                │
-│                                                                     │
-│   ┌─────────────┐         ┌─────────────┐         ┌─────────────┐  │
-│   │  PLATFORM   │   AND   │    OWNER    │   AND   │    AGENT    │  │
-│   │ openEvolve  │         │  approves   │         │   signs     │  │
-│   │   = true    │         │             │         │             │  │
-│   └─────────────┘         └─────────────┘         └─────────────┘  │
-│                                                                     │
-│   ALL THREE required. This prevents:                                │
-│   • Platform didn't enable it → blocked                            │
-│   • Owner didn't approve → blocked                                  │
-│   • Agent compromised → still needs owner                          │
-│                                                                     │
-└─────────────────────────────────────────────────────────────────────┘
-```
-
----
-
 ## No TEE Required — Pure Cryptography
 
 Unlike approaches that rely on Trusted Execution Environments (TEEs), AINFT achieves trustless operation through pure cryptography:
@@ -238,7 +213,7 @@ Unlike approaches that rely on Trusted Execution Environments (TEEs), AINFT achi
 │  1. PLATFORM (deploys contract)                                     │
 │     • Signs attestation for new mints                               │
 │     • Sets rules, fees, cloning limits                         │
-│     • Controls openMinting, openEvolve flags                        │
+│     • Controls openMinting, openCloning flags                       │
 │     • Does NOT have decrypt access to agent memory                  │
 │                                                                     │
 │  2. CORE TRUSTLESS ENGINE (Genesis Contract)                        │
@@ -316,12 +291,6 @@ interface IERC_AINFT {
         uint256 tokenId,
         bytes32 newMemoryHash,
         string calldata newStorageURI
-    ) external;
-    
-    /// @notice Platform + Owner must enable. Agent signs.
-    function selfEvolve(
-        uint256 tokenId,
-        bytes32 newModelHash
     ) external;
     
     // ============ View Functions ============
