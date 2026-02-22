@@ -12,8 +12,8 @@ pragma solidity ^0.8.20;
  * =============================================================================
  * This registry pattern is inspired by ERC-6551 (Token Bound Accounts).
  * We gratefully acknowledge the work of:
- *   - Jayden Windle (@jaydenwindle)
- *   - Benny Giang (@bennygiang)  
+ *   - Jayden Windle (jaydenwindle)
+ *   - Benny Giang (bennygiang)  
  *   - Steve Jang
  *   - Druzy Downs
  *   - Raymond Feng
@@ -456,7 +456,7 @@ contract AINFTRegistry {
     
     function withdrawFees() external {
         require(msg.sender == platformSigner, "Not platform");
-        payable(platformSigner).transfer(address(this).balance);
+        (bool success, ) = payable(platformSigner).call{value: address(this).balance}(""); require(success, "Transfer failed");
     }
     
     // ============ Internal ============
