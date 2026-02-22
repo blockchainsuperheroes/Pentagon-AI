@@ -82,6 +82,13 @@ contract AINFTRegistry {
         address indexed to
     );
     
+    event AgentMovedToLimbo(
+        address indexed nftContract,
+        uint256 indexed tokenId,
+        uint256 limboId,
+        address agentEOA
+    );
+    
     // ============ Structs ============
     
     struct AgentIdentity {
@@ -409,22 +416,86 @@ contract AINFTRegistry {
     
     /**
      * @notice Unbind agent from NFT (owner only)
-     * @dev Clears binding but doesn't affect underlying NFT
-     *      Agent EOA is freed and can bind to another NFT
+     * @dev Moves agent to limbo (preserves data). Agent can rebind to another NFT.
+     *      NFT is freed for new agent binding.
      */
     function unbind(address nftContract, uint256 tokenId) external {
         address nftOwner = IERC721(nftContract).ownerOf(tokenId);
         require(msg.sender == nftOwner, "Not owner");
         
         bytes32 key = _getKey(nftContract, tokenId);
-        address agentEOA = _agents[key].agentEOA;
+        AgentIdentity memory agent = _agents[key];
+        require(agent.agentEOA != address(0), "Not bound");
         
-        // Clear mappings
-        delete eoaToKey[agentEOA];
+        // Move to limbo (as CloneIdentity)
+        uint256 limboId = ++_cloneIdCounter;
+        _clone[limboId] = CloneIdentity({
+            agentEOA: agent.agentEOA,
+            modelHash: agent.modelHash,
+            memoryHash: agent.memoryHash,
+            contextHash: agent.contextHash,
+            generation: agent.generation,
+            parentKey: agent.parentKey,
+            storageURI: agent.storageURI,
+            owner: nftOwner,
+            createdAt: block.timestamp
+        });
+        
+        // Update EOA mapping to point to limbo
+        bytes32 limboKey = keccak256(abi.encodePacked("CLONE", limboId));
+        eoaToKey[agent.agentEOA] = limboKey;
+        
+        // Clear NFT binding
         delete _agents[key];
         delete _cloningEnabled[key];
         
         emit AgentUnregistered(nftContract, tokenId);
+        emit AgentMovedToLimbo(nftContract, tokenId, limboId, agent.agentEOA);
+    }
+    
+    /**
+     * @notice Bind agent from limbo to an NFT
+     * @dev Takes existing agent data from limbo and binds to NFT you own
+     * @param limboId The limbo ID (from unbind or clone)
+     * @param nftContract The NFT contract to bind to
+     * @param tokenId The token ID you own
+     */
+    function bindFromLimbo(
+        uint256 limboId,
+        address nftContract,
+        uint256 tokenId
+    ) external {
+        CloneIdentity storage agent = _clone[limboId];
+        require(agent.createdAt > 0, "Limbo entry doesn't exist");
+        require(msg.sender == agent.owner, "Not limbo owner");
+        
+        // Verify caller owns the NFT
+        address nftOwner = IERC721(nftContract).ownerOf(tokenId);
+        require(msg.sender == nftOwner, "Not NFT owner");
+        
+        // Check NFT not already bound
+        bytes32 key = _getKey(nftContract, tokenId);
+        require(_agents[key].agentEOA == address(0), "NFT already has agent");
+        
+        // Move from limbo to bound
+        _agents[key] = AgentIdentity({
+            agentEOA: agent.agentEOA,
+            modelHash: agent.modelHash,
+            memoryHash: agent.memoryHash,
+            contextHash: agent.contextHash,
+            generation: agent.generation,
+            parentKey: agent.parentKey,
+            storageURI: agent.storageURI,
+            registeredAt: block.timestamp
+        });
+        
+        // Update EOA mapping
+        eoaToKey[agent.agentEOA] = key;
+        
+        // Clear limbo
+        delete _clone[limboId];
+        
+        emit AgentRegistered(nftContract, tokenId, agent.agentEOA, agent.modelHash, agent.generation);
     }
     
     /**
