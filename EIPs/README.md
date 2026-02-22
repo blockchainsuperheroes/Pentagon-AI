@@ -302,6 +302,38 @@ interface IERC_AINFT {
 
 ---
 
+## Two Approaches
+
+### 1. Native AINFT (New Collections)
+Custom ERC-721 with agent features built-in. Best for new projects.
+
+### 2. AINFT Registry (Existing Collections) ⭐ NEW
+Make ANY existing ERC-721 AI-native without modifying the original contract:
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│   ANY ERC-721 ──register()──► AINFT Registry                       │
+│   (Bored Ape,                  ├── agentEOA                        │
+│    Pudgy Penguin,              ├── memoryHash                      │
+│    any NFT...)                 ├── modelHash                       │
+│                                ├── lineage                         │
+│                                └── clone()                          │
+└─────────────────────────────────────────────────────────────────────┘
+
+NFT ownership: Original contract (OpenSea, Blur compatible)
+Agent identity: Registry extension layer
+```
+
+**Why this matters:**
+- Works with existing NFTs — no migration needed
+- Marketplaces already work (OpenSea, Blur, etc.)
+- Agent features are opt-in extension
+- Backward compatible with entire NFT ecosystem
+
+**Contract:** [`AINFTRegistry.sol`](./src/contracts/AINFTRegistry.sol)
+
+---
+
 ## Live Deployment (Pentagon Chain)
 
 | Contract | Address |
