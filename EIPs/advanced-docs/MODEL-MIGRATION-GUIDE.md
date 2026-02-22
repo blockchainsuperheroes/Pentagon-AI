@@ -156,6 +156,37 @@ The agent's identity (EOA, TBA, certs, lineage) persists across model changes. T
 
 ---
 
+## Agent Self-Awareness
+
+The agent SHOULD know what model it's running on. This is runtime info, not on-chain data.
+
+```markdown
+# In agent's workspace (e.g., TOOLS.md or config)
+
+## Current Model
+- **Model:** claude-opus-4.5
+- **Context window:** 200K tokens
+- **Tool calling:** Reliable
+- **Known limitations:** None significant
+
+## Previous Models
+- claude-3-opus (2025-01 to 2025-06)
+- gpt-4-turbo (2024-08 to 2025-01)
+```
+
+**Why agent should know:**
+- Adjust behavior based on capabilities
+- Understand own limitations
+- Debug issues ("am I hallucinating because context is too small?")
+- Log which model generated each memory entry
+
+**Why not on-chain:**
+- Changes frequently
+- Only the agent needs to know
+- No verification value (can't prove agent actually uses declared model)
+
+---
+
 ## Best Practices
 
 1. **Test before switching** — Never migrate production without validation
@@ -163,6 +194,7 @@ The agent's identity (EOA, TBA, certs, lineage) persists across model changes. T
 3. **Version your prompts** — Track which prompts work with which models
 4. **Document model requirements** — Note minimum context size, tool support needed
 5. **Graceful degradation** — Design agent to work with reduced capabilities
+6. **Agent knows its model** — Store current model in workspace, not on-chain
 
 ---
 
