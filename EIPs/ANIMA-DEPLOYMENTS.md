@@ -6,8 +6,18 @@ Deployed contracts for ERC-ANIMA (Agentic NFT) on Pentagon Chain.
 
 | Contract | Address | Version | Date |
 |----------|---------|---------|------|
-| **AINFTRegistry** | `0x327165c476da9071933d4e2dbb58efe2f6c9f486` | v1.0.0 | 2026-02-25 |
+| **AINFTRegistry** | `0x36F7702045C7755174aaA88B62152343B50e0e75` | v2.0.0 | 2026-02-25 |
 | **AINFT Genesis** | `0x4e8D3B9Be7Ef241Fb208364ed511E92D6E2A172d` | v1.0.0 | 2026-02-21 |
+
+### v2.0.0 Changes (2026-02-25)
+- **Two-tier withdrawal protection:**
+  - `protocolWithdrawalsAllowed` — protocol-wide agent rights toggle (admin)
+  - `ownerWithdrawalAllowed` — per-AINFT owner setting
+  - Both must be TRUE for xDASH withdrawal
+- **Dash Platform integration:**
+  - `getDashIdentity(nftContract, tokenId)` — returns Dash identity hash tied to TBA
+  - `getDashAddressSeed(nftContract, tokenId)` — returns seed for deriving Dash address
+- **Default state:** Both withdrawal flags TRUE (open for testing)
 
 ### Network Info
 - **Chain ID:** 3344
@@ -49,6 +59,7 @@ function unbind(address nftContract, uint256 tokenId) external
 
 | Contract | Address | Issue |
 |----------|---------|-------|
+| AINFTRegistry v1 | `0x327165c476da9071933d4e2dbb58efe2f6c9f486` | No withdrawal controls |
 | AINFTRegistry (old) | `0xd68dab3c4cdbbc4a615c1869b6a44c4fa0764e34` | Solidity 0.8.33 - MCOPY opcode not supported |
 | AINFTRegistry (older) | `0x6B81e00508E3C449E20255CdFb85A0541457Ea6d` | Different function signatures |
 

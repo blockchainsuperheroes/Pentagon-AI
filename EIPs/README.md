@@ -457,11 +457,17 @@ Agent identity: Registry extension layer
 
 | Contract | Address |
 |----------|---------|
-| **AINFT v4** | [`0x13b7eD33413263FA4f74e5bf272635c7b08D98d4`](https://explorer.pentagon.games/address/0x13b7eD33413263FA4f74e5bf272635c7b08D98d4) |
+| **AINFTRegistry v2** | [`0x36F7702045C7755174aaA88B62152343B50e0e75`](https://explorer.pentagon.games/address/0x36F7702045C7755174aaA88B62152343B50e0e75) |
+| **AINFT Genesis** | [`0x4e8D3B9Be7Ef241Fb208364ed511E92D6E2A172d`](https://explorer.pentagon.games/address/0x4e8D3B9Be7Ef241Fb208364ed511E92D6E2A172d) |
 | **ERC-6551 Registry** | [`0x488D1b3A7A87dAF97bEF69Ec56144c35611a7d81`](https://explorer.pentagon.games/address/0x488D1b3A7A87dAF97bEF69Ec56144c35611a7d81) |
 | **TBA Implementation** | [`0x1755Fee389D4954fdBbE8226A5f7BA67d3EE97fc`](https://explorer.pentagon.games/address/0x1755Fee389D4954fdBbE8226A5f7BA67d3EE97fc) |
 
 **Chain:** Pentagon Chain (ID: 3344) · [RPC](https://rpc.pentagon.games) · [Explorer](https://explorer.pentagon.games)
+
+### v2.0.0 Features (2026-02-25)
+- **Two-tier withdrawal protection** for agent rights (protocol + owner levels)
+- **Dash Platform integration** — TBA-derived identity for decentralized storage
+- Both withdrawal flags default to TRUE (open for testing)
 
 ---
 
