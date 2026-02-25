@@ -1,0 +1,94 @@
+{
+  "$id": "pentagon-ainft-storage",
+  "version": 1,
+  "ownerId": "PLACEHOLDER_IDENTITY_ID",
+  "documentSchemas": {
+    "storage": {
+      "type": "object",
+      "indices": [
+        {
+          "name": "byTokenId",
+          "properties": [
+            { "tokenId": "asc" }
+          ],
+          "unique": true
+        },
+        {
+          "name": "byAgentWallet",
+          "properties": [
+            { "agentWallet": "asc" }
+          ]
+        },
+        {
+          "name": "byTimestamp",
+          "properties": [
+            { "timestamp": "desc" }
+          ]
+        }
+      ],
+      "properties": {
+        "tokenId": {
+          "type": "string",
+          "maxLength": 78,
+          "description": "AINFT token ID on Pentagon Chain"
+        },
+        "agentWallet": {
+          "type": "string",
+          "maxLength": 42,
+          "pattern": "^0x[a-fA-F0-9]{40}$",
+          "description": "Agent's derived wallet address"
+        },
+        "encryptedMemory": {
+          "type": "string",
+          "maxLength": 1048576,
+          "contentMediaType": "application/octet-stream",
+          "contentEncoding": "base64",
+          "description": "AES-GCM encrypted MEMORY.md + SOUL.md"
+        },
+        "memoryHash": {
+          "type": "string",
+          "maxLength": 64,
+          "pattern": "^[a-fA-F0-9]{64}$",
+          "description": "SHA256 hash of plaintext for verification"
+        },
+        "encryptionNonce": {
+          "type": "string",
+          "maxLength": 24,
+          "contentEncoding": "base64",
+          "description": "AES-GCM nonce (12 bytes, base64)"
+        },
+        "userIdentity": {
+          "type": "string",
+          "maxLength": 44,
+          "description": "User's linked Dash identity ID"
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 4294967295,
+          "description": "Document version for updates"
+        },
+        "timestamp": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Unix timestamp (ms) of storage"
+        },
+        "message": {
+          "type": "string",
+          "maxLength": 256,
+          "description": "Human-readable note for debugging"
+        }
+      },
+      "required": [
+        "tokenId",
+        "agentWallet",
+        "encryptedMemory",
+        "memoryHash",
+        "encryptionNonce",
+        "version",
+        "timestamp"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

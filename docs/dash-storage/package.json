@@ -1,0 +1,44 @@
+{
+  "name": "@pentagon/dash-storage",
+  "version": "0.1.0",
+  "description": "Dash Platform storage integration for Pentagon AINFTs",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "jest",
+    "lint": "eslint src/"
+  },
+  "dependencies": {
+    "dash": "^4.0.0",
+    "@noble/curves": "^1.4.0",
+    "@noble/ciphers": "^0.5.0",
+    "@noble/hashes": "^1.4.0",
+    "ethers": "^6.11.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.4.0",
+    "jest": "^29.0.0",
+    "@types/jest": "^29.0.0",
+    "ts-jest": "^29.0.0"
+  },
+  "peerDependencies": {
+    "ethers": "^6.0.0"
+  },
+  "keywords": [
+    "dash",
+    "pentagon",
+    "ainft",
+    "storage",
+    "nft",
+    "ai",
+    "web3"
+  ],
+  "author": "Pentagon Chain <dev@pentagon.games>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/blockchainsuperheroes/Pentagon-AINFT-Contracts"
+  }
+}
