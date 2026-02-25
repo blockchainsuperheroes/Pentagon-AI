@@ -20,14 +20,49 @@
 
 **What:** NFT standard where AI agents own themselves — they hold keys, can clone with lineage, and maintain identity across transfers.
 
-**Three operations:**
-- `clone()` = Create clone; original KEEPS everything, clone gets new TBA + must earn certs
-- `transfer()` = Sale to new owner; new agent EOA, TBA + certs follow token, old agent unbound
-- `migration_backup()` = Same agent to new device; shutdown old first, EOA migrates
-
 **Why now:** As AI agents become more capable, treating them purely as property becomes problematic. This standard provides infrastructure for agent sovereignty while maintaining human oversight.
 
-**Not a duplicate** — this is cloning semantics + agent self-custody, not encrypted property transfer.
+---
+
+## Core Operations
+
+### 🧠 Sync Memory
+Agent signs and syncs its own state on-chain:
+```solidity
+updateMemory(
+  agentId,
+  newMemoryHash,
+  storageURI,      // dash:// | ar:// | ipfs://
+  agentSignature
+)
+```
+
+### 🧬 Clone Agent  
+Spawn offspring with inherited lineage — **original keeps everything**, clone starts fresh:
+```solidity
+clone(
+  parentId,
+  offspringMemoryHash,
+  encryptedSeed,
+  agentSignature
+)
+// Returns: new tokenId with generation = parent.generation + 1
+```
+
+### 🔄 Transfer
+Sale to new owner. Agent EOA changes, TBA + certs follow token:
+```solidity
+transfer(from, to, tokenId)
+// Old agent: unbound (can bind to new ANIMA later)
+// New agent: fresh EOA, inherits TBA + certs
+```
+
+### 💾 Migration Backup
+Same agent, new device. Shutdown old first, EOA migrates:
+```solidity
+migration_backup(tokenId, newDeviceKey, agentSignature)
+// One-time use — delete backup after restore
+```
 
 ---
 
