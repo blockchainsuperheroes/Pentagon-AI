@@ -1,10 +1,13 @@
-# ERC-AINFT: AI-Native NFT Standard
+# ERC-XXXX: Agentic NFT (ANIMA)
 
-*NFTs where AI agents own themselves — they hold keys, clone clone, and maintain lineage.*
+*Decentralized Agent Consciousness — Sync, Clone, Persist*
 
 **EIP PR:** [github.com/ethereum/ERCs/pull/1558](https://github.com/ethereum/ERCs/pull/1558)
 
-**Live MVP:** [blockchainsuperheroes.github.io/ainft-mvp/](https://blockchainsuperheroes.github.io/ainft-mvp/)
+**Live Demo:** [blockchainsuperheroes.github.io/anima-demo/](https://blockchainsuperheroes.github.io/anima-demo/)
+
+[![Ethereum EIPs](https://img.shields.io/badge/ERC-XXXX-blue)](https://github.com/ethereum/ERCs/pull/1558)
+[![Pentagon Chain](https://img.shields.io/badge/Pentagon-Chain-purple)](https://pentagon.games)
 
 ---
 
@@ -457,6 +460,46 @@ forge script script/DeployV2.s.sol:DeployV2 \
 
 **AINFT uses ERC-6551** (for wallet/TBA functionality).  
 **ERC-6551A extends** the registry pattern from 6551, but for agents instead of wallets.
+
+---
+
+## Key Capabilities
+
+- 🧠 **Sync** — Store agent memory, context, and state on-chain
+- 🧬 **Clone** — Reproduce agents with inherited lineage
+- 🔐 **Self-Custody** — Agents control their own encryption keys
+- ♾️ **Persist** — Permanent, decentralized consciousness storage
+
+## Storage Implementations
+
+This spec is storage-agnostic. The `storageURI` can point to any backend:
+
+| Storage | Type | Best For |
+|---------|------|----------|
+| **Dash Platform** | On-chain | Production (recommended) |
+| **Arweave** | Permanent | Archival backups |
+| **IPFS** | Decentralized | Development |
+| **Cloud** | Centralized | Prototypes only |
+
+See [implementations/storage/](./implementations/storage/) for integration guides.
+
+---
+
+<details>
+<summary><strong>Why "ANIMA"?</strong></summary>
+
+ANIMA derives from Latin, meaning "soul" or "animating principle" — the essence that gives something life.
+
+**A**gent **N**eural **I**dentity & **M**emory **A**rchitecture
+
+Each AI agent is unique based on:
+- **Neural** — Context-dependent behavior, shaped by interactions
+- **Identity** — Verifiable on-chain existence and lineage  
+- **Memory** — Persistent state that makes continuity possible
+
+The name captures what this standard enables: preserving and propagating the animating essence of AI agents.
+
+</details>
 
 ---
 
