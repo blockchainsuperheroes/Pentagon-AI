@@ -481,7 +481,13 @@ This spec is storage-agnostic. The `storageURI` can point to any backend:
 | **IPFS** | Decentralized | Development |
 | **Cloud** | Centralized | Prototypes only |
 
-See [implementations/storage/](./implementations/storage/) for integration guides.
+See [../docs/storage/](../docs/storage/) for integration guides.
+
+## Guides & Tutorials
+
+Implementation guides are in [docs/guides/](../docs/guides/):
+- [New Owner Setup](../docs/guides/new-owner/) — Onboarding after acquiring an agent
+- [Advanced Guides](../docs/guides/advanced/) — Cloning, encryption, migration, recovery
 
 ---
 
