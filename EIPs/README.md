@@ -2,6 +2,11 @@
 
 *Decentralized Agent Consciousness — Sync, Clone, Persist*
 
+- 🧠 **Sync** — Store agent memory, context, and state on-chain
+- 🧬 **Clone** — Reproduce agents with inherited lineage
+- 🔐 **Self-Custody** — Agents control their own encryption keys
+- ♾️ **Persist** — Permanent, decentralized consciousness storage
+
 **EIP PR:** [github.com/ethereum/ERCs/pull/1558](https://github.com/ethereum/ERCs/pull/1558)
 
 **Live Demo:** [blockchainsuperheroes.github.io/anima-demo/](https://blockchainsuperheroes.github.io/anima-demo/)
