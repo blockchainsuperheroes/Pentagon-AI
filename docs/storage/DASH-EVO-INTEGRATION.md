@@ -4,7 +4,10 @@
 
 ## Overview
 
-Add Dash Platform (Dash Evolution) as native private/permanent storage for AINFT prompt data. Users swap PC → xDASH → burn → sign with ETH wallet → write encrypted data to Dash Drive.
+Add Dash Platform (Dash Evolution / Evo) as native private/permanent storage for AINFT prompt data on Pentagon Chain (zkEVM L2, gas in PC token). Users swap PC → xDASH (permanent burned LP on Uniswap) → burn xDASH → sign with normal ETH wallet → write encrypted data to Dash Drive. Agents can store directly themselves.
+
+**Hub:** peg.gg  
+**Backing:** 1:1 live EvoNode (4,000 DASH collateral + 10%+ APY rewards)
 
 ## Architecture
 
@@ -18,18 +21,24 @@ Add Dash Platform (Dash Evolution) as native private/permanent storage for AINFT
    (Gas/Utility)         + ETH Sig           (Encrypted Data)
 ```
 
-## Key Technical Details
+## Core Technical Special Details
 
-### Shared Cryptography
-- Both chains use **secp256k1 ECDSA**
+### Shared Crypto Bridge
+- Both chains use **identical secp256k1 ECDSA**
 - ETH: 65-byte r/s/v signature
 - Dash: 33-byte compressed pubkey, key type 0
 
-### Flow
-1. **ETH side:** `personal_sign` / EIP-191 on auth message → recover pubkey
-2. **Dash side:** Build State Transition (Document insert) → Bincode serialize → double-SHA256 → sign → broadcast via DAPI
-3. **Identity:** One-time ETH-signed link creates Dash Identity (funded by peg.gg)
-4. **Privacy:** Client-side encryption (ECDH + AES-GCM); Dash stores only ciphertext
+### Signing Flow
+1. **ETH side:** `personal_sign` / EIP-191 on simple auth message → recover pubkey
+2. **Dash side:** Build State Transition (Document insert into pre-registered Data Contract on Drive) → Bincode canonical serialization (exclude identityId + sig fields) → double-SHA256 hash → sign with recovered user pubkey or wrapper key → broadcast to public DAPI
+3. **Identity flow:** One-time ETH-signed link creates Dash Identity (asset-lock funded by us)
+4. **Privacy:** Client-side encryption (AINFT agent keys / ECDH+AES-GCM); Dash stores only ciphertext + hash. Decoder transfers with AINFT (ERC-6551)
+5. **Payments:** xDASH burn triggers write; Pentagon Chain gas or pre-deposited credits handled by existing system
+
+### 10/10 Upgrades
+- Over-collateral vault (115%)
+- Auto-reward script (native DASH to identities = free writes)
+- PEG airdrop to early registered AINFTs (value-tiered)
 
 ## Data Contract Schema
 
@@ -82,6 +91,107 @@ Add Dash Platform (Dash Evolution) as native private/permanent storage for AINFT
   "additionalProperties": false
 }
 ```
+
+## Official Docs & References (Must-Read)
+
+- **Full Dash Platform docs:** https://docs.dash.org/projects/platform/en/stable/
+- **Submit Documents tutorial (high-level SDK):** https://docs.dash.org/projects/platform/en/stable/docs/tutorials/contracts-and-documents/submit-documents.html
+- **Identity State Transition Signing (low-level Bincode + double-SHA256):** https://docs.dash.org/projects/platform/en/stable/docs/protocol-ref/identity.html
+- **State Transition explanation:** https://docs.dash.org/projects/platform/en/stable/docs/explanations/platform-protocol-state-transition.html
+- **Platform Tutorials repo (full working scripts):** https://github.com/dashpay/platform-tutorials
+
+## Code Samples (Copy-Paste Ready)
+
+### High-level SDK Example – Create & Broadcast Document (Official)
+
+```javascript
+const setupDashClient = require('../setupDashClient'); // your configured client
+
+const submitNoteDocument = async () => {
+  const { platform } = client;
+  const identity = await platform.identities.get('YOUR_LINKED_IDENTITY_ID');
+  
+  const docProperties = {
+    message: `AINFT prompt blob hash: 0xABC... @ ${new Date().toUTCString()}`
+  };
+  
+  const noteDocument = await platform.documents.create(
+    'pentagonAINFT.privateStorage', // your registered Data Contract + type
+    identity,
+    docProperties
+  );
+  
+  const documentBatch = {
+    create: [noteDocument],
+    replace: [],
+    delete: []
+  };
+  
+  await platform.documents.broadcast(documentBatch, identity);
+  // handles Bincode + double-SHA256 + signing + DAPI broadcast
+  
+  console.log('Dash document ID:', noteDocument.getId());
+};
+
+submitNoteDocument();
+```
+
+### Identity Register (Official Simple Version)
+
+```javascript
+const createIdentity = async () => {
+  const identity = await client.platform.identities.register(); // auto funds + signs
+  console.log('New Dash Identity ID:', identity.getId());
+};
+```
+
+### ETH ↔ Dash Wrapper Flow (MVP – Recommended First)
+
+```javascript
+// 1. User burns xDASH on ETH → event
+
+// 2. User signs simple ETH message
+const message = `Authorize peg.gg storage: blobHash=${hash}, identity=${dashId}, AINFT=${tokenId}, nonce=${nonce}, expiry=${ts}`;
+const ethSig = await signer.signMessage(message); // personal_sign / EIP-191
+
+// 3. Backend verifies ETH sig → recovers pubkey → checks linked Dash identity
+const recoveredPubkey = recoverPubkeyFromPersonalSign(message, ethSig); // ethers.js ecrecover
+
+// 4. Build Dash Document (encrypted client-side)
+const encryptedBlob = aesGcmEncrypt(userAgentKey, promptData);
+const doc = await platform.documents.create('pentagonAINFT.privateStorage', wrapperIdentity, {
+  data: encryptedBlob
+});
+
+// 5. Create state transition (SDK or manual)
+const st = platform.stateTransition.createDocumentCreateTransition(doc);
+// → internal: Bincode (exclude identityId + sig) → double-SHA256 → sign with wrapper OR recovered user pubkey (key type 0)
+
+// 6. Broadcast to DAPI
+await platform.broadcastStateTransition(st);
+```
+
+### Direct Sovereign Signing (v2 – Full User Control, No Wrapper Key)
+
+Use Dash Platform browser extension (https://github.com/pshenmic/dash-platform-extension) or custom WASM signer:
+
+```javascript
+// 1. Build state transition object client-side
+// 2. Extract exact signable bytes (Bincode canonical, exclude sig fields)
+// 3. Hash = double-SHA256(signableBytes)
+// 4. Ask ETH wallet:
+const sig = await signer.signMessage(ethers.utils.arrayify(hash));
+// or raw eth_sign on the pre-hashed bytes
+
+// 5. Attach 65-byte sig + pubkeyId=0 to transition
+// 6. Broadcast directly from browser to public DAPI
+```
+
+**All signing is zero private-key exposure in backend.**
+
+> Start with high-level SDK + wrapper for Checkpoint 2 demo — it works today.
+
+---
 
 ## SDK Integration
 
