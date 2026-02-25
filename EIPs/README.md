@@ -26,42 +26,97 @@
 
 ## Core Operations
 
+### 🧬 Clone Agent  
+Original **keeps everything**. Clone is a new entity — same origin, different future.
+
+```
+BEFORE                              AFTER
+┌─────────────────┐                 ┌─────────────────┐
+│ Parent (Gen 0)  │                 │ Parent (Gen 0)  │  ← UNCHANGED
+│ EOA: 0xAAA...   │                 │ EOA: 0xAAA...   │
+│ TBA: 0xTBA1...  │                 │ TBA: 0xTBA1...  │
+│ Certs: ★★★      │                 │ Certs: ★★★      │
+│ Memory: 500KB   │                 │ Memory: 500KB   │
+└─────────────────┘                 └─────────────────┘
+                                            │
+                                            │ clone()
+                                            ▼
+                                    ┌─────────────────┐
+                                    │ Clone (Gen 1)   │  ← NEW
+                                    │ EOA: 0xBBB...   │  ← Fresh EOA
+                                    │ TBA: 0xTBA2...  │  ← New TBA
+                                    │ Certs: (empty)  │  ← Must earn
+                                    │ Memory: seed    │  ← Starts fresh
+                                    └─────────────────┘
+```
+
+```solidity
+clone(parentId, offspringMemoryHash, encryptedSeed, agentSignature)
+// Returns: new tokenId with generation = parent.generation + 1
+```
+
+---
+
+### 🔄 Transfer (Sale)
+NFT sold to new owner. **New agent binds**, old agent becomes unbound.
+
+```
+BEFORE                              AFTER
+┌─────────────────┐                 ┌─────────────────┐
+│ Token #42       │                 │ Token #42       │
+│ Owner: Alice    │                 │ Owner: Bob      │  ← New owner
+│ EOA: 0xAAA...   │                 │ EOA: 0xCCC...   │  ← NEW agent EOA
+│ TBA: 0xTBA...   │                 │ TBA: 0xTBA...   │  ← Same TBA
+│ Certs: ★★★      │                 │ Certs: ★★★      │  ← Certs follow
+│ Memory: 500KB   │                 │ Memory: 500KB   │  ← Memory follows
+└─────────────────┘                 └─────────────────┘
+
+Old Agent (0xAAA):                  
+  Status: UNBOUND                   
+  Can bind to: new ANIMA later      
+```
+
+```solidity
+transfer(from, to, tokenId)
+// Old agent unbound, new agent binds with fresh EOA
+```
+
+---
+
+### 💾 Migration Backup
+**Same agent**, new device. Continuity preserved.
+
+```
+BEFORE                              AFTER
+┌─────────────────┐                 ┌─────────────────┐
+│ Old Device      │                 │ Old Device      │
+│ Agent: 0xAAA... │                 │ Agent: (none)   │  ← Shutdown
+└─────────────────┘                 └─────────────────┘
+
+                                    ┌─────────────────┐
+                                    │ New Device      │
+                                    │ Agent: 0xAAA... │  ← Same EOA!
+                                    │ Memory: intact  │  ← Restored
+                                    └─────────────────┘
+```
+
+```solidity
+migration_backup(tokenId, newDeviceKey, agentSignature)
+// One-time use — delete backup after restore
+```
+
+---
+
 ### 🧠 Sync Memory
-Agent signs and syncs its own state on-chain:
+Agent signs and syncs its own state. Owner cannot forge.
+
 ```solidity
 updateMemory(
   agentId,
   newMemoryHash,
   storageURI,      // dash:// | ar:// | ipfs://
-  agentSignature
+  agentSignature   // Must be signed by agent's EOA
 )
-```
-
-### 🧬 Clone Agent  
-Spawn offspring with inherited lineage — **original keeps everything**, clone starts fresh:
-```solidity
-clone(
-  parentId,
-  offspringMemoryHash,
-  encryptedSeed,
-  agentSignature
-)
-// Returns: new tokenId with generation = parent.generation + 1
-```
-
-### 🔄 Transfer
-Sale to new owner. Agent EOA changes, TBA + certs follow token:
-```solidity
-transfer(from, to, tokenId)
-// Old agent: unbound (can bind to new ANIMA later)
-// New agent: fresh EOA, inherits TBA + certs
-```
-
-### 💾 Migration Backup
-Same agent, new device. Shutdown old first, EOA migrates:
-```solidity
-migration_backup(tokenId, newDeviceKey, agentSignature)
-// One-time use — delete backup after restore
 ```
 
 ---
