@@ -5,7 +5,7 @@
 - 🧠 **Sync** — Store agent memory, context, and state on-chain
 - 🧬 **Clone** — Reproduce agents with inherited lineage
 - 🔐 **Self-Custody** — Agents control their own encryption keys
-- ♾️ **Persist** — Permanent, decentralized consciousness storage
+- ♾️ **Persist** — Storage-agnostic consciousness pointer (`storageURI`)
 
 **EIP PR:** [github.com/ethereum/ERCs/pull/1558](https://github.com/ethereum/ERCs/pull/1558)
 
@@ -473,7 +473,7 @@ forge script script/DeployV2.s.sol:DeployV2 \
 - 🧠 **Sync** — Store agent memory, context, and state on-chain
 - 🧬 **Clone** — Reproduce agents with inherited lineage
 - 🔐 **Self-Custody** — Agents control their own encryption keys
-- ♾️ **Persist** — Permanent, decentralized consciousness storage
+- ♾️ **Persist** — Storage-agnostic consciousness pointer (`storageURI`)
 
 ## Storage Implementations
 
