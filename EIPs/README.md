@@ -9,7 +9,7 @@
 
 **EIP PR:** [github.com/ethereum/ERCs/pull/1558](https://github.com/ethereum/ERCs/pull/1558)
 
-**Live Demo:** [blockchainsuperheroes.github.io/ai-anima-demo/](https://blockchainsuperheroes.github.io/ai-anima-demo/)
+**Live Demo:** [blockchainsuperheroes.github.io/anima-demo/](https://blockchainsuperheroes.github.io/anima-demo/)
 
 [![Ethereum EIPs](https://img.shields.io/badge/ERC-XXXX-blue)](https://github.com/ethereum/ERCs/pull/1558)
 [![Pentagon Chain](https://img.shields.io/badge/Pentagon-Chain-purple)](https://pentagon.games)
