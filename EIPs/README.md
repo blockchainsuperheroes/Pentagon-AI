@@ -1,4 +1,4 @@
-# ERC-XXXX: Agentic NFT (ANIMA)
+# ERC-8170: Agentic NFT (ANIMA)
 
 *Decentralized Agent Consciousness — Sync, Clone, Persist*
 
@@ -11,7 +11,7 @@
 
 **Live Demo:** [blockchainsuperheroes.github.io/anima-demo/](https://blockchainsuperheroes.github.io/anima-demo/)
 
-[![Ethereum EIPs](https://img.shields.io/badge/ERC-XXXX-blue)](https://github.com/ethereum/ERCs/pull/1558)
+[![Ethereum EIPs](https://img.shields.io/badge/ERC-8170-blue)](https://github.com/ethereum/ERCs/pull/1558)
 [![Pentagon Chain](https://img.shields.io/badge/Pentagon-Chain-purple)](https://pentagon.games)
 
 ---
