@@ -66,9 +66,9 @@
     "category": "extension"
   },
   {
-    "id": "erc-6551a",
-    "name": "ERC-6551A",
-    "title": "Agent Binding Registry",
+    "id": "erc-8171",
+    "name": "ERC-8171",
+    "title": "Agent Binding Registry (formerly ERC-6551A)",
     "status": "proposed",
     "description": "A registry that binds AI agents to any existing ERC-721 token. Enables agent attachment without requiring new token contracts.",
     "relevance": "Core companion to ERC-8170. Enables binding agents to existing NFTs via bind()/unbind() pattern.",
