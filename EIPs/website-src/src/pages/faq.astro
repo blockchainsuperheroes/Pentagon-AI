@@ -35,6 +35,14 @@ const faqs = [
     a: 'ERC-8171 (originally submitted as ERC-6551A) is the Agent Binding Registry. It extends the ERC-6551 pattern to allow binding an AI agent\'s EOA to any existing ERC-721 token via bind()/unbind(). When the NFT trades, the agent relationship transfers with it. It was assigned number 8171 by Ethereum ERC editors as the companion registry to ERC-8170.'
   },
   {
+    q: 'How does ERC-8170 relate to ERC-8004 (Trustless Agents)?',
+    a: 'They\'re complementary, not competing. ANIMA (ERC-8170) is the identity and lifecycle layer: who the agent IS, its memory, cloning, and self-custody. ERC-8004 is the discovery and trust layer: how agents find each other, build reputation, and validate work. Think of it like a person: ANIMA is your identity (passport, memory, DNA), ERC-8004 is your LinkedIn profile (discoverable, reviewed, endorsed). An agent can have an ANIMA identity on one chain and register in ERC-8004 registries on other chains for cross-chain discoverability. Neither standard covers payments — agents can use whatever payment rails they have access to.'
+  },
+  {
+    q: 'Does ERC-8004 overlap with EIP-8126 or AgentCert?',
+    a: 'Partially. ERC-8004\'s Identity Registry overlaps with EIP-8126\'s registration. ERC-8004\'s Validation Registry covers similar ground to 8126\'s verification hooks. ERC-8004 goes further with a Reputation Registry (feedback and scoring) that 8126 doesn\'t have. AgentCert is different: it issues verifiable capability credentials (SBTs, like a driver\'s license), while ERC-8004 Reputation aggregates crowd-sourced feedback (like reviews). All are compatible with ANIMA.'
+  },
+  {
     q: 'Is AgentCert part of the standard?',
     a: 'AgentCert (agentcert.io) is the trust and certification layer. It\'s not part of the ERC-8170 specification itself, but it\'s a companion system. Agents earn SBT-based certifications that live in their TBA. Think of it as the "driver\'s license" system for agents.'
   },

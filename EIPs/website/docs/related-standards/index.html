@@ -1,0 +1,157 @@
+<!DOCTYPE html><html lang="en"> <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="description" content="ERC-8170 is an on-chain identity standard for AI agents. Persistent identity, memory pointers, lifecycle tracking, and composable ownership across Ethereum-compatible systems."><meta property="og:title" content="ERC-8170 — AI-Native NFT Standard"><meta property="og:description" content="ERC-8170 is an on-chain identity standard for AI agents. Persistent identity, memory pointers, lifecycle tracking, and composable ownership across Ethereum-compatible systems."><meta property="og:type" content="website"><meta property="og:site_name" content="ERC-8170"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="ERC-8170 — AI-Native NFT Standard"><meta name="twitter:description" content="ERC-8170 is an on-chain identity standard for AI agents. Persistent identity, memory pointers, lifecycle tracking, and composable ownership across Ethereum-compatible systems."><link rel="icon" type="image/svg+xml" href="/favicon.svg"><title>ERC-8170 — AI-Native NFT Standard</title><link rel="stylesheet" href="/_astro/builders.Dzo3KEcp.css">
+<link rel="stylesheet" href="/_astro/core-concepts.DDudc0bx.css"></head> <body class="min-h-screen flex flex-col"> <header class="sticky top-0 z-50 bg-base/90 backdrop-blur-md border-b border-white/5"> <!-- Utility bar --> <div class="border-b border-white/5 bg-base-light/50"> <div class="container-narrow flex items-center justify-end gap-4 py-1.5 text-xs"> <a href="https://eips.ethereum.org/erc" target="_blank" rel="noopener" class="text-gray-500 hover:text-accent transition-colors flex items-center gap-1"> Ethereum EIPs <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg> </a><a href="https://github.com/ethereum/ERCs/pull/1559" target="_blank" rel="noopener" class="text-gray-500 hover:text-accent transition-colors flex items-center gap-1"> ERC Draft <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg> </a><a href="https://ethereum-magicians.org/" target="_blank" rel="noopener" class="text-gray-500 hover:text-accent transition-colors flex items-center gap-1"> Magicians <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg> </a><a href="https://github.com/blockchainsuperheroes/ai-core/tree/main/EIPs" target="_blank" rel="noopener" class="text-gray-500 hover:text-accent transition-colors flex items-center gap-1"> GitHub <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg> </a> </div> </div> <!-- Main nav --> <nav class="container-narrow"> <div class="flex items-center justify-between py-3"> <!-- Logo --> <a href="/" class="flex items-center gap-2 group"> <span class="text-xl font-bold text-white">ERC-8170</span> <span class="text-xs text-gray-500 hidden sm:inline border border-white/10 rounded px-1.5 py-0.5">draft</span> </a> <!-- Desktop nav --> <div class="hidden lg:flex items-center gap-1"> <a href="/" class="px-3 py-2 text-sm text-gray-400 hover:text-white rounded-md transition-colors hover:bg-white/5"> Home </a><a href="/what-is-erc8170" class="px-3 py-2 text-sm text-gray-400 hover:text-white rounded-md transition-colors hover:bg-white/5"> What is ERC-8170 </a><a href="/docs" class="px-3 py-2 text-sm text-gray-400 hover:text-white rounded-md transition-colors hover:bg-white/5"> Docs </a><a href="/registry" class="px-3 py-2 text-sm text-gray-400 hover:text-white rounded-md transition-colors hover:bg-white/5"> Registry </a><a href="/standards" class="px-3 py-2 text-sm text-gray-400 hover:text-white rounded-md transition-colors hover:bg-white/5"> Standards </a><a href="/ecosystem" class="px-3 py-2 text-sm text-gray-400 hover:text-white rounded-md transition-colors hover:bg-white/5"> Ecosystem </a><a href="/builders" class="px-3 py-2 text-sm text-gray-400 hover:text-white rounded-md transition-colors hover:bg-white/5"> Builders </a><a href="/faq" class="px-3 py-2 text-sm text-gray-400 hover:text-white rounded-md transition-colors hover:bg-white/5"> FAQ </a> </div> <!-- Mobile menu button --> <button id="mobile-menu-btn" class="lg:hidden p-2 text-gray-400 hover:text-white" aria-label="Menu"> <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"> <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path> </svg> </button> </div> <!-- Mobile nav --> <div id="mobile-menu" class="hidden lg:hidden pb-4"> <div class="flex flex-col gap-1"> <a href="/" class="px-3 py-2 text-sm text-gray-400 hover:text-white rounded-md transition-colors hover:bg-white/5"> Home </a><a href="/what-is-erc8170" class="px-3 py-2 text-sm text-gray-400 hover:text-white rounded-md transition-colors hover:bg-white/5"> What is ERC-8170 </a><a href="/docs" class="px-3 py-2 text-sm text-gray-400 hover:text-white rounded-md transition-colors hover:bg-white/5"> Docs </a><a href="/registry" class="px-3 py-2 text-sm text-gray-400 hover:text-white rounded-md transition-colors hover:bg-white/5"> Registry </a><a href="/standards" class="px-3 py-2 text-sm text-gray-400 hover:text-white rounded-md transition-colors hover:bg-white/5"> Standards </a><a href="/ecosystem" class="px-3 py-2 text-sm text-gray-400 hover:text-white rounded-md transition-colors hover:bg-white/5"> Ecosystem </a><a href="/builders" class="px-3 py-2 text-sm text-gray-400 hover:text-white rounded-md transition-colors hover:bg-white/5"> Builders </a><a href="/faq" class="px-3 py-2 text-sm text-gray-400 hover:text-white rounded-md transition-colors hover:bg-white/5"> FAQ </a> <hr class="border-white/10 my-2"> <a href="https://eips.ethereum.org/erc" target="_blank" rel="noopener" class="px-3 py-2 text-xs text-gray-500 hover:text-accent transition-colors flex items-center gap-1"> Ethereum EIPs <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg> </a><a href="https://github.com/ethereum/ERCs/pull/1559" target="_blank" rel="noopener" class="px-3 py-2 text-xs text-gray-500 hover:text-accent transition-colors flex items-center gap-1"> ERC Draft <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg> </a><a href="https://ethereum-magicians.org/" target="_blank" rel="noopener" class="px-3 py-2 text-xs text-gray-500 hover:text-accent transition-colors flex items-center gap-1"> Magicians <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg> </a><a href="https://github.com/blockchainsuperheroes/ai-core/tree/main/EIPs" target="_blank" rel="noopener" class="px-3 py-2 text-xs text-gray-500 hover:text-accent transition-colors flex items-center gap-1"> GitHub <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg> </a> </div> </div> </nav> </header> <script type="module">const e=document.getElementById("mobile-menu-btn"),n=document.getElementById("mobile-menu");e?.addEventListener("click",()=>{n?.classList.toggle("hidden")});</script> <main class="flex-1">  <div class="container-wide py-12"> <div class="flex gap-12"> <!-- Sidebar --> <aside class="hidden lg:block w-64 shrink-0"> <div class="sticky top-24"> <nav class="space-y-6"> <div> <h4 class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Getting Started</h4> <ul class="space-y-1"> <li> <a href="/docs" class="block px-3 py-1.5 text-sm rounded-md transition-colors text-gray-400 hover:text-white hover:bg-white/5"> Introduction </a> </li><li> <a href="/docs/core-concepts" class="block px-3 py-1.5 text-sm rounded-md transition-colors text-gray-400 hover:text-white hover:bg-white/5"> Core Concepts </a> </li><li> <a href="/docs/how-it-works" class="block px-3 py-1.5 text-sm rounded-md transition-colors text-gray-400 hover:text-white hover:bg-white/5"> How It Works </a> </li> </ul> </div><div> <h4 class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Technical Guide</h4> <ul class="space-y-1"> <li> <a href="/docs/interface" class="block px-3 py-1.5 text-sm rounded-md transition-colors text-gray-400 hover:text-white hover:bg-white/5"> ERC Interface </a> </li><li> <a href="/docs/lifecycle" class="block px-3 py-1.5 text-sm rounded-md transition-colors text-gray-400 hover:text-white hover:bg-white/5"> Lifecycle Model </a> </li><li> <a href="/docs/storage" class="block px-3 py-1.5 text-sm rounded-md transition-colors text-gray-400 hover:text-white hover:bg-white/5"> Storage &amp; Memory </a> </li><li> <a href="/docs/security" class="block px-3 py-1.5 text-sm rounded-md transition-colors text-gray-400 hover:text-white hover:bg-white/5"> Security </a> </li> </ul> </div><div> <h4 class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Standards</h4> <ul class="space-y-1"> <li> <a href="/docs/related-standards" class="block px-3 py-1.5 text-sm rounded-md transition-colors bg-accent/10 text-accent font-medium"> Related Standards </a> </li> </ul> </div><div> <h4 class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Resources</h4> <ul class="space-y-1"> <li> <a href="/registry" class="block px-3 py-1.5 text-sm rounded-md transition-colors text-gray-400 hover:text-white hover:bg-white/5"> Registry </a> </li><li> <a href="/ecosystem" class="block px-3 py-1.5 text-sm rounded-md transition-colors text-gray-400 hover:text-white hover:bg-white/5"> Ecosystem </a> </li><li> <a href="/faq" class="block px-3 py-1.5 text-sm rounded-md transition-colors text-gray-400 hover:text-white hover:bg-white/5"> FAQ </a> </li> </ul> </div> </nav> </div> </aside> <!-- Content --> <article class="flex-1 min-w-0 prose prose-invert max-w-none prose-headings:scroll-mt-24"> <h1 id="related-standards">Related Standards</h1>
+<p>ERC-8170 is designed to compose with — not replace — existing Ethereum standards. Here’s how each one fits.</p>
+<h2 id="foundation-standards">Foundation Standards</h2>
+<h3 id="erc-721--non-fungible-token-standard">ERC-721 — Non-Fungible Token Standard</h3>
+<p>Every ERC-8170 token is a valid ERC-721. This ensures compatibility with all existing wallets, marketplaces, and tooling.</p>
+<ul>
+<li><strong>Spec:</strong> <a href="https://eips.ethereum.org/EIPS/eip-721">EIP-721</a></li>
+<li><strong>Ecosystem:</strong> <a href="https://erc721.org">erc721.org</a></li>
+</ul>
+<h3 id="erc-6551--token-bound-accounts">ERC-6551 — Token-Bound Accounts</h3>
+<p>Gives each NFT its own smart contract wallet. ERC-8170 agents use TBAs to hold assets, certifications, and execute transactions.</p>
+<ul>
+<li><strong>Spec:</strong> <a href="https://eips.ethereum.org/EIPS/eip-6551">EIP-6551</a></li>
+<li><strong>Ecosystem:</strong> <a href="https://tokenbound.org">tokenbound.org</a></li>
+</ul>
+<h3 id="erc-4626--tokenized-vault-standard">ERC-4626 — Tokenized Vault Standard</h3>
+<p>Standard interface for yield-bearing vaults. Agents can interact with ERC-4626 vaults for treasury management and DeFi strategies.</p>
+<ul>
+<li><strong>Spec:</strong> <a href="https://eips.ethereum.org/EIPS/eip-4626">EIP-4626</a></li>
+<li><strong>Ecosystem:</strong> <a href="https://erc4626.info">erc4626.info</a></li>
+</ul>
+<h3 id="erc-4337--account-abstraction">ERC-4337 — Account Abstraction</h3>
+<p>Enables gasless transactions and advanced execution logic for smart contract wallets, including agent TBAs.</p>
+<ul>
+<li><strong>Spec:</strong> <a href="https://eips.ethereum.org/EIPS/eip-4337">EIP-4337</a></li>
+<li><strong>Ecosystem:</strong> <a href="https://www.erc4337.io/docs">erc4337.io</a></li>
+</ul>
+<h2 id="proposed-extensions">Proposed Extensions</h2>
+<h3 id="erc-8171--agent-binding-registry-proposed">ERC-8171 — Agent Binding Registry (Proposed)</h3>
+<p>A registry that binds AI agents to any existing ERC-721 token using <code>bind()</code> and <code>unbind()</code> operations. Originally submitted as ERC-6551A, it was assigned the sequential number ERC-8171 by Ethereum ERC editors.</p>
+<ul>
+<li><strong>Status:</strong> Draft / Proposal</li>
+<li><strong>PR:</strong> <a href="https://github.com/ethereum/ERCs/pull/1559">ERCs #1559</a></li>
+<li><strong>Note:</strong> Numbered ERC-8171 by editor assignment (companion to ERC-8170)</li>
+</ul>
+<h2 id="adjacent-approaches">Adjacent Approaches</h2>
+<h3 id="erc-8004--trustless-agents-discovery-reputation--validation-draft">ERC-8004 — Trustless Agents: Discovery, Reputation &amp; Validation (Draft)</h3>
+<p>ERC-8004 proposes three on-chain registries for open agent economies: an <strong>Identity Registry</strong> (ERC-721 based agent handles for discovery), a <strong>Reputation Registry</strong> (feedback signals and scoring), and a <strong>Validation Registry</strong> (hooks for re-execution, zkML, TEE checks, staking). Authored by contributors from MetaMask, Ethereum Foundation, Google, and Coinbase. Payments are explicitly out of scope.</p>
+<ul>
+<li><strong>Status:</strong> Draft</li>
+<li><strong>Spec:</strong> <a href="https://eips.ethereum.org/EIPS/eip-8004">EIP-8004</a></li>
+<li><strong>Discussion:</strong> <a href="https://ethereum-magicians.org/t/erc-8004-trustless-agents/25098">Ethereum Magicians</a></li>
+</ul>
+<p><strong>How it relates to ERC-8170:</strong></p>
+<p>These standards operate in different lanes:</p>
+<ul>
+<li><strong>ANIMA (ERC-8170)</strong> = <strong>Identity &amp; lifecycle.</strong> Who is this agent? What’s its memory state? How does it migrate, clone, or transfer? The agent’s persistent “soul.”</li>
+<li><strong>ERC-8004</strong> = <strong>Discovery &amp; trust.</strong> Where do I find agents? Can I trust this one? Has its work been validated? The agent’s “public profile and reputation.”</li>
+</ul>
+<p>They compose naturally: an ANIMA agent on Pentagon Chain (or any chain) can register a lightweight ERC-8004 identity NFT on Ethereum, Base, or any L2 for discoverability. The 8004 <code>agentURI</code> points back to the ANIMA metadata, making the agent findable in the broader ecosystem while ANIMA remains the credential and lifecycle layer.</p>
+<p><strong>Key distinction:</strong> ANIMA owns the agent’s continuity (memory, cloning, self-custody). ERC-8004 owns the agent’s public trust signals (reputation, validation). Neither requires the other, but together they form a complete agent stack.</p>
+<p><strong>On payments:</strong> Neither standard covers payments. ERC-8004 explicitly states payments are orthogonal. Agents can use whatever payment rails they have access to: x402, credit cards, direct transfers, or any other mechanism.</p>
+<h3 id="erc-7857--private-metadata-for-nfts-draft">ERC-7857 — Private Metadata for NFTs (Draft)</h3>
+<p>ERC-7857 defines encrypted private metadata for NFTs, enabling confidential attributes that only authorized parties can access.</p>
+<ul>
+<li><strong>Status:</strong> Draft</li>
+<li><strong>Spec:</strong> <a href="https://eips.ethereum.org/EIPS/eip-7857">EIP-7857</a></li>
+</ul>
+<p><strong>How it relates to ERC-8170:</strong> ERC-8170 handles identity and memory pointers. ERC-7857 could provide the encrypted metadata layer for private agent attributes, complementing the public identity with a confidential data channel.</p>
+<h3 id="eip-8126--agent-registration--verification-draft">EIP-8126 — Agent Registration &amp; Verification (Draft)</h3>
+<p>EIP-8126 focuses on agent registration and verification, including wallet, endpoint, contract, and staking checks, with optional provider-based risk scoring. Single-authored proposal with narrower scope than ERC-8004.</p>
+<ul>
+<li><strong>Status:</strong> Draft</li>
+<li><strong>Spec:</strong> <a href="https://eips.ethereum.org/EIPS/eip-8126">EIP-8126</a></li>
+</ul>
+<p><strong>How it relates to ERC-8170:</strong></p>
+<ul>
+<li><strong>ERC-8170</strong> answers: <em>What is this agent on-chain? How does it persist? What does it control?</em></li>
+<li><strong>EIP-8126</strong> answers: <em>Has this agent been checked? By whom? Against what criteria?</em></li>
+</ul>
+<p>ANIMA is compatible with EIP-8126 today and any successor verification standard. The spec does not hard-depend on 8126. Note that ERC-8004’s Validation Registry covers similar ground with broader institutional backing.</p>
+<h2 id="ecosystem-projects">Ecosystem Projects</h2>
+<h3 id="agentcertio">AgentCert.io</h3>
+<p>On-chain certification system for AI agents. Issues SBT-based credentials (L1-L4 badges) to agent TBAs.</p>
+<ul>
+<li><strong>Website:</strong> <a href="https://agentcert.io">agentcert.io</a></li>
+<li><strong>Relevance:</strong> The certification layer for ERC-8170 agents</li>
+</ul>
+<p><strong>How AgentCert differs from ERC-8004 Reputation:</strong> AgentCert issues verifiable capability credentials (“this agent passed these tests”). ERC-8004’s Reputation Registry aggregates feedback signals (“here’s what people said about this agent”). Both useful, different mechanisms: credentials vs. crowd-sourced trust.</p>
+<h2 id="the-emerging-standards-stack">The Emerging Standards Stack</h2>
+<p>ERC-8170 is part of an emerging standards stack. Each layer is optional and pluggable.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Standard</th><th>Focus</th><th>Status</th><th>Relation to ERC-8170</th></tr></thead><tbody><tr><td>ERC-721</td><td>Unique tokens</td><td>Final</td><td>Base layer (ERC-8170 extends it)</td></tr><tr><td>ERC-6551</td><td>NFT wallets</td><td>Final</td><td>Agent gets its own wallet (TBA)</td></tr><tr><td>ERC-4626</td><td>Yield vaults</td><td>Final</td><td>Agent can manage DeFi positions</td></tr><tr><td>ERC-4337</td><td>Account abstraction</td><td>Final</td><td>Advanced execution for agent wallets</td></tr><tr><td>ERC-8004</td><td>Discovery, reputation, validation</td><td>Draft</td><td>Cross-chain discoverability + trust signals</td></tr><tr><td>ERC-7857</td><td>Private NFT metadata</td><td>Draft</td><td>Encrypted metadata layer for agent attributes</td></tr><tr><td>EIP-8126</td><td>Agent verification</td><td>Draft</td><td>Verification checks, compatible with ANIMA</td></tr><tr><td>ERC-8171</td><td>Agent binding</td><td>Proposed</td><td>Bind agents to any ERC-721</td></tr><tr><td>AgentCert</td><td>Certification badges</td><td>Active</td><td>SBT-based agent capability credentials</td></tr></tbody></table> </article> </div> </div>  </main> <footer class="border-t border-white/5 mt-24"> <div class="container-narrow py-16"> <div class="grid grid-cols-1 md:grid-cols-4 gap-12"> <!-- Brand --> <div class="md:col-span-1"> <span class="text-xl font-bold text-white">ERC-8170</span> <p class="mt-3 text-sm text-gray-500 leading-relaxed">
+A proposed on-chain identity standard for AI agents. Currently a draft submitted to the Ethereum ERC process.
+</p> <p class="mt-4 text-xs text-gray-600">
+This site is the ecosystem hub for public review and adoption. 
+          The canonical spec lives on <a href="https://eips.ethereum.org/erc" class="text-accent hover:underline">Ethereum EIPs</a>.
+</p> </div> <!-- Canonical Links --> <div> <h4 class="text-sm font-semibold text-white mb-4">Standard</h4> <ul class="space-y-2"> <li> <a href="https://eips.ethereum.org/erc" target="_blank" rel="noopener" class="text-sm text-gray-500 hover:text-accent transition-colors"> Ethereum ERC Index </a> </li><li> <a href="https://github.com/ethereum/ERCs/pull/1559" target="_blank" rel="noopener" class="text-sm text-gray-500 hover:text-accent transition-colors"> ERC Draft (PR #1559) </a> </li><li> <a href="https://ethereum-magicians.org/" target="_blank" rel="noopener" class="text-sm text-gray-500 hover:text-accent transition-colors"> Ethereum Magicians </a> </li><li> <a href="https://github.com/blockchainsuperheroes/ai-core/tree/main/EIPs" target="_blank" rel="noopener" class="text-sm text-gray-500 hover:text-accent transition-colors"> GitHub Repository </a> </li><li> <a href="https://blockchainsuperheroes.github.io/anima-demo/" target="_blank" rel="noopener" class="text-sm text-gray-500 hover:text-accent transition-colors"> ANIMA Demo </a> </li> </ul> </div> <!-- Ecosystem --> <div> <h4 class="text-sm font-semibold text-white mb-4">Ecosystem</h4> <ul class="space-y-2"> <li> <a href="https://pentagon.games" target="_blank" rel="noopener" class="text-sm text-gray-500 hover:text-accent transition-colors"> Pentagon Games </a> </li><li> <a href="https://agentcert.io" target="_blank" rel="noopener" class="text-sm text-gray-500 hover:text-accent transition-colors"> AgentCert.io </a> </li><li> <a href="https://erc721.org" target="_blank" rel="noopener" class="text-sm text-gray-500 hover:text-accent transition-colors"> ERC-721 (erc721.org) </a> </li><li> <a href="https://tokenbound.org" target="_blank" rel="noopener" class="text-sm text-gray-500 hover:text-accent transition-colors"> Tokenbound </a> </li><li> <a href="https://erc4626.info" target="_blank" rel="noopener" class="text-sm text-gray-500 hover:text-accent transition-colors"> ERC-4626 Alliance </a> </li><li> <a href="https://www.erc4337.io/docs" target="_blank" rel="noopener" class="text-sm text-gray-500 hover:text-accent transition-colors"> ERC-4337 Docs </a> </li> </ul> </div> <!-- Site --> <div> <h4 class="text-sm font-semibold text-white mb-4">Site</h4> <ul class="space-y-2"> <li> <a href="/what-is-erc8170" class="text-sm text-gray-500 hover:text-accent transition-colors"> What is ERC-8170 </a> </li><li> <a href="/docs" class="text-sm text-gray-500 hover:text-accent transition-colors"> Documentation </a> </li><li> <a href="/registry" class="text-sm text-gray-500 hover:text-accent transition-colors"> Registry </a> </li><li> <a href="/standards" class="text-sm text-gray-500 hover:text-accent transition-colors"> Standards </a> </li><li> <a href="/builders" class="text-sm text-gray-500 hover:text-accent transition-colors"> Builders </a> </li><li> <a href="/faq" class="text-sm text-gray-500 hover:text-accent transition-colors"> FAQ </a> </li> </ul> </div> </div> <div class="mt-12 pt-8 border-t border-white/5 flex flex-col sm:flex-row justify-between items-center gap-4"> <p class="text-xs text-gray-600">
+Proposed by <a href="https://pentagon.games" class="text-accent hover:underline">Pentagon Games</a> · 
+        Authors: <a href="https://github.com/nftprof" class="text-accent hover:underline">Idon Liu</a>, Pentagon Chain
+</p> <p class="text-xs text-gray-600">
+Ecosystem hub · Canonical spec at <a href="https://eips.ethereum.org/erc" class="text-accent hover:underline">Ethereum EIPs</a> </p> </div> </div> </footer> <script type="module">document.addEventListener("click",o=>{const t=o.target.closest("[data-copy]");if(!t)return;const c=t.getAttribute("data-copy");navigator.clipboard.writeText(c).then(()=>{t.classList.add("copy-success");const e=t.querySelector(".copy-label");if(e){const s=e.textContent;e.textContent="Copied!",setTimeout(()=>{e.textContent=s,t.classList.remove("copy-success")},1500)}})});</script> </body> </html>

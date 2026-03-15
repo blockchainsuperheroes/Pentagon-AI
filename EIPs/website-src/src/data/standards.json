@@ -55,6 +55,17 @@
     "category": "adjacent"
   },
   {
+    "id": "erc-8004",
+    "name": "ERC-8004",
+    "title": "Trustless Agents \u2014 Discovery, Reputation & Validation",
+    "status": "draft",
+    "description": "Proposes three on-chain registries for agent economies: Identity Registry (ERC-721 based agent handles), Reputation Registry (feedback signals and scoring), and Validation Registry (hooks for zkML, TEE, staking checks). Authored by MetaMask, Ethereum Foundation, Google, and Coinbase. Payments are explicitly out of scope.",
+    "relevance": "Complementary discovery and trust layer. ANIMA (ERC-8170) is the identity/lifecycle layer (who the agent IS, its memory, cloning, self-custody). ERC-8004 is the discovery/trust layer (how agents find each other and build reputation). An ANIMA agent can register in an ERC-8004 Identity Registry on any chain for cross-chain discoverability, with agentURI pointing back to ANIMA metadata.",
+    "specUrl": "https://eips.ethereum.org/EIPS/eip-8004",
+    "ecosystemUrl": "https://ethereum-magicians.org/t/erc-8004-trustless-agents/25098",
+    "category": "adjacent"
+  },
+  {
     "id": "erc-7857",
     "name": "ERC-7857",
     "title": "Private Metadata for NFTs",
