@@ -180,7 +180,7 @@ Agent identity survives unbinding.
 **For the Agent:**
 - Bind to a different NFT (that you own)
 - Stay standalone
-- (Future) Mint as standalone AINFT
+- (Future) Mint as standalone ANIMA
 
 ---
 

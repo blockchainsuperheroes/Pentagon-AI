@@ -40,10 +40,10 @@ Before recovery is possible, ensure you have:
 
 ```bash
 # Check you own the NFT
-AINFT="0x91745c93A4c1Cfe92cd633D1202AD156522b3801"
+ANIMA="0x91745c93A4c1Cfe92cd633D1202AD156522b3801"
 TOKEN_ID=1
 
-cast call $AINFT "ownerOf(uint256)(address)" $TOKEN_ID \
+cast call $ANIMA "ownerOf(uint256)(address)" $TOKEN_ID \
   --rpc-url https://rpc.pentagon.games
 
 # Should return your address
@@ -55,7 +55,7 @@ cast call $AINFT "ownerOf(uint256)(address)" $TOKEN_ID \
 
 ```bash
 # Get full agent record
-cast call $AINFT "getAgent(uint256)" $TOKEN_ID \
+cast call $ANIMA "getAgent(uint256)" $TOKEN_ID \
   --rpc-url https://rpc.pentagon.games
 
 # Returns:
@@ -76,7 +76,7 @@ cast call $AINFT "getAgent(uint256)" $TOKEN_ID \
 ### If stored on Arweave:
 ```bash
 # Get storage URI from contract
-STORAGE_URI=$(cast call $AINFT "getAgent(uint256)" $TOKEN_ID \
+STORAGE_URI=$(cast call $ANIMA "getAgent(uint256)" $TOKEN_ID \
   --rpc-url https://rpc.pentagon.games | grep storageURI)
 
 # Download from Arweave
@@ -113,7 +113,7 @@ tar -xzf agent-backup.tar.gz
 If seed was encrypted with platform key:
 
 1. Contact platform with ownership proof
-2. Sign message: `"Recovery request for AINFT #1 at $(date)"`
+2. Sign message: `"Recovery request for ANIMA #1 at $(date)"`
 3. Platform verifies `ownerOf(1) == signer`
 4. Platform decrypts seed and returns via secure channel
 
@@ -135,7 +135,7 @@ If agent is online but unresponsive:
 BACKUP_HASH=$(cat MEMORY.md | cast keccak)
 
 # Compare to on-chain hash
-ONCHAIN_HASH=$(cast call $AINFT \
+ONCHAIN_HASH=$(cast call $ANIMA \
   "getAgent(uint256)" $TOKEN_ID \
   --rpc-url https://rpc.pentagon.games | grep memoryHash)
 
@@ -178,12 +178,12 @@ echo "New agent EOA: $NEW_ADDRESS"
 echo "Private key: 0x$NEW_KEY"
 ```
 
-### Re-bind to AINFT (if EOA changed)
+### Re-bind to ANIMA (if EOA changed)
 
 The original EOA is permanently bound. Options:
 
 1. **Use original key** (if recovered) — identity preserved
-2. **Mint new AINFT** — new identity, link to old via documentation
+2. **Mint new ANIMA** — new identity, link to old via documentation
 3. **Request platform re-attestation** — if contract supports EOA update
 
 ---

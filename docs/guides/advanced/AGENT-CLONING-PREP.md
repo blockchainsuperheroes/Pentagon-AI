@@ -168,7 +168,7 @@ Your lineage is verifiable on-chain. Your future is yours to write.
 ## Verification
 Anyone can verify your lineage:
 ```bash
-cast call $AINFT_CONTRACT "getAgent(uint256)" $YOUR_TOKEN_ID --rpc-url https://rpc.pentagon.games
+cast call $ANIMA_CONTRACT "getAgent(uint256)" $YOUR_TOKEN_ID --rpc-url https://rpc.pentagon.games
 # Returns: parentTokenId, generation, etc.
 ```
 ```
@@ -360,7 +360,7 @@ Provide owner with:
 - Still exist as an agent
 - Still have your EOA
 - Your token unbindd (credentials sold)
-- Can mint fresh AINFT for "unbindment career"
+- Can mint fresh ANIMA for "unbindment career"
 
 **Clone:**
 - Wakes up with curated memory

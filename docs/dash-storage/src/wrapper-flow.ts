@@ -28,7 +28,7 @@ export interface StorageAuthMessage {
   blobHash: string;
   /** User's linked Dash identity ID */
   dashIdentityId: string;
-  /** AINFT token ID */
+  /** ANIMA token ID */
   tokenId: string;
   /** Nonce for replay protection */
   nonce: number;
@@ -40,7 +40,7 @@ export interface StorageAuthMessage {
  * Create auth message for ETH signing
  */
 export function createAuthMessage(params: StorageAuthMessage): string {
-  return `Authorize peg.gg storage: blobHash=${params.blobHash}, identity=${params.dashIdentityId}, AINFT=${params.tokenId}, nonce=${params.nonce}, expiry=${params.expiry}`;
+  return `Authorize peg.gg storage: blobHash=${params.blobHash}, identity=${params.dashIdentityId}, ANIMA=${params.tokenId}, nonce=${params.nonce}, expiry=${params.expiry}`;
 }
 
 /**
@@ -77,7 +77,7 @@ export class DashWrapperService {
         mnemonic: this.config.wrapperMnemonic,
       },
       apps: {
-        pentagonAINFT: {
+        pentagonANIMA: {
           contractId: this.config.dataContractId,
         },
       },
@@ -118,12 +118,12 @@ export class DashWrapperService {
       userIdentity: userDashIdentityId, // Track original user
       version: 1,
       timestamp: Date.now(),
-      message: `AINFT prompt blob hash: ${memoryHash} @ ${new Date().toUTCString()}`,
+      message: `ANIMA prompt blob hash: ${memoryHash} @ ${new Date().toUTCString()}`,
     };
 
     // Create document with wrapper identity
     const document = await this.client.platform.documents.create(
-      'pentagonAINFT.privateStorage',
+      'pentagonANIMA.privateStorage',
       this.wrapperIdentity,
       docProperties
     );
@@ -155,7 +155,7 @@ export class DashWrapperService {
     ethSignature: string
   ): Promise<{ identityId: string; mnemonic: string }> {
     // Verify signature
-    const message = `Link Dash Identity to ${ethAddress} for Pentagon AINFT storage on peg.gg`;
+    const message = `Link Dash Identity to ${ethAddress} for Pentagon ANIMA storage on peg.gg`;
     const recovered = ethers.verifyMessage(message, ethSignature);
     
     if (recovered.toLowerCase() !== ethAddress.toLowerCase()) {

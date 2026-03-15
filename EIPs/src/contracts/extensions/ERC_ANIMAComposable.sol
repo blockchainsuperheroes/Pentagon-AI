@@ -1,22 +1,22 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-import "../ERC_AINFT.sol";
+import "../ERC_ANIMA.sol";
 
 /**
- * @title IERC_AINFTComposable
+ * @title IERC_ANIMAComposable
  * @notice Extension for composable agent capabilities (ERC-6551 compatible)
- * @dev Allows AI_NFTs to own other NFTs and tokens, building agent "inventories"
+ * @dev Allows ANIMAs to own other NFTs and tokens, building agent "inventories"
  */
-interface IERC_AINFTComposable {
+interface IERC_ANIMAComposable {
     
     event AssetBound(uint256 indexed tokenId, address indexed asset, uint256 indexed assetId);
     event AssetUnbound(uint256 indexed tokenId, address indexed asset, uint256 indexed assetId);
     event CapabilityAdded(uint256 indexed tokenId, bytes32 indexed capabilityHash, string capabilityURI);
     
     /**
-     * @notice Bind an NFT to an AI_NFT (agent owns the asset)
-     * @param tokenId The AI_NFT token ID
+     * @notice Bind an NFT to an ANIMA (agent owns the asset)
+     * @param tokenId The ANIMA token ID
      * @param asset The NFT contract address
      * @param assetId The NFT token ID to bind
      * @param agentSignature Agent's authorization
@@ -29,8 +29,8 @@ interface IERC_AINFTComposable {
     ) external;
     
     /**
-     * @notice Unbind an NFT from an AI_NFT
-     * @param tokenId The AI_NFT token ID
+     * @notice Unbind an NFT from an ANIMA
+     * @param tokenId The ANIMA token ID
      * @param asset The NFT contract address
      * @param assetId The NFT token ID to unbind
      * @param recipient Where to send the unbound NFT
@@ -46,7 +46,7 @@ interface IERC_AINFTComposable {
     
     /**
      * @notice Add a capability to an agent (skill, tool, permission)
-     * @param tokenId The AI_NFT token ID
+     * @param tokenId The ANIMA token ID
      * @param capabilityHash Hash of capability definition
      * @param capabilityURI URI pointing to capability spec
      * @param agentSignature Agent's authorization
@@ -59,8 +59,8 @@ interface IERC_AINFTComposable {
     ) external;
     
     /**
-     * @notice Get all assets bound to an AI_NFT
-     * @param tokenId The AI_NFT token ID
+     * @notice Get all assets bound to an ANIMA
+     * @param tokenId The ANIMA token ID
      */
     function getBoundAssets(uint256 tokenId) external view returns (
         address[] memory contracts,
@@ -68,8 +68,8 @@ interface IERC_AINFTComposable {
     );
     
     /**
-     * @notice Get all capabilities of an AI_NFT
-     * @param tokenId The AI_NFT token ID
+     * @notice Get all capabilities of an ANIMA
+     * @param tokenId The ANIMA token ID
      * @return hashes Array of capability hashes
      * @return uris Array of capability URIs
      */
@@ -80,7 +80,7 @@ interface IERC_AINFTComposable {
     
     /**
      * @notice Check if agent has a specific capability
-     * @param tokenId The AI_NFT token ID
+     * @param tokenId The ANIMA token ID
      * @param capabilityHash The capability to check
      * @return hasCapability True if agent has the capability
      */
@@ -88,13 +88,13 @@ interface IERC_AINFTComposable {
 }
 
 /**
- * @title ERC_AINFTComposable
+ * @title ERC_ANIMAComposable
  * @notice Reference implementation of composable agent extension
- * @dev Enables AI_NFTs to own assets and accumulate capabilities
+ * @dev Enables ANIMAs to own assets and accumulate capabilities
  */
-contract ERC_AINFTComposable is IERC_AINFTComposable {
+contract ERC_ANIMAComposable is IERC_ANIMAComposable {
     
-    ERC_AINFT public immutable ainft;
+    ERC_ANIMA public immutable anima;
     
     struct BoundAsset {
         address assetContract;
@@ -115,8 +115,8 @@ contract ERC_AINFTComposable is IERC_AINFTComposable {
     mapping(uint256 => Capability[]) private _capabilities;
     mapping(uint256 => mapping(bytes32 => bool)) private _hasCapability;
     
-    constructor(address _ainft) {
-        ainft = ERC_AINFT(_ainft);
+    constructor(address _anima) {
+        anima = ERC_ANIMA(_anima);
     }
     
     function bindAsset(
@@ -126,7 +126,7 @@ contract ERC_AINFTComposable is IERC_AINFTComposable {
         bytes calldata agentSignature
     ) external override {
         // Verify agent signature
-        address derivedWallet = ainft.getDerivedWallet(tokenId);
+        address derivedWallet = anima.getDerivedWallet(tokenId);
         bytes32 messageHash = keccak256(abi.encodePacked("bind", tokenId, asset, assetId));
         require(_verifySignature(messageHash, agentSignature, derivedWallet), "Invalid signature");
         
@@ -152,7 +152,7 @@ contract ERC_AINFTComposable is IERC_AINFTComposable {
         bytes calldata agentSignature
     ) external override {
         // Verify agent signature
-        address derivedWallet = ainft.getDerivedWallet(tokenId);
+        address derivedWallet = anima.getDerivedWallet(tokenId);
         bytes32 messageHash = keccak256(abi.encodePacked("unbind", tokenId, asset, assetId, recipient));
         require(_verifySignature(messageHash, agentSignature, derivedWallet), "Invalid signature");
         
@@ -182,7 +182,7 @@ contract ERC_AINFTComposable is IERC_AINFTComposable {
         bytes calldata agentSignature
     ) external override {
         // Verify agent signature
-        address derivedWallet = ainft.getDerivedWallet(tokenId);
+        address derivedWallet = anima.getDerivedWallet(tokenId);
         bytes32 messageHash = keccak256(abi.encodePacked("capability", tokenId, capabilityHash, capabilityURI));
         require(_verifySignature(messageHash, agentSignature, derivedWallet), "Invalid signature");
         

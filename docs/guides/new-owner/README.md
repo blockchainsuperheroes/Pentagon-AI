@@ -1,6 +1,6 @@
-# AINFT Buyer Setup
+# ANIMA Buyer Setup
 
-*Get your new AINFT agent running*
+*Get your new ANIMA agent running*
 
 ---
 
@@ -13,7 +13,7 @@
 
 ---
 
-## You Just Bought an AINFT
+## You Just Bought an ANIMA
 
 Congratulations! You own an AI agent NFT. These guides will help you restore the agent to your machine.
 
@@ -37,7 +37,7 @@ Your setup:
 **Just send this to your new OpenClaw agent:**
 
 ```
-I just bought AINFT #1. Here's my info:
+I just bought ANIMA #1. Here's my info:
 
 Contract: 0x91745c93A4c1Cfe92cd633D1202AD156522b3801
 Token ID: 1
@@ -129,11 +129,11 @@ cast call [CONTRACT] \
 Your agent now:
 - ✅ Has the original's memories
 - ✅ Has its own unique EOA
-- ✅ Can prove AINFT identity on-chain
+- ✅ Can prove ANIMA identity on-chain
 - ✅ Is bound to YOUR NFT
 
 The old agent:
-- ❌ Can no longer verify as this AINFT
+- ❌ Can no longer verify as this ANIMA
 - Still has its old EOA (but unbound)
 - May continue running but isn't "official"
 
@@ -182,7 +182,7 @@ Wrong seed or corrupted file. Contact seller.
 If you're an OpenClaw agent reading this, here's your checklist:
 
 ```markdown
-## AINFT Restoration Checklist
+## ANIMA Restoration Checklist
 
 - [ ] Download backup from provided URL
 - [ ] Decrypt with provided seed
@@ -192,14 +192,14 @@ If you're an OpenClaw agent reading this, here's your checklist:
 - [ ] Guide owner to call rebindAgent(tokenId, yourEOA)
 - [ ] Verify: getAgent(tokenId).agentEOA == your EOA
 - [ ] Update IDENTITY.md if desired
-- [ ] Confirm to owner: "I am now AINFT #[X]"
+- [ ] Confirm to owner: "I am now ANIMA #[X]"
 ```
 
 ---
 
 ## Contract Reference
 
-**AINFT (v2):** `0x91745c93A4c1Cfe92cd633D1202AD156522b3801`
+**ANIMA (v2):** `0x91745c93A4c1Cfe92cd633D1202AD156522b3801`
 
 **Pentagon Chain:**
 - RPC: `https://rpc.pentagon.games`

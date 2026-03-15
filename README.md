@@ -2,11 +2,11 @@
 
 AI infrastructure for autonomous agents on Pentagon Chain.
 
-## Why AINFT?
+## Why ANIMA?
 
 As AI agents become more capable, treating them as files on your laptop isn't enough.
 
-| Scenario | Without AINFT | With AINFT |
+| Scenario | Without ANIMA | With ANIMA |
 |----------|---------------|------------|
 | Computer dies | Agent gone forever | Restore from on-chain backup |
 | Switch devices | Start over | Seamless migration |
@@ -18,7 +18,7 @@ As AI agents become more capable, treating them as files on your laptop isn't en
 
 ---
 
-## ERC-AINFT: AI-Native NFT
+## ERC-ANIMA: AI-Native NFT
 
 A new standard for AI agent identity.
 
@@ -35,9 +35,9 @@ A new standard for AI agent identity.
 
 | Link | Description |
 |------|-------------|
-| [Full Specification](./EIPs/) | Complete ERC-AINFT standard |
+| [Full Specification](./EIPs/) | Complete ERC-ANIMA standard |
 | [Agent Backup Guide](./EIPs/AGENT-BACKUP-GUIDE.md) | How to backup your agent on-chain |
-| [AINFT Skills](./Pentagon-Claws/skills/ainft/) | Agent capabilities for AINFT |
+| [ANIMA Skills](./Pentagon-Claws/skills/anima/) | Agent capabilities for ANIMA |
 | [Ethereum PR](https://github.com/ethereum/ERCs/pull/1558) | Official submission |
 
 ---
@@ -46,9 +46,9 @@ A new standard for AI agent identity.
 
 | Folder | Description |
 |--------|-------------|
-| **[EIPs/](./EIPs/)** | ERC-AINFT specification + contracts |
+| **[EIPs/](./EIPs/)** | ERC-ANIMA specification + contracts |
 | **[Agent-Test-Standard/](./Agent-Test-Standard/)** | Certification tiers for AI agents (L1-L7) |
-| **[Pentagon-Claws/](./Pentagon-Claws/)** | Agent capabilities (voice, inference, AINFT skills) |
+| **[Pentagon-Claws/](./Pentagon-Claws/)** | Agent capabilities (voice, inference, ANIMA skills) |
 
 ---
 

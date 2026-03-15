@@ -1,7 +1,7 @@
 {
   "name": "@pentagon/dash-storage",
   "version": "0.1.0",
-  "description": "Dash Platform storage integration for Pentagon AINFTs",
+  "description": "Dash Platform storage integration for Pentagon ANIMAs",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
@@ -29,7 +29,7 @@
   "keywords": [
     "dash",
     "pentagon",
-    "ainft",
+    "anima",
     "storage",
     "nft",
     "ai",
@@ -39,6 +39,6 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/blockchainsuperheroes/Pentagon-AINFT-Contracts"
+    "url": "https://github.com/blockchainsuperheroes/Pentagon-ANIMA-Contracts"
   }
 }

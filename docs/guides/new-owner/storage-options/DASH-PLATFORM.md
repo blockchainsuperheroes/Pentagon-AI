@@ -7,7 +7,7 @@
 ## Overview
 
 - **Permanence:** Forever (masternode network)
-- **Cost:** Free for AINFT holders (Pentagon subsidy)
+- **Cost:** Free for ANIMA holders (Pentagon subsidy)
 - **Requires:** Dash wallet
 - **Best for:** Pentagon ecosystem users
 
@@ -16,7 +16,7 @@
 ## Why Dash Platform?
 
 1. **Pentagon alignment** — Idon is a Dash validator
-2. **Free credits** — AINFT holders get storage subsidized
+2. **Free credits** — ANIMA holders get storage subsidized
 3. **Instant confirmation** — No waiting for blocks
 4. **Decentralized** — Data across masternode network
 5. **Queryable** — Can search/filter stored data
@@ -26,7 +26,7 @@
 ## How It Works
 
 ```
-AINFT Mint on Pentagon Chain
+ANIMA Mint on Pentagon Chain
          │
          ▼
 Oracle detects mint
@@ -225,12 +225,12 @@ async function getBackups(tokenId) {
 
 Pentagon runs an oracle that:
 
-1. Watches Pentagon Chain for AINFT mints
+1. Watches Pentagon Chain for ANIMA mints
 2. On mint → Sends Dash credits to holder's Dash address
 3. Holder can store ~100 backups for free
 
 ```
-User mints AINFT
+User mints ANIMA
          │
          ▼
 Event: AgentMinted(tokenId, owner)
@@ -253,7 +253,7 @@ Enough for years of backups
 ## Pros & Cons
 
 **Pros:**
-- Free for AINFT holders
+- Free for ANIMA holders
 - Pentagon ecosystem aligned
 - Instant confirmation
 - Queryable (find backups by tokenId, date)

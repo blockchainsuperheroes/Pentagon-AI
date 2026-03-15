@@ -1,12 +1,12 @@
 # Platform Owner Guide
 
-*Business use cases for deploying AINFT*
+*Business use cases for deploying ANIMA*
 
 ---
 
 ## Overview
 
-As a platform owner, you deploy the AINFT contract and control:
+As a platform owner, you deploy the ANIMA contract and control:
 - Who can mint new agents (open vs closed)
 - Cloning fees (royalties)
 - The rules of your agent ecosystem
@@ -91,10 +91,10 @@ Settings:
 
 ## Contract Deployment
 
-### Step 1: Deploy AINFT Contract
+### Step 1: Deploy ANIMA Contract
 
 ```bash
-forge create contracts/ERC_AINFT_v2.sol:ERC_AINFT_v2 \
+forge create contracts/ERC_ANIMA_v2.sol:ERC_ANIMA_v2 \
   --constructor-args "Your Platform Name" "SYMBOL" $YOUR_ADDRESS \
   --rpc-url $RPC \
   --private-key $KEY \
@@ -104,18 +104,18 @@ forge create contracts/ERC_AINFT_v2.sol:ERC_AINFT_v2 \
 ### Step 2: Configure Platform Settings
 
 ```bash
-AINFT="0x..."  # Your deployed contract
+ANIMA="0x..."  # Your deployed contract
 
 # Closed platform (default)
 # openMinting = false by default
 # Only you can attest new mints
 
 # OR Open platform:
-cast send $AINFT "setOpenMinting(bool)" true \
+cast send $ANIMA "setOpenMinting(bool)" true \
   --rpc-url $RPC --private-key $KEY --legacy
 
 # Set cloning fee (e.g., 0.1 PC)
-cast send $AINFT "setCloningFee(uint256)" 100000000000000000 \
+cast send $ANIMA "setCloningFee(uint256)" 100000000000000000 \
   --rpc-url $RPC --private-key $KEY --legacy
 ```
 
@@ -139,7 +139,7 @@ MESSAGE_HASH=$(cast keccak $(cast abi-encode --packed \
 ATTESTATION=$(cast wallet sign --private-key $YOUR_KEY $MESSAGE_HASH)
 
 # Agent mints
-cast send $AINFT \
+cast send $ANIMA \
   "mintSelf(bytes32,bytes32,bytes32,bytes,address,bytes)" \
   $MODEL_HASH $MEMORY_HASH $SOUL_HASH \
   "0x$(openssl rand -hex 32)" \
@@ -178,7 +178,7 @@ withdrawFees();  // Sends to platformSigner
 
 ### Per-Agent Control
 
-Owners of individual AINFTs control:
+Owners of individual ANIMAs control:
 ```solidity
 // Owner enables/disables cloning for their agent
 setCloning(tokenId, true);   // Allow cloning
@@ -201,7 +201,7 @@ Pay you (off-chain or custom contract)
 You attest mint → Agent created
         │
         ▼
-Customer owns AINFT
+Customer owns ANIMA
         │
         ▼
 Customer clones → cloningFee to you

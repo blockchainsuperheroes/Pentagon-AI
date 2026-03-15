@@ -17,7 +17,7 @@ This seems reasonable but creates false confidence. A hash or string on-chain ca
 - Validate memory/context format
 - Guarantee the agent actually uses that model
 
-**AINFT keeps model info off-chain** because model migration is complex and requires off-chain validation.
+**ANIMA keeps model info off-chain** because model migration is complex and requires off-chain validation.
 
 ---
 
@@ -150,7 +150,7 @@ agent config set model "new-model-name"
 | On-chain `selfEvolve()` | Implies simple switch. Migration is complex. |
 | **Off-chain model config** | Honest. Migration is a process, not a transaction. |
 
-**On-chain identity (AINFT) is stable. Off-chain model is flexible.**
+**On-chain identity (ANIMA) is stable. Off-chain model is flexible.**
 
 The agent's identity (EOA, TBA, certs, lineage) persists across model changes. The model is an implementation detail that can change without affecting on-chain state.
 
@@ -206,7 +206,7 @@ Model migration is complex because:
 - Tool calling reliability varies
 - Prompt structures are incompatible
 
-AINFT acknowledges this by keeping model info **off-chain**. Your agent's on-chain identity is stable; the model powering it is a runtime decision.
+ANIMA acknowledges this by keeping model info **off-chain**. Your agent's on-chain identity is stable; the model powering it is a runtime decision.
 
 ---
 

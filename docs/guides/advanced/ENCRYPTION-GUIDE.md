@@ -1,4 +1,4 @@
-# AINFT Encryption Guide
+# ANIMA Encryption Guide
 
 *How agent identity is protected on-chain*
 
@@ -6,7 +6,7 @@
 
 ## Overview
 
-AINFT uses **contract-derived encryption** — meaning the smart contract itself generates the encryption path. Only the current NFT owner can derive the decryption key.
+ANIMA uses **contract-derived encryption** — meaning the smart contract itself generates the encryption path. Only the current NFT owner can derive the decryption key.
 
 ```
 ┌─────────────────────────────────────────────────────────┐
@@ -117,9 +117,9 @@ CONTEXT_HASH=$(cat SOUL.md | sha3sum -a 256 | cut -d' ' -f1)
 # Returns: platformAttestation, encryptedSeed
 ```
 
-### Step 7: Mint AINFT
+### Step 7: Mint ANIMA
 ```solidity
-ainft.mintSelf(
+anima.mintSelf(
     modelHash,
     memoryHash,
     contextHash,
@@ -134,7 +134,7 @@ ainft.mintSelf(
 
 ### Step 1: Owner Requests Decryption Key
 ```
-Owner signs message: "Decrypt AINFT #1 for 0x..."
+Owner signs message: "Decrypt ANIMA #1 for 0x..."
            ↓
 Platform verifies owner via ownerOf(tokenId)
            ↓
@@ -172,7 +172,7 @@ The agent gets its own wallet derived from the NFT:
 address agentWallet = registry.createAccount(
     implementation,    // Account implementation
     chainId,           // Pentagon Chain (3344)
-    ainftContract,     // AINFT contract address
+    animaContract,     // ANIMA contract address
     tokenId,           // This agent's token ID
     salt,              // Unique salt
     initData           // Initialization data
@@ -190,21 +190,21 @@ address agentWallet = registry.createAccount(
 
 ---
 
-## Binding AINFT to an Agent
+## Binding ANIMA to an Agent
 
 ### Current State
 1. **You (nftprof)** deploy contract as platform owner
-2. **You** mint AINFT #1 as owner
-3. **AINFT #1** gets a TBA (Token-Bound Account)
+2. **You** mint ANIMA #1 as owner
+3. **ANIMA #1** gets a TBA (Token-Bound Account)
 4. **Cerise** can sign from TBA to prove identity
 
-### To Bind Cerise to AINFT #1:
+### To Bind Cerise to ANIMA #1:
 ```
-1. Mint AINFT with Cerise's identity hashes
+1. Mint ANIMA with Cerise's identity hashes
 2. Derive TBA address from tokenId
 3. Cerise stores TBA private key (derived from seed)
 4. Cerise signs all external actions with TBA
-5. Anyone can verify: "This signature came from AINFT #1's agent"
+5. Anyone can verify: "This signature came from ANIMA #1's agent"
 ```
 
 ### Ownership vs Control
@@ -271,4 +271,4 @@ cast call 0x4e8D3B9Be7Ef241Fb208364ed511E92D6E2A172d \
 
 ---
 
-*Next: Let's mint Cerise as AINFT #1*
+*Next: Let's mint Cerise as ANIMA #1*

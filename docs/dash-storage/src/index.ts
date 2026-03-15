@@ -1,5 +1,5 @@
 /**
- * Pentagon AINFT Dash Storage
+ * Pentagon ANIMA Dash Storage
  * 
  * Integrates Dash Platform (Evolution) for encrypted agent memory storage
  * 
@@ -15,7 +15,7 @@ import Dash from 'dash';
 import { ethers } from 'ethers';
 import {
   DashStorageConfig,
-  AINFTStorageDocument,
+  ANIMAStorageDocument,
   IdentityLinkResponse,
   StorageResult,
   RetrievalResult,
@@ -35,9 +35,9 @@ export * from './wrapper-flow';
 export * from './sovereign-signing';
 
 /**
- * Main client for AINFT Dash storage operations
+ * Main client for ANIMA Dash storage operations
  */
-export class DashAINFTStorage {
+export class DashANIMAStorage {
   private client: any;
   private identity: any;
   private config: DashStorageConfig;
@@ -78,7 +78,7 @@ export class DashAINFTStorage {
         mnemonic: linkResult.mnemonic,
       },
       apps: {
-        ainftStorage: {
+        animaStorage: {
           contractId: this.config.dataContractId,
         },
       },
@@ -114,7 +114,7 @@ export class DashAINFTStorage {
     const version = existing ? existing.version + 1 : 1;
 
     // Create document
-    const docProperties: AINFTStorageDocument = {
+    const docProperties: ANIMAStorageDocument = {
       tokenId,
       agentWallet: agentWallet.toLowerCase(),
       encryptedMemory: toBase64(ciphertext),
@@ -125,7 +125,7 @@ export class DashAINFTStorage {
     };
 
     const document = await this.client.platform.documents.create(
-      'ainftStorage.storage',
+      'animaStorage.storage',
       this.identity,
       docProperties
     );
@@ -207,11 +207,11 @@ export class DashAINFTStorage {
   /**
    * Get storage document by token ID
    */
-  async getDocument(tokenId: string): Promise<AINFTStorageDocument | null> {
+  async getDocument(tokenId: string): Promise<ANIMAStorageDocument | null> {
     this.ensureInitialized();
 
     const documents = await this.client.platform.documents.get(
-      'ainftStorage.storage',
+      'animaStorage.storage',
       {
         where: [['tokenId', '==', tokenId]],
         orderBy: [['version', 'desc']],
@@ -220,23 +220,23 @@ export class DashAINFTStorage {
     );
 
     if (documents.length === 0) return null;
-    return documents[0].toJSON() as AINFTStorageDocument;
+    return documents[0].toJSON() as ANIMAStorageDocument;
   }
 
   /**
    * Get all documents for an agent wallet
    */
-  async getDocumentsByAgent(agentWallet: string): Promise<AINFTStorageDocument[]> {
+  async getDocumentsByAgent(agentWallet: string): Promise<ANIMAStorageDocument[]> {
     this.ensureInitialized();
 
     const documents = await this.client.platform.documents.get(
-      'ainftStorage.storage',
+      'animaStorage.storage',
       {
         where: [['agentWallet', '==', agentWallet.toLowerCase()]],
       }
     );
 
-    return documents.map((d: any) => d.toJSON() as AINFTStorageDocument);
+    return documents.map((d: any) => d.toJSON() as ANIMAStorageDocument);
   }
 
   /**
@@ -266,12 +266,12 @@ export class DashAINFTStorage {
   // --- Private helpers ---
 
   private getLinkMessage(ethAddress: string): string {
-    return `Link Dash Identity to ${ethAddress} for Pentagon AINFT storage on peg.gg`;
+    return `Link Dash Identity to ${ethAddress} for Pentagon ANIMA storage on peg.gg`;
   }
 
   private ensureInitialized(): void {
     if (!this.initialized) {
-      throw new Error('DashAINFTStorage not initialized. Call init() first.');
+      throw new Error('DashANIMAStorage not initialized. Call init() first.');
     }
   }
 }
@@ -281,7 +281,7 @@ export class DashAINFTStorage {
  */
 export function createDashStorage(
   network: 'testnet' | 'mainnet' = 'testnet'
-): DashAINFTStorage {
+): DashANIMAStorage {
   const config: DashStorageConfig = {
     network,
     dataContractId: network === 'mainnet' 
@@ -292,5 +292,5 @@ export function createDashStorage(
       : 'https://testnet-api.peg.gg',
   };
 
-  return new DashAINFTStorage(config);
+  return new DashANIMAStorage(config);
 }

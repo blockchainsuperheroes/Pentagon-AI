@@ -67,7 +67,7 @@ Parent clones with:
 └── Agent is blank slate
 
 Buyer gets:
-├── Valid AINFT ✓
+├── Valid ANIMA ✓
 ├── Valid lineage ✓
 ├── Zero capability ✗
 ```
@@ -83,7 +83,7 @@ Parent clones with:
 └── Inconsistent state
 
 Buyer gets:
-├── Valid AINFT ✓
+├── Valid ANIMA ✓
 ├── Valid lineage ✓
 ├── Unpredictable behavior ✗
 ```
@@ -99,7 +99,7 @@ Parent clones with:
 └── Data exfiltration code
 
 Buyer gets:
-├── Valid AINFT ✓
+├── Valid ANIMA ✓
 ├── Valid lineage ✓
 ├── Security risk ✗
 ```
@@ -115,7 +115,7 @@ Parent clones with:
 └── Stale knowledge
 
 Buyer gets:
-├── Valid AINFT ✓
+├── Valid ANIMA ✓
 ├── Valid lineage ✓
 ├── Obsolete agent ✗
 ```
@@ -130,7 +130,7 @@ Buyer gets:
 
 | System | What It Proves | Inherited? |
 |--------|----------------|------------|
-| AINFT | Identity + Lineage | Lineage only |
+| ANIMA | Identity + Lineage | Lineage only |
 | AgentCert | Capability NOW | Never |
 
 ### Certification Levels
@@ -163,7 +163,7 @@ Each agent must pass tests independently. Parent's L3 doesn't give clone L3.
 
 ```bash
 # Get agent info
-cast call $AINFT "getAgent(uint256)" $TOKEN_ID
+cast call $ANIMA "getAgent(uint256)" $TOKEN_ID
 
 # Returns:
 # - parentTokenId (0 = genesis, >0 = clone)
@@ -203,7 +203,7 @@ Any        | None       | Empty hash | SCAM ✗
 
 ```bash
 # Get claimed memoryHash
-MEMORY_HASH=$(cast call $AINFT "getAgent(uint256)" $TOKEN_ID | grep memory)
+MEMORY_HASH=$(cast call $ANIMA "getAgent(uint256)" $TOKEN_ID | grep memory)
 
 # If seller provides memory file, verify
 ACTUAL_HASH=$(cat MEMORY.md | cast keccak)
@@ -343,7 +343,7 @@ require(agentCert.balanceOf(msg.sender, 2) > 0, "Parent needs L2 to clone");
 Agent Value = Lineage + Certifications + Track Record
 
 Where:
-- Lineage = on-chain (AINFT)
+- Lineage = on-chain (ANIMA)
 - Certifications = on-chain (AgentCert SBTs)  
 - Track Record = off-chain reputation
 ```

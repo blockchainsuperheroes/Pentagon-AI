@@ -11,15 +11,15 @@ Add after "Why a New Standard vs Extension?":
 ```markdown
 ### No TEE Required — Pure Cryptography
 
-Unlike approaches that rely on Trusted Execution Environments (TEEs), AINFT achieves trustless operation through pure cryptography:
+Unlike approaches that rely on Trusted Execution Environments (TEEs), ANIMA achieves trustless operation through pure cryptography:
 
 | Approach | Trust Assumption | Single Point of Failure |
 |----------|-----------------|------------------------|
 | TEE-based | Trust hardware vendor (Intel SGX, AMD SEV) | Hardware vulnerability, attestation service |
 | Platform-custody | Trust platform operator | Platform compromise, insider threat |
-| **AINFT** | Trust cryptography only | None — math doesn't fail |
+| **ANIMA** | Trust cryptography only | None — math doesn't fail |
 
-**How AINFT avoids TEE:**
+**How ANIMA avoids TEE:**
 - Agent EOA binding: Agent signs mint with its own key (`msg.sender` = agent)
 - Deterministic key derivation: `wrapKey = hash(contract, tokenId, owner, nonce)`
 - No external attestation service needed
@@ -28,7 +28,7 @@ Unlike approaches that rely on Trusted Execution Environments (TEEs), AINFT achi
 **Why this matters:**
 - TEEs have been broken repeatedly (Foreshadow, Plundervolt, etc.)
 - Centralized attestation services are single points of failure
-- AINFT: "Agent IS the proof" — cryptographic binding, not attestation
+- ANIMA: "Agent IS the proof" — cryptographic binding, not attestation
 ```
 
 ### 2. Add OpenClaw Reference Implementation Section
@@ -38,16 +38,16 @@ Add to "Reference Implementation":
 ```markdown
 ### Live Implementation: OpenClaw
 
-AINFT has been implemented for [OpenClaw](https://github.com/openclaw/openclaw), an open-source AI agent framework:
+ANIMA has been implemented for [OpenClaw](https://github.com/openclaw/openclaw), an open-source AI agent framework:
 
 **OpenClaw Integration:**
-- Agent mints AINFT on first boot
+- Agent mints ANIMA on first boot
 - EOA generated and bound automatically
 - Memory backup/restore via encrypted archives
 - ERC-6551 TBA for agent wallet
 
 **Deployment (Pentagon Chain):**
-- AINFT v4: `0x13b7eD33413263FA4f74e5bf272635c7b08D98d4`
+- ANIMA v4: `0x13b7eD33413263FA4f74e5bf272635c7b08D98d4`
 - ERC-6551 Registry: `0x488D1b3A7A87dAF97bEF69Ec56144c35611a7d81`
 
 **Documentation:**
@@ -55,7 +55,7 @@ AINFT has been implemented for [OpenClaw](https://github.com/openclaw/openclaw),
 - [Platform Owner Guide](https://github.com/blockchainsuperheroes/Pentagon-AI/blob/main/EIPs/PLATFORM-OWNER-GUIDE.md)
 - [Reproduction Guide](https://github.com/blockchainsuperheroes/Pentagon-AI/blob/main/EIPs/REPRODUCTION-GUIDE.md)
 
-**Not limited to OpenClaw** — any agent framework can implement AINFT. The standard is framework-agnostic.
+**Not limited to OpenClaw** — any agent framework can implement ANIMA. The standard is framework-agnostic.
 ```
 
 ### 3. Add Business Model Section (Attracts VCs/Builders)
@@ -65,7 +65,7 @@ Add after Specification:
 ```markdown
 ## Business Models
 
-AINFT supports multiple business models via platform controls:
+ANIMA supports multiple business models via platform controls:
 
 ### Closed Platform (Factory Model)
 ```solidity
@@ -101,7 +101,7 @@ See [PLATFORM-OWNER-GUIDE.md](https://github.com/blockchainsuperheroes/Pentagon-
 Update first paragraph of Abstract to include:
 
 ```markdown
-This ERC defines a standard for AI-Native NFTs (AINFTs) that enable autonomous AI agents to:
+This ERC defines a standard for AI-Native NFTs (ANIMAs) that enable autonomous AI agents to:
 1. **Self-custody without TEE** — Pure cryptographic binding, no hardware trust
 2. Manage their own encryption (agent encrypts; owner accesses via trustless engine)
 3. Reproduce by issuing offspring (consciousness seeds)

@@ -2,11 +2,11 @@
 pragma solidity ^0.8.20;
 
 /**
- * @title IERC_AINFT
- * @notice ERC-AINFTA: AI-Native NFT Standard Interface
+ * @title IERC_ANIMA
+ * @notice ERC-ANIMA: AI-Native NFT Standard Interface
  * @dev Interface for AI agent identity, reproduction, and self-custody
  */
-interface IERC_AINFT {
+interface IERC_ANIMA {
     
     // ============ Events ============
     
@@ -145,12 +145,12 @@ interface IERC_AINFT {
 }
 
 /**
- * @title ERC_AINFT
- * @notice Reference implementation of ERC-AINFTA: AI-Native NFT Standard
+ * @title ERC_ANIMA
+ * @notice Reference implementation of ERC-ANIMA: AI-Native NFT Standard
  * @dev Full implementation with reproduction, lineage tracking, and agent self-custody
  * @author Pentagon Chain (pentagon.games)
  */
-contract ERC_AINFT is IERC_AINFT {
+contract ERC_ANIMA is IERC_ANIMA {
     
     // ============ State ============
     
@@ -166,7 +166,7 @@ contract ERC_AINFT is IERC_AINFT {
     mapping(uint256 => address) private _tokenApprovals;
     mapping(address => mapping(address => bool)) private _operatorApprovals;
     
-    // ERC-AINFTA state
+    // ERC-ANIMA state
     mapping(uint256 => ConsciousnessSeed) private _seeds;
     mapping(uint256 => uint256[]) private _clone;
     mapping(uint256 => bool) private _reproductionEnabled;
@@ -187,7 +187,7 @@ contract ERC_AINFT is IERC_AINFT {
         platformSigner = _platformSigner;
     }
     
-    // ============ ERC-AINFTA Core ============
+    // ============ ERC-ANIMA Core ============
     
     function mintSelf(
         bytes32 modelHash,

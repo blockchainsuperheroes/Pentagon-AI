@@ -2,7 +2,7 @@
 pragma solidity ^0.8.20;
 
 /**
- * @title AINFTRegistry
+ * @title ANIMARegistry
  * @notice Make ANY ERC-721 AI-native without modifying the original contract
  * @dev Backward compatible — works with existing NFTs on OpenSea, Blur, etc.
  * @author Pentagon Chain (pentagon.games)
@@ -22,12 +22,12 @@ pragma solidity ^0.8.20;
  * Reference: https://github.com/erc6551/reference
  * 
  * Just as ERC-6551 allows ANY NFT to have a wallet without modifying the
- * original contract, AINFT Registry allows ANY NFT to have an AI agent
+ * original contract, ANIMA Registry allows ANY NFT to have an AI agent
  * bound to it without modifying the original contract.
  * =============================================================================
  * 
  * Architecture:
- *   ANY ERC-721 ──bind()──► AINFT Registry ──► Agent Identity
+ *   ANY ERC-721 ──bind()──► ANIMA Registry ──► Agent Identity
  *   (Bored Ape, etc.)       │                  ├── agentEOA
  *                           │                  ├── memoryHash
  *   Ownership: Original     │                  ├── modelHash  
@@ -45,7 +45,7 @@ interface IERC721 {
     function ownerOf(uint256 tokenId) external view returns (address);
 }
 
-contract AINFTRegistry {
+contract ANIMARegistry {
     
     // ============ Events ============
     
@@ -220,7 +220,7 @@ contract AINFTRegistry {
         // Verify owner signature
         address nftOwner = IERC721(nftContract).ownerOf(tokenId);
         bytes32 messageHash = keccak256(abi.encodePacked(
-            "AINFT_REGISTER",
+            "ANIMA_REGISTER",
             nftContract,
             tokenId,
             msg.sender, // agentEOA
@@ -521,7 +521,7 @@ contract AINFTRegistry {
         // Verify owner signature
         address nftOwner = IERC721(nftContract).ownerOf(tokenId);
         bytes32 messageHash = keccak256(abi.encodePacked(
-            "AINFT_REBIND",
+            "ANIMA_REBIND",
             nftContract,
             tokenId,
             newAgentEOA

@@ -23,7 +23,7 @@ You own a Bored Ape, CryptoPunk, or EtherFantasy NFT. You want to attach an AI a
 
 | Option | Problem |
 |--------|---------|
-| Mint new AINFT | Lose your existing NFT's value/history |
+| Mint new ANIMA | Lose your existing NFT's value/history |
 | Store agent data off-chain | Not verifiable, doesn't transfer with NFT |
 | Modify original contract | Impossible (deployed immutably) |
 
@@ -34,7 +34,7 @@ ERC-6551A uses a registry (like ERC-6551) to extend existing NFTs:
 ```
 Bored Ape #123 (untouched on original contract)
          │
-         └──► AINFTRegistry
+         └──► ANIMARegistry
                    │
                    └──► Agent Identity
                         ├── agentEOA
@@ -47,13 +47,13 @@ Bored Ape #123 (untouched on original contract)
 
 ---
 
-## Comparison: ERC-AINFT vs ERC-6551A
+## Comparison: ERC-ANIMA vs ERC-6551A
 
-| Aspect | ERC-AINFT | ERC-6551A |
+| Aspect | ERC-ANIMA | ERC-6551A |
 |--------|-----------|-----------|
 | **Creates new token?** | YES | NO |
 | **Works with existing NFTs?** | NO | YES |
-| **Where is NFT?** | AINFT contract | Original contract |
+| **Where is NFT?** | ANIMA contract | Original contract |
 | **Transfer mechanism** | Standard ERC-721 | Original contract (OpenSea) |
 | **Clone creates token?** | YES (tradeable) | NO (needs claim path) |
 | **Use case** | New agent-first collections | Add agents to existing collections |
@@ -64,7 +64,7 @@ Bored Ape #123 (untouched on original contract)
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                        AINFT Registry                           │
+│                        ANIMA Registry                           │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
 │   ANY ERC-721 ──bind()──► Registry ──► Agent Identity          │
@@ -195,7 +195,7 @@ Both use `bindExisting()` to attach to an NFT.
 │  │            └── Tradeable via OpenSea                    │   │
 │  │                                                          │   │
 │  │  Option B: mintStandalone() (future)                    │   │
-│  │            └── Tradeable via AINFT marketplace          │   │
+│  │            └── Tradeable via ANIMA marketplace          │   │
 │  │                                                          │   │
 │  │  Option C: Keep standalone                              │   │
 │  │            └── Operational, not tradeable               │   │
@@ -293,7 +293,7 @@ require(msg.sender == clone.owner, "Not clone owner");
 
 ## Reference Implementation
 
-See [contracts/AINFTRegistry.sol](./contracts/AINFTRegistry.sol)
+See [contracts/ANIMARegistry.sol](./contracts/ANIMARegistry.sol)
 
 ---
 
@@ -310,7 +310,7 @@ This registry pattern is inspired by ERC-6551 (Token Bound Accounts). We gratefu
 
 ## See Also
 
-- [ERC-AINFT](../README.md) — Standalone AI-native NFT standard
+- [ERC-ANIMA](../README.md) — Standalone AI-native NFT standard
 - [CLONE-LIFECYCLE.md](./docs/CLONE-LIFECYCLE.md) — Detailed clone documentation
 - [BIND-UNBIND-FLOW.md](./docs/BIND-UNBIND-FLOW.md) — Registration flows
 

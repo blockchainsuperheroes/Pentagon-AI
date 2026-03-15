@@ -143,14 +143,14 @@ Don't bind. Clone operates with direct ownership.
 
 **Result:** Operational but not tradeable on NFT marketplaces.
 
-### Path C: Mint Standalone AINFT (Future)
+### Path C: Mint Standalone ANIMA (Future)
 
 ```solidity
-// Convert clone to full AINFT token
+// Convert clone to full ANIMA token
 mintStandalone(cloneId);
 ```
 
-**Result:** Clone becomes tradeable on AINFT-specific marketplace.
+**Result:** Clone becomes tradeable on ANIMA-specific marketplace.
 
 ---
 
@@ -191,7 +191,7 @@ mintStandalone(cloneId);
 │           │              │               │               │        │
 │           │              ▼               ▼               ▼        │
 │           │         Tradeable      Operational     Tradeable     │
-│           │         (OpenSea)      (not trade)    (AINFT mkt)   │
+│           │         (OpenSea)      (not trade)    (ANIMA mkt)   │
 │           │                                                       │
 │           └──────────────────────────────────────────────────────►│
 │                         (repeat transfers in limbo)               │

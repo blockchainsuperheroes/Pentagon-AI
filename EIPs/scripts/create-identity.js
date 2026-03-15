@@ -1,5 +1,5 @@
 /**
- * Create Dash Identity for Pentagon AINFT storage
+ * Create Dash Identity for Pentagon ANIMA storage
  * 
  * Prerequisites:
  * 1. npm install dash

@@ -1,5 +1,5 @@
 {
-  "$id": "pentagon-ainft-storage",
+  "$id": "pentagon-anima-storage",
   "version": 1,
   "ownerId": "PLACEHOLDER_IDENTITY_ID",
   "documentSchemas": {
@@ -30,7 +30,7 @@
         "tokenId": {
           "type": "string",
           "maxLength": 78,
-          "description": "AINFT token ID on Pentagon Chain"
+          "description": "ANIMA token ID on Pentagon Chain"
         },
         "agentWallet": {
           "type": "string",

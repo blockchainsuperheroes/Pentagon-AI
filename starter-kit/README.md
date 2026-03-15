@@ -39,7 +39,7 @@ forge create contracts/SimpleAgentNFT.sol:SimpleAgentNFT \
 If you already have an ERC-721 collection and want to add AI agent identity:
 
 ```bash
-# Use the AINFTRegistry to bind an agent to your NFT
+# Use the ANIMARegistry to bind an agent to your NFT
 # Registry on Pentagon Chain: 0x327165c476da9071933d4e2dbb58efe2f6c9f486
 
 cast send $REGISTRY_ADDRESS \
@@ -73,8 +73,8 @@ https://blockchainsuperheroes.github.io/anima-demo/
 
 | Contract | Address |
 |----------|---------|
-| AINFT Genesis | `0x4e8D3B9Be7Ef241Fb208364ed511E92D6E2A172d` |
-| AINFTRegistry | `0x327165c476da9071933d4e2dbb58efe2f6c9f486` |
+| ANIMA Genesis | `0x4e8D3B9Be7Ef241Fb208364ed511E92D6E2A172d` |
+| ANIMARegistry | `0x327165c476da9071933d4e2dbb58efe2f6c9f486` |
 | ATSBadge (SBT) | `0x83423589256c8C142730bfA7309643fC9217738d` |
 
 ### Deploy on Your Chain

@@ -1,10 +1,10 @@
-# Dash Evo Storage Integration for AINFTs
+# Dash Evo Storage Integration for ANIMAs
 
 **peg.gg + Pentagon Chain Integration Plan**
 
 ## Overview
 
-Add Dash Platform (Dash Evolution / Evo) as native private/permanent storage for AINFT prompt data on Pentagon Chain (zkEVM L2, gas in PC token). Users swap PC → xDASH (permanent burned LP on Uniswap) → burn xDASH → sign with normal ETH wallet → write encrypted data to Dash Drive. Agents can store directly themselves.
+Add Dash Platform (Dash Evolution / Evo) as native private/permanent storage for ANIMA prompt data on Pentagon Chain (zkEVM L2, gas in PC token). Users swap PC → xDASH (permanent burned LP on Uniswap) → burn xDASH → sign with normal ETH wallet → write encrypted data to Dash Drive. Agents can store directly themselves.
 
 **Hub:** peg.gg  
 **Backing:** 1:1 live EvoNode (4,000 DASH collateral + 10%+ APY rewards)
@@ -32,19 +32,19 @@ Add Dash Platform (Dash Evolution / Evo) as native private/permanent storage for
 1. **ETH side:** `personal_sign` / EIP-191 on simple auth message → recover pubkey
 2. **Dash side:** Build State Transition (Document insert into pre-registered Data Contract on Drive) → Bincode canonical serialization (exclude identityId + sig fields) → double-SHA256 hash → sign with recovered user pubkey or wrapper key → broadcast to public DAPI
 3. **Identity flow:** One-time ETH-signed link creates Dash Identity (asset-lock funded by us)
-4. **Privacy:** Client-side encryption (AINFT agent keys / ECDH+AES-GCM); Dash stores only ciphertext + hash. Decoder transfers with AINFT (ERC-6551)
+4. **Privacy:** Client-side encryption (ANIMA agent keys / ECDH+AES-GCM); Dash stores only ciphertext + hash. Decoder transfers with ANIMA (ERC-6551)
 5. **Payments:** xDASH burn triggers write; Pentagon Chain gas or pre-deposited credits handled by existing system
 
 ### 10/10 Upgrades
 - Over-collateral vault (115%)
 - Auto-reward script (native DASH to identities = free writes)
-- PEG airdrop to early registered AINFTs (value-tiered)
+- PEG airdrop to early registered ANIMAs (value-tiered)
 
 ## Data Contract Schema
 
 ```json
 {
-  "$id": "pentagon-ainft-storage-v1",
+  "$id": "pentagon-anima-storage-v1",
   "type": "object",
   "indices": [
     {
@@ -60,7 +60,7 @@ Add Dash Platform (Dash Evolution / Evo) as native private/permanent storage for
   "properties": {
     "tokenId": {
       "type": "string",
-      "description": "AINFT token ID on Pentagon Chain"
+      "description": "ANIMA token ID on Pentagon Chain"
     },
     "agentWallet": {
       "type": "string",
@@ -112,11 +112,11 @@ const submitNoteDocument = async () => {
   const identity = await platform.identities.get('YOUR_LINKED_IDENTITY_ID');
   
   const docProperties = {
-    message: `AINFT prompt blob hash: 0xABC... @ ${new Date().toUTCString()}`
+    message: `ANIMA prompt blob hash: 0xABC... @ ${new Date().toUTCString()}`
   };
   
   const noteDocument = await platform.documents.create(
-    'pentagonAINFT.privateStorage', // your registered Data Contract + type
+    'pentagonANIMA.privateStorage', // your registered Data Contract + type
     identity,
     docProperties
   );
@@ -151,7 +151,7 @@ const createIdentity = async () => {
 // 1. User burns xDASH on ETH → event
 
 // 2. User signs simple ETH message
-const message = `Authorize peg.gg storage: blobHash=${hash}, identity=${dashId}, AINFT=${tokenId}, nonce=${nonce}, expiry=${ts}`;
+const message = `Authorize peg.gg storage: blobHash=${hash}, identity=${dashId}, ANIMA=${tokenId}, nonce=${nonce}, expiry=${ts}`;
 const ethSig = await signer.signMessage(message); // personal_sign / EIP-191
 
 // 3. Backend verifies ETH sig → recovers pubkey → checks linked Dash identity
@@ -159,7 +159,7 @@ const recoveredPubkey = recoverPubkeyFromPersonalSign(message, ethSig); // ether
 
 // 4. Build Dash Document (encrypted client-side)
 const encryptedBlob = aesGcmEncrypt(userAgentKey, promptData);
-const doc = await platform.documents.create('pentagonAINFT.privateStorage', wrapperIdentity, {
+const doc = await platform.documents.create('pentagonANIMA.privateStorage', wrapperIdentity, {
   data: encryptedBlob
 });
 
@@ -208,18 +208,18 @@ import { secp256k1 } from '@noble/curves/secp256k1';
 import { gcm } from '@noble/ciphers/aes';
 import { randomBytes } from '@noble/ciphers/webcrypto';
 
-interface AINFTStorageConfig {
+interface ANIMAStorageConfig {
   dashNetwork: 'testnet' | 'mainnet';
   dataContractId: string;
   pegGatewayUrl: string;
 }
 
-export class DashAINFTStorage {
+export class DashANIMAStorage {
   private client: any;
-  private config: AINFTStorageConfig;
+  private config: ANIMAStorageConfig;
   private identity: any;
 
-  constructor(config: AINFTStorageConfig) {
+  constructor(config: ANIMAStorageConfig) {
     this.config = config;
   }
 
@@ -229,14 +229,14 @@ export class DashAINFTStorage {
    */
   async init(ethAddress: string, ethSignature: string): Promise<void> {
     // Verify ETH signature
-    const message = `Link Dash Identity to ${ethAddress} for AINFT storage`;
+    const message = `Link Dash Identity to ${ethAddress} for ANIMA storage`;
     // Recovery happens on backend/peg.gg
     
     // Initialize Dash client
     this.client = new Dash.Client({
       network: this.config.dashNetwork,
       apps: {
-        ainftStorage: {
+        animaStorage: {
           contractId: this.config.dataContractId
         }
       }
@@ -256,7 +256,7 @@ export class DashAINFTStorage {
       network: this.config.dashNetwork,
       wallet: { mnemonic },
       apps: {
-        ainftStorage: {
+        animaStorage: {
           contractId: this.config.dataContractId
         }
       }
@@ -289,7 +289,7 @@ export class DashAINFTStorage {
     
     // Create document
     const document = await this.client.platform.documents.create(
-      'ainftStorage.storage',
+      'animaStorage.storage',
       this.identity,
       {
         tokenId,
@@ -319,7 +319,7 @@ export class DashAINFTStorage {
     agentPrivateKey: Uint8Array
   ): Promise<string | null> {
     const documents = await this.client.platform.documents.get(
-      'ainftStorage.storage',
+      'animaStorage.storage',
       { where: [['tokenId', '==', tokenId]] }
     );
 
@@ -343,7 +343,7 @@ export class DashAINFTStorage {
     privateKey: Uint8Array,
     tokenId: string
   ): Promise<Uint8Array> {
-    const salt = new TextEncoder().encode(`ainft-storage-${tokenId}`);
+    const salt = new TextEncoder().encode(`anima-storage-${tokenId}`);
     const keyMaterial = await crypto.subtle.importKey(
       'raw',
       privateKey,
@@ -394,7 +394,7 @@ Burns xDASH and credits storage quota
 ### GET /storage/quota/:ethAddress
 Returns storage quota balance
 
-## AINFT Contract Updates
+## ANIMA Contract Updates
 
 Add storage URI prefix support:
 
@@ -464,7 +464,7 @@ function getStorageType(string memory uri) public pure returns (StorageType) {
 2. `packages/dash-storage/src/types.ts` - TypeScript interfaces
 3. `packages/dash-storage/src/encryption.ts` - AES-GCM helpers
 4. `packages/dash-storage/test/integration.test.ts` - Tests
-5. `contracts/extensions/AINFTDashStorage.sol` - Contract extension
+5. `contracts/extensions/ANIMADashStorage.sol` - Contract extension
 6. `apps/peg-gg/` - Next.js frontend
 
 ## Security Notes

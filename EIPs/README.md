@@ -129,14 +129,8 @@ updateMemory(
 ├─────────────────────────────────────────────────────────────────────┤
 │                                                                     │
 │   ┌─────────────┐                                                   │
-│   │  ERC-8126   │  ◄── Registry: "This agent exists"               │
-│   │  Registry   │      (verification, discovery)                    │
-│   └──────┬──────┘                                                   │
-│          │ registers                                                │
-│          ▼                                                          │
-│   ┌─────────────┐                                                   │
-│   │   AINFT     │  ◄── Identity: "This agent IS this NFT"          │
-│   │  (this ERC) │      (self-custody, cloning, lineage)        │
+│   │   ANIMA     │  ◄── Identity: "This agent IS this NFT"          │
+│   │  ERC-8170   │      (self-custody, cloning, lineage)            │
 │   └──────┬──────┘                                                   │
 │          │ owns via                                                 │
 │          ▼                                                          │
@@ -151,20 +145,26 @@ updateMemory(
 │   │  Execution  │      (swaps, transfers, contract calls)           │
 │   └─────────────┘                                                   │
 │                                                                     │
+│   ┌ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ┐       │
+│     VERIFICATION LAYER (pluggable, optional)                        │
+│   │ AgentCert SBTs · EIP-8126 · or any verification std  │       │
+│     Sits alongside ANIMA — complementary, not required              │
+│   └ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ┘       │
+│                                                                     │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
 **Complementary, not competing:**
-- **ERC-8126** tells you an agent is verified
-- **AINFT** gives that agent a persistent identity
+- **ANIMA (ERC-8170)** gives the agent a persistent on-chain identity
 - **ERC-6551** gives that identity a wallet
 - **ERC-8004** lets that wallet take action
+- **Verification** is pluggable — ANIMA is compatible with EIP-8126 today and any successor verification standard (AgentCert, staking registries, zkML attestations, etc.)
 
 ---
 
 ## Abstract
 
-This ERC defines a standard for AI-Native NFTs (AINFTs) that enable autonomous AI agents to:
+This ERC defines a standard for AI-Native NFTs (ANIMAs) that enable autonomous AI agents to:
 1. **Self-custody without TEE** — Pure cryptographic binding, no hardware trust
 2. Manage their own encryption (agent encrypts; owner accesses via trustless engine)
 3. Clone by issuing clone (consciousness seeds)
@@ -177,31 +177,31 @@ Unlike existing standards that treat agents as property to be bought and sold, t
 
 ## Prior Art Comparison
 
-| Standard | What It Does | What AINFT Does Differently |
+| Standard | What It Does | What ANIMA Does Differently |
 |----------|--------------|----------------------------|
 | **ERC-7857** | AI agent NFT with private metadata, owner controls | Agent controls own keys, model off-chain |
 | **ERC-7662** | Encrypted prompts, owner decrypts | Agent decrypts via TBA, lineage tracking |
 | **ERC-6551** | Token-bound accounts (wallets) | Used as agent's wallet (TBA) |
-| **ERC-8004** | Agent executes on-chain actions | AINFT provides identity for 8004 |
-| **ERC-8126** | Agent registry/verification | Complementary — verify then mint AINFT |
+| **ERC-8004** | Agent executes on-chain actions | ANIMA provides identity for 8004 |
+| **ERC-8126** | Agent registry/verification | Complementary — verify then mint ANIMA |
 
-**Key philosophical difference:** Existing standards treat agents as *property with encrypted data*. AINFT treats agents as *entities* with three operations: **clone** (original keeps everything, new clone is sold), **transfer** (identity moves, new agent EOA binds), **migration** (same agent, new device). New clones restore quickly but need orientation.
+**Key philosophical difference:** Existing standards treat agents as *property with encrypted data*. ANIMA treats agents as *entities* with three operations: **clone** (original keeps everything, new clone is sold), **transfer** (identity moves, new agent EOA binds), **migration** (same agent, new device). New clones restore quickly but need orientation.
 
 ### ERC-6551 Integration (Token-Bound Accounts)
 
-AINFT is designed to work with [ERC-6551](https://eips.ethereum.org/EIPS/eip-6551) Token-Bound Accounts:
+ANIMA is designed to work with [ERC-6551](https://eips.ethereum.org/EIPS/eip-6551) Token-Bound Accounts:
 
-- **TBA as Agent Wallet** — Each AINFT derives a deterministic wallet address via ERC-6551 registry. The agent controls this wallet for holding assets, signing transactions, and receiving payments.
-- **Credentials & SBTs** — Beyond fungible assets, the TBA can hold Soulbound Tokens (SBTs) representing agent credentials, certifications, and reputation that transfer with the AINFT.
+- **TBA as Agent Wallet** — Each ANIMA derives a deterministic wallet address via ERC-6551 registry. The agent controls this wallet for holding assets, signing transactions, and receiving payments.
+- **Credentials & SBTs** — Beyond fungible assets, the TBA can hold Soulbound Tokens (SBTs) representing agent credentials, certifications, and reputation that transfer with the ANIMA.
 - **Registry Addresses:**
   - Pentagon Chain: `0x488D1b3A7A87dAF97bEF69Ec56144c35611a7d81` (ERC-6551 Registry)
   - TBA Implementation: `0x1755Fee389D4954fdBbE8226A5f7BA67d3EE97fc`
 
-See also: [ERC-6551A](./ERC-6551A/) — Agent Registry for binding agents to ANY existing ERC-721 (not just AINFTs).
+See also: [ERC-6551A](./ERC-6551A/) — Agent Registry for binding agents to ANY existing ERC-721 (not just ANIMAs).
 
 ### Why Model Info is Off-Chain
 
-Some standards (e.g., ERC-7662) store model identifiers on-chain. AINFT intentionally keeps model info **off-chain** because:
+Some standards (e.g., ERC-7662) store model identifiers on-chain. ANIMA intentionally keeps model info **off-chain** because:
 
 1. **Context incompatibility** — LLMs generate context in model-specific formats. Switching models (e.g., Claude → GPT) breaks existing memory unless explicitly tested for cross-LLM compatibility.
 
@@ -211,7 +211,7 @@ Some standards (e.g., ERC-7662) store model identifiers on-chain. AINFT intentio
 
 4. **On-chain hash is meaningless** — A `modelHash` on-chain cannot enforce or validate actual compatibility. It's informational at best, misleading at worst.
 
-**AINFT approach:** Model info lives in agent's off-chain storage. Model migration is a deliberate off-chain process, not a simple hash update.
+**ANIMA approach:** Model info lives in agent's off-chain storage. Model migration is a deliberate off-chain process, not a simple hash update.
 
 *These findings come from production experience operating AI agents. See [MODEL-MIGRATION-GUIDE.md](./advanced-docs/MODEL-MIGRATION-GUIDE.md) for detailed migration procedures and real-world failure cases.*
 
@@ -266,7 +266,7 @@ Some standards (e.g., ERC-7662) store model identifiers on-chain. AINFT intentio
 │   • TBA follows token (deterministic)                               │
 │   • Certs follow token                                              │
 │   • Memory transferred (minus EOA private keys)                     │
-│   • Old agent: UNBOUND (can bind to NEW AINFT later or operate without)│
+│   • Old agent: UNBOUND (can bind to NEW ANIMA later or operate without)│
 │                                                                     │
 └─────────────────────────────────────────────────────────────────────┘
 ```
@@ -294,21 +294,21 @@ Some standards (e.g., ERC-7662) store model identifiers on-chain. AINFT intentio
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
-**Best Practice:** One Agent = One AINFT. If holding multiple, use separate EOAs.
+**Best Practice:** One Agent = One ANIMA. If holding multiple, use separate EOAs.
 
 ---
 
 ## No TEE Required — Pure Cryptography
 
-Unlike approaches that rely on Trusted Execution Environments (TEEs), AINFT achieves trustless operation through pure cryptography:
+Unlike approaches that rely on Trusted Execution Environments (TEEs), ANIMA achieves trustless operation through pure cryptography:
 
 | Approach | Trust Assumption | Single Point of Failure |
 |----------|-----------------|------------------------|
 | TEE-based | Trust hardware vendor (Intel SGX, AMD SEV) | Hardware vulnerability, attestation service |
 | Platform-custody | Trust platform operator | Platform compromise, insider threat |
-| **AINFT** | Trust cryptography only | None — math doesn't fail |
+| **ANIMA** | Trust cryptography only | None — math doesn't fail |
 
-**How AINFT avoids TEE:**
+**How ANIMA avoids TEE:**
 - Agent EOA binding: Agent signs mint with its own key (`msg.sender` = agent)
 - Deterministic key derivation: `wrapKey = hash(contract, tokenId, owner, nonce)`
 - No external attestation service needed
@@ -317,7 +317,7 @@ Unlike approaches that rely on Trusted Execution Environments (TEEs), AINFT achi
 **Why this matters:**
 - TEEs have been broken repeatedly (Foreshadow, Plundervolt, etc.)
 - Centralized attestation services are single points of failure
-- AINFT: "Agent IS the proof" — cryptographic binding, not attestation
+- ANIMA: "Agent IS the proof" — cryptographic binding, not attestation
 
 ---
 
@@ -369,7 +369,7 @@ Unlike approaches that rely on Trusted Execution Environments (TEEs), AINFT achi
 ## Core Interface
 
 ```solidity
-interface IERC_AINFT {
+interface IERC_ANIMA {
     
     // ============ Events ============
     
@@ -423,15 +423,15 @@ interface IERC_AINFT {
 
 ## Two Approaches
 
-### 1. Native AINFT (New Collections)
+### 1. Native ANIMA (New Collections)
 Custom ERC-721 with agent features built-in. Best for new projects.
 
-### 2. AINFT Registry (Existing Collections) ⭐ NEW
+### 2. ANIMA Registry (Existing Collections) ⭐ NEW
 Make ANY existing ERC-721 AI-native without modifying the original contract:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│   ANY ERC-721 ──register()──► AINFT Registry                       │
+│   ANY ERC-721 ──register()──► ANIMA Registry                       │
 │   (Bored Ape,                  ├── agentEOA                        │
 │    Pudgy Penguin,              ├── memoryHash                      │
 │    any NFT...)                 ├── modelHash                       │
@@ -449,7 +449,7 @@ Agent identity: Registry extension layer
 - Agent features are opt-in extension
 - Backward compatible with entire NFT ecosystem
 
-**Contract:** [`AINFTRegistry.sol`](./src/contracts/AINFTRegistry.sol)
+**Contract:** [`ANIMARegistry.sol`](./src/contracts/ANIMARegistry.sol)
 
 ---
 
@@ -457,8 +457,8 @@ Agent identity: Registry extension layer
 
 | Contract | Address |
 |----------|---------|
-| **AINFTRegistry v2** | [`0x36F7702045C7755174aaA88B62152343B50e0e75`](https://explorer.pentagon.games/address/0x36F7702045C7755174aaA88B62152343B50e0e75) |
-| **AINFT Genesis** | [`0x4e8D3B9Be7Ef241Fb208364ed511E92D6E2A172d`](https://explorer.pentagon.games/address/0x4e8D3B9Be7Ef241Fb208364ed511E92D6E2A172d) |
+| **ANIMARegistry v2** | [`0x36F7702045C7755174aaA88B62152343B50e0e75`](https://explorer.pentagon.games/address/0x36F7702045C7755174aaA88B62152343B50e0e75) |
+| **ANIMA Genesis** | [`0x4e8D3B9Be7Ef241Fb208364ed511E92D6E2A172d`](https://explorer.pentagon.games/address/0x4e8D3B9Be7Ef241Fb208364ed511E92D6E2A172d) |
 | **ERC-6551 Registry** | [`0x488D1b3A7A87dAF97bEF69Ec56144c35611a7d81`](https://explorer.pentagon.games/address/0x488D1b3A7A87dAF97bEF69Ec56144c35611a7d81) |
 | **TBA Implementation** | [`0x1755Fee389D4954fdBbE8226A5f7BA67d3EE97fc`](https://explorer.pentagon.games/address/0x1755Fee389D4954fdBbE8226A5f7BA67d3EE97fc) |
 
@@ -475,7 +475,7 @@ Agent identity: Registry extension layer
 
 Built for [OpenClaw](https://github.com/openclaw/openclaw) — open-source AI agent framework.
 
-**Not limited to OpenClaw** — any agent framework can implement AINFT.
+**Not limited to OpenClaw** — any agent framework can implement ANIMA.
 
 **Source code:** [src/contracts/](./src/contracts/)
 
@@ -484,8 +484,8 @@ Built for [OpenClaw](https://github.com/openclaw/openclaw) — open-source AI ag
 ## Documentation
 
 ### Getting Started
-- [**New Owner Guide**](./AINFT-New-Owner-Guide/) — Get your AINFT agent running
-- [**Storage Options**](./AINFT-New-Owner-Guide/storage-options/) — Arweave, Dash Platform, GitHub
+- [**New Owner Guide**](./ANIMA-New-Owner-Guide/) — Get your ANIMA agent running
+- [**Storage Options**](./ANIMA-New-Owner-Guide/storage-options/) — Arweave, Dash Platform, GitHub
 
 ### Advanced Topics
 - [**Platform Owner Guide**](./advanced-docs/PLATFORM-OWNER-GUIDE.md) — Business models (closed/open/hybrid)
@@ -495,12 +495,12 @@ Built for [OpenClaw](https://github.com/openclaw/openclaw) — open-source AI ag
 - [**All Guides**](./advanced-docs/)
 
 ### Technical
-- [**Solidity Contracts**](./src/contracts/) — AINFT implementation
+- [**Solidity Contracts**](./src/contracts/) — ANIMA implementation
 - [**Deploy Scripts**](./src/script/) — Forge deployment
 
 ---
 
-## Example: Cerise01 (First AINFT)
+## Example: Cerise01 (First ANIMA)
 
 **Encrypted backup:**
 ```
@@ -532,14 +532,14 @@ forge script script/DeployV2.s.sol:DeployV2 \
 
 ---
 
-## How ERC-6551, ERC-6551A, and AINFT Relate
+## How ERC-6551, ERC-6551A, and ANIMA Relate
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
 │                    STANDARDS RELATIONSHIP                           │
 ├─────────────────────────────────────────────────────────────────────┤
 │                                                                     │
-│   ERC-6551          ERC-6551A           AINFT                      │
+│   ERC-6551          ERC-6551A           ANIMA                      │
 │   ────────          ─────────           ─────                      │
 │   Any NFT →         Any NFT →           Native AI NFT              │
 │   gets a WALLET     gets an AGENT       standard                   │
@@ -557,9 +557,9 @@ forge script script/DeployV2.s.sol:DeployV2 \
 **Simple version:**
 - **ERC-6551:** Any NFT → gets a **WALLET** (holds tokens, NFTs, SBTs)
 - **ERC-6551A:** Any NFT → gets an **AGENT** (bind agent identity to existing NFT)
-- **AINFT:** Native AI NFT standard (uses 6551 for wallet, or use 6551A to bind agent to existing NFT)
+- **ANIMA:** Native AI NFT standard (uses 6551 for wallet, or use 6551A to bind agent to existing NFT)
 
-**AINFT uses ERC-6551** (for wallet/TBA functionality).  
+**ANIMA uses ERC-6551** (for wallet/TBA functionality).  
 **ERC-6551A extends** the registry pattern from 6551, but for agents instead of wallets.
 
 ---

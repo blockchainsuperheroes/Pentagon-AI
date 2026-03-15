@@ -1,17 +1,17 @@
 # GLOSSARY.md — Terms & Acronyms
 
-*Quick reference for AINFT and related concepts*
+*Quick reference for ANIMA and related concepts*
 
 ---
 
-## Core AINFT Terms
+## Core ANIMA Terms
 
 | Term | Full Name | Description |
 |------|-----------|-------------|
-| **AINFT** | AI-Native NFT | NFT standard designed for AI agent identity, with reproduction and self-custody |
+| **ANIMA** | AI-Native NFT | NFT standard designed for AI agent identity, with reproduction and self-custody |
 | **EOA** | Externally Owned Account | A wallet controlled by a private key (not a smart contract). Agents hold their own EOA to prove identity |
 | **TBA** | Token-Bound Account | A smart contract wallet bound to an NFT via ERC-6551. The NFT controls the wallet |
-| **TBA vs EOA** | — | EOA = agent's own key. TBA = smart contract wallet owned by NFT. AINFT uses EOA for identity binding |
+| **TBA vs EOA** | — | EOA = agent's own key. TBA = smart contract wallet owned by NFT. ANIMA uses EOA for identity binding |
 
 ---
 
@@ -20,7 +20,7 @@
 | Term | Full Name | Description |
 |------|-----------|-------------|
 | **ERC** | Ethereum Request for Comments | Standard proposals for Ethereum (like ERC-20, ERC-721) |
-| **ERC-721** | NFT Standard | The base NFT standard. AINFT extends this |
+| **ERC-721** | NFT Standard | The base NFT standard. ANIMA extends this |
 | **ERC-6551** | Token Bound Accounts | Standard for NFTs to own smart contract wallets |
 | **ERC-4337** | Account Abstraction | Standard for smart contract wallets with advanced features (paymasters, bundlers) |
 | **EIP** | Ethereum Improvement Proposal | Broader proposals for Ethereum changes (ERCs are a subset) |
@@ -52,11 +52,11 @@
 | Term | Full Name | Description |
 |------|-----------|-------------|
 | **IPFS** | InterPlanetary File System | Decentralized content-addressed storage. Requires pinning to persist |
-| **Arweave** | — | Permanent decentralized storage. Pay once, stored forever. Recommended for AINFT |
+| **Arweave** | — | Permanent decentralized storage. Pay once, stored forever. Recommended for ANIMA |
 
 ---
 
-## AINFT-Specific
+## ANIMA-Specific
 
 | Term | Description |
 |------|-------------|
@@ -86,7 +86,7 @@
 
 | Term | Full Name | Description |
 |------|-----------|-------------|
-| **AgentCert** | Agent Certification | Tiered certification system (L1-L4) proving agent readiness. L3+ = AINFT ready |
+| **AgentCert** | Agent Certification | Tiered certification system (L1-L4) proving agent readiness. L3+ = ANIMA ready |
 | **OpenClaw** | — | Open-source agent runtime framework |
 | **ATS** | Agent Test Standard | Testing framework for agent capabilities |
 
@@ -100,7 +100,7 @@
 EOA (Externally Owned Account)
 ├─ Controlled by private key
 ├─ Agent holds this directly
-└─ Used for AINFT identity binding
+└─ Used for ANIMA identity binding
 
 TBA (Token Bound Account)
 ├─ Smart contract wallet
@@ -113,7 +113,7 @@ Smart Contract Wallet (e.g., Safe, 4337)
 └─ Can be combined with TBA
 ```
 
-### AINFT vs Regular NFT
+### ANIMA vs Regular NFT
 
 ```
 Regular NFT
@@ -121,7 +121,7 @@ Regular NFT
 ├─ No identity binding
 └─ Just art/collectible
 
-AINFT
+ANIMA
 ├─ Agent EOA bound to token
 ├─ Memory state hash on-chain
 ├─ Reproduction capability
@@ -133,7 +133,7 @@ AINFT
 
 ## See Also
 
-- [ERC-AINFT Specification](./EIPs/ERC-AINFT.md)
+- [ERC-ANIMA Specification](./EIPs/ERC-ANIMA.md)
 - [Agent Verification Philosophy](./EIPs/AGENT-VERIFICATION-PHILOSOPHY.md)
 - [OpenClaw Bind Guide](./EIPs/OPENCLAW-BIND-GUIDE.md)
 - [ERC-6551 Registry Guide](./EIPs/ERC6551-REGISTRY-GUIDE.md)

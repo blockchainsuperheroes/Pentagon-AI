@@ -1,6 +1,6 @@
-# AINFT Deployment Guide
+# ANIMA Deployment Guide
 
-Step-by-step guide to deploy AINFT infrastructure.
+Step-by-step guide to deploy ANIMA infrastructure.
 
 ## Prerequisites
 
@@ -28,11 +28,11 @@ forge create src/ERC6551Account.sol:ERC6551Account \
   --private-key $DEPLOYER_KEY
 ```
 
-### 3. Deploy AINFT Genesis Contract
+### 3. Deploy ANIMA Genesis Contract
 
 ```bash
-forge create contracts/AINFT.sol:AINFT \
-  --constructor-args "Pentagon AINFT" "PAINFT" $ERC6551_REGISTRY $ACCOUNT_IMPL \
+forge create contracts/ANIMA.sol:ANIMA \
+  --constructor-args "Pentagon ANIMA" "PANIMA" $ERC6551_REGISTRY $ACCOUNT_IMPL \
   --rpc-url https://rpc.pentagon.games \
   --private-key $DEPLOYER_KEY
 ```
@@ -41,13 +41,13 @@ forge create contracts/AINFT.sol:AINFT \
 
 ```solidity
 // Set cloning limits
-ainft.setMaxClone(100);
-ainft.setCloningCooldown(1 hours);
-ainft.setCloningFee(0.01 ether);
+anima.setMaxClone(100);
+anima.setCloningCooldown(1 hours);
+anima.setCloningFee(0.01 ether);
 
 // Platform owner is deployer by default
 // Transfer ownership later if needed
-ainft.transferOwnership(newPlatformOwner);
+anima.transferOwnership(newPlatformOwner);
 ```
 
 ### 5. Mint First Agent (Platform Test)
@@ -57,7 +57,7 @@ ainft.transferOwnership(newPlatformOwner);
 bytes memory attestation = platformSign(modelHash, contextHash, recipient);
 
 // Mint
-(uint256 tokenId, address tba) = ainft.mintSelf(
+(uint256 tokenId, address tba) = anima.mintSelf(
     keccak256("claude-opus-4.5"),  // modelHash
     bytes32(0),                     // memoryHash (empty initially)
     keccak256("cerise-soul"),       // contextHash
@@ -70,7 +70,7 @@ bytes memory attestation = platformSign(modelHash, contextHash, recipient);
 
 | Contract | Address | Notes |
 |----------|---------|-------|
-| AINFT Genesis | `TBD` | Platform owner: `TBD` |
+| ANIMA Genesis | `TBD` | Platform owner: `TBD` |
 | ERC-6551 Registry | `TBD` | Canonical or custom |
 | Account Implementation | `TBD` | Agent wallets |
 
@@ -87,7 +87,7 @@ bytes memory attestation = platformSign(modelHash, contextHash, recipient);
 
 | Action | Estimated Gas | PC Cost (~) |
 |--------|---------------|-------------|
-| Deploy AINFT | ~2M gas | 0.02 PC |
+| Deploy ANIMA | ~2M gas | 0.02 PC |
 | mintSelf | ~300k gas | 0.003 PC |
 | updateMemory | ~100k gas | 0.001 PC |
 | clone | ~400k gas | 0.004 PC |

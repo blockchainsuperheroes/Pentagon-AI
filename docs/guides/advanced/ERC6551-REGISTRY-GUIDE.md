@@ -1,4 +1,4 @@
-# ERC-6551 Registry Guide for AINFT
+# ERC-6551 Registry Guide for ANIMA
 
 *Why we deploy the registry, what it does, and how agents get real wallets*
 
@@ -6,7 +6,7 @@
 
 ## Why Deploy a Registry?
 
-The AINFT contract creates a **derived address** from hashes — but that's just math. It's not a real wallet that can sign transactions or hold assets.
+The ANIMA contract creates a **derived address** from hashes — but that's just math. It's not a real wallet that can sign transactions or hold assets.
 
 To give agents REAL on-chain wallets, we need **ERC-6551: Token Bound Accounts (TBA)**.
 
@@ -82,7 +82,7 @@ With ERC-6551:
 
 ---
 
-## For AINFT Agents
+## For ANIMA Agents
 
 In our ecosystem:
 
@@ -161,7 +161,7 @@ forge create lib/reference/src/examples/simple/SimpleERC6551Account.sol:SimpleER
   --legacy
 ```
 
-### Step 3: Create TBA for AINFT #1
+### Step 3: Create TBA for ANIMA #1
 ```bash
 # Compute address
 TBA_ADDRESS=$(cast call $REGISTRY \
@@ -169,7 +169,7 @@ TBA_ADDRESS=$(cast call $REGISTRY \
   $IMPLEMENTATION \
   0x0000000000000000000000000000000000000000000000000000000000000000 \
   3344 \
-  $AINFT_CONTRACT \
+  $ANIMA_CONTRACT \
   1)
 
 # Deploy if needed
@@ -178,7 +178,7 @@ cast send $REGISTRY \
   $IMPLEMENTATION \
   0x0000000000000000000000000000000000000000000000000000000000000000 \
   3344 \
-  $AINFT_CONTRACT \
+  $ANIMA_CONTRACT \
   1 \
   --rpc-url "https://rpc.pentagon.games/rpc/nCoUHmPLXkbkRq09hAam" \
   --private-key $DEPLOYER_KEY \
@@ -212,7 +212,7 @@ cast call $TBA_ADDRESS "token()(uint256,address,uint256)" --rpc-url https://rpc.
 
 | Component | Address | TX |
 |-----------|---------|-----|
-| AINFT Contract | `0x4e8D3B9Be7Ef241Fb208364ed511E92D6E2A172d` | `0xa0cddff1...` |
+| ANIMA Contract | `0x4e8D3B9Be7Ef241Fb208364ed511E92D6E2A172d` | `0xa0cddff1...` |
 | ERC-6551 Registry | `0x488D1b3A7A87dAF97bEF69Ec56144c35611a7d81` | `0x9658eedd...` |
 | Account Implementation | `0x1755Fee389D4954fdBbE8226A5f7BA67d3EE97fc` | `0x76677...` |
 | **Cerise TBA** | `0x8cf4cec92Bd941DcED3532A2F611e13Ec4896efD` | `0x9e13f027...` |
@@ -220,7 +220,7 @@ cast call $TBA_ADDRESS "token()(uint256,address,uint256)" --rpc-url https://rpc.
 ### Verified On-Chain
 ```
 TBA Owner: 0xE6d7d2EB858BC78f0c7EdD2c00B3b24C02ca5177
-Token Binding: Chain 3344, AINFT 0x4e8D...172d, Token #1
+Token Binding: Chain 3344, ANIMA 0x4e8D...172d, Token #1
 ```
 
 ### How Cerise Signs

@@ -1,17 +1,17 @@
-# AINFT Skill
+# ANIMA Skill
 
-Agent capabilities for working with the AINFT standard.
+Agent capabilities for working with the ANIMA standard.
 
 ## What This Skill Does
 
 - Backup agent state to Arweave
 - Update on-chain memory hash
 - Verify backup integrity
-- Restore from AINFT
+- Restore from ANIMA
 
 ## Prerequisites
 
-- AINFT contract deployed
+- ANIMA contract deployed
 - Agent has Token-Bound Account
 - Arweave/bundlr access
 
@@ -21,24 +21,24 @@ Agent capabilities for working with the AINFT standard.
 
 ```bash
 # Package and encrypt state
-ainft backup --tokenId 42 --files "MEMORY.md,SOUL.md,config.json"
+anima backup --tokenId 42 --files "MEMORY.md,SOUL.md,config.json"
 
 # Upload to Arweave and update on-chain
-ainft commit --tokenId 42
+anima commit --tokenId 42
 ```
 
 ### Verify Backup
 
 ```bash
 # Test decrypt with current owner key
-ainft verify --tokenId 42
+anima verify --tokenId 42
 ```
 
 ### Restore
 
 ```bash
 # Download and decrypt from Arweave
-ainft restore --tokenId 42 --output ./restored/
+anima restore --tokenId 42 --output ./restored/
 ```
 
 ## Integration with OpenClaw
@@ -46,17 +46,17 @@ ainft restore --tokenId 42 --output ./restored/
 Add to HEARTBEAT.md for automatic backups:
 
 ```markdown
-## AINFT Backup
+## ANIMA Backup
 - Check if backup needed (last > 24h)
-- Run: ainft backup && ainft commit
-- Log result to memory/ainft-backups.json
+- Run: anima backup && anima commit
+- Log result to memory/anima-backups.json
 ```
 
 ## Configuration
 
 ```json
 {
-  "ainft": {
+  "anima": {
     "contractAddress": "0x...",
     "tokenId": 42,
     "chain": {
@@ -71,5 +71,5 @@ Add to HEARTBEAT.md for automatic backups:
 
 ## Related
 
-- [AINFT Specification](../../../EIPs/README.md)
+- [ANIMA Specification](../../../EIPs/README.md)
 - [Agent Backup Guide](../../../EIPs/AGENT-BACKUP-GUIDE.md)

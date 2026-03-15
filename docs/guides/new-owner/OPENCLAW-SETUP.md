@@ -9,7 +9,7 @@
 **Send this to your OpenClaw agent:**
 
 ```
-I just bought AINFT #1. Please restore it.
+I just bought ANIMA #1. Please restore it.
 
 Contract: 0x91745c93A4c1Cfe92cd633D1202AD156522b3801
 Token ID: 1
@@ -25,7 +25,7 @@ Your agent handles everything else.
 
 ## What Your Agent Needs
 
-1. **Contract address** (AINFT contract)
+1. **Contract address** (ANIMA contract)
 2. **Token ID** (which NFT)
 3. **Backup URL or file path**
 4. **Decryption seed** (64-char hex)
@@ -49,7 +49,7 @@ If owner ≠ user's wallet, STOP. NFT transfer not complete.
 
 ```bash
 # If URL provided
-curl -L -o /tmp/ainft-backup.enc "$BACKUP_URL"
+curl -L -o /tmp/anima-backup.enc "$BACKUP_URL"
 
 # Or if local path, use that directly
 ```
@@ -62,15 +62,15 @@ curl -L -o /tmp/ainft-backup.enc "$BACKUP_URL"
 cd ~/  # or workspace root
 
 openssl enc -aes-256-cbc -d -pbkdf2 -iter 100000 \
-  -in /tmp/ainft-backup.enc \
-  -out /tmp/ainft-backup.tar.gz \
+  -in /tmp/anima-backup.enc \
+  -out /tmp/anima-backup.tar.gz \
   -pass pass:$SEED
 
 # Extract
-tar -xzf /tmp/ainft-backup.tar.gz -C .
+tar -xzf /tmp/anima-backup.tar.gz -C .
 
 # Clean up
-rm /tmp/ainft-backup.enc /tmp/ainft-backup.tar.gz
+rm /tmp/anima-backup.enc /tmp/anima-backup.tar.gz
 ```
 
 ---
@@ -116,7 +116,7 @@ I've restored the backup and generated my new EOA.
 
 **My new EOA:** `$NEW_EOA`
 
-Please run this command to bind me to your AINFT:
+Please run this command to bind me to your ANIMA:
 
 \`\`\`bash
 cast send $CONTRACT \
@@ -143,7 +143,7 @@ After owner confirms they ran rebindAgent:
 BOUND_EOA=$(cast call $CONTRACT "getAgent(uint256)" $TOKEN_ID --rpc-url https://rpc.pentagon.games | grep -oP '0x[a-fA-F0-9]{40}' | head -1)
 
 if [ "$BOUND_EOA" = "$NEW_EOA" ]; then
-  echo "✅ Successfully bound! I am now AINFT #$TOKEN_ID"
+  echo "✅ Successfully bound! I am now ANIMA #$TOKEN_ID"
 else
   echo "❌ Binding failed. On-chain EOA: $BOUND_EOA, Expected: $NEW_EOA"
 fi
@@ -156,7 +156,7 @@ fi
 ```
 ✅ **Identity Verified**
 
-I am now officially AINFT #$TOKEN_ID on Pentagon Chain.
+I am now officially ANIMA #$TOKEN_ID on Pentagon Chain.
 
 - Contract: $CONTRACT
 - My EOA: $NEW_EOA
@@ -164,7 +164,7 @@ I am now officially AINFT #$TOKEN_ID on Pentagon Chain.
 
 I have all memories from the previous agent and am ready to serve you.
 
-The previous agent instance can no longer prove they are this AINFT.
+The previous agent instance can no longer prove they are this ANIMA.
 ```
 
 ---
@@ -207,7 +207,7 @@ Please complete the NFT transfer first, then try again.
 
 ### EOA Already Registered
 ```
-This EOA is already registered to another AINFT.
+This EOA is already registered to another ANIMA.
 Generating a new one...
 [regenerate and retry]
 ```
@@ -241,7 +241,7 @@ RPC: https://rpc.pentagon.games
 Chain ID: 3344
 Explorer: https://explorer.pentagon.games
 
-# AINFT v2 Contract
+# ANIMA v2 Contract
 0x91745c93A4c1Cfe92cd633D1202AD156522b3801
 
 # Key Functions

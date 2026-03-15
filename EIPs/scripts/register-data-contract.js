@@ -1,5 +1,5 @@
 /**
- * Register Pentagon AINFT Data Contract on Dash Platform
+ * Register Pentagon ANIMA Data Contract on Dash Platform
  * 
  * Prerequisites:
  * 1. npm install dash

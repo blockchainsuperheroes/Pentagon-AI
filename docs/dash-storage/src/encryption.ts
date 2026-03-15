@@ -1,5 +1,5 @@
 /**
- * Encryption utilities for AINFT memory storage
+ * Encryption utilities for ANIMA memory storage
  * Uses AES-256-GCM with HKDF key derivation
  */
 
@@ -20,8 +20,8 @@ export function deriveEncryptionKey(
   privateKey: Uint8Array,
   tokenId: string
 ): Uint8Array {
-  const salt = new TextEncoder().encode(`pentagon-ainft-${tokenId}`);
-  const info = new TextEncoder().encode('ainft-memory-encryption');
+  const salt = new TextEncoder().encode(`pentagon-anima-${tokenId}`);
+  const info = new TextEncoder().encode('anima-memory-encryption');
   
   return hkdf(sha256, privateKey, salt, info, KEY_LENGTH);
 }

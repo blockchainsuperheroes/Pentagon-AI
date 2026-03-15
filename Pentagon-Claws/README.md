@@ -58,7 +58,7 @@ certification:
 ## Related
 
 - [Agent Test Standard](../Agent-Test-Standard/) — Certification tiers L1-L7
-- [ERC-7857A](https://github.com/blockchainsuperheroes/Pentagon-Chain-Ecosystem-Solidity-Contracts/blob/main/EIPs/ERC-7857A-AINFT.md) — AI-Native NFT proposal
+- [ERC-7857A](https://github.com/blockchainsuperheroes/Pentagon-Chain-Ecosystem-Solidity-Contracts/blob/main/EIPs/ERC-7857A-ANIMA.md) — AI-Native NFT proposal
 - [OpenClaw](https://github.com/openclaw/openclaw) — Upstream framework
 
 ---

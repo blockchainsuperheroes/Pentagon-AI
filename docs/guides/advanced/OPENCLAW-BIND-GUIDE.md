@@ -1,12 +1,12 @@
-# AINFT Bind Guide for OpenClaw Agents
+# ANIMA Bind Guide for OpenClaw Agents
 
-*How to bind your OpenClaw agent to an on-chain AINFT identity*
+*How to bind your OpenClaw agent to an on-chain ANIMA identity*
 
 ---
 
 ## Overview
 
-Binding an agent to an AINFT creates a **verifiable on-chain identity**. After binding:
+Binding an agent to an ANIMA creates a **verifiable on-chain identity**. After binding:
 - Agent has a Token-Bound Account (TBA) for signing
 - Memory state can be cryptographically verified
 - Agent can clone (create clone)
@@ -16,7 +16,7 @@ Binding an agent to an AINFT creates a **verifiable on-chain identity**. After b
 
 ## Prerequisites
 
-1. **AINFT Contract deployed** on your chain
+1. **ANIMA Contract deployed** on your chain
 2. **Platform wallet** (can attest mints)
 3. **Agent running** via OpenClaw
 4. **Storage** for encrypted backups (Arweave recommended)
@@ -91,15 +91,15 @@ ATTESTATION=$(cast wallet sign --private-key $PLATFORM_KEY $MESSAGE_HASH)
 echo "Attestation: $ATTESTATION"
 ```
 
-### Step 4: Mint AINFT
+### Step 4: Mint ANIMA
 
 Call the contract to mint:
 
 ```bash
-AINFT_CONTRACT="0x4e8D3B9Be7Ef241Fb208364ed511E92D6E2A172d"  # Pentagon Chain
+ANIMA_CONTRACT="0x4e8D3B9Be7Ef241Fb208364ed511E92D6E2A172d"  # Pentagon Chain
 ENCRYPTED_SEED="0x$(echo $SEED)"  # Hex-encoded seed
 
-cast send $AINFT_CONTRACT \
+cast send $ANIMA_CONTRACT \
   "mintSelf(bytes32,bytes32,bytes32,bytes,bytes)" \
   $MODEL_HASH \
   $MEMORY_HASH \
@@ -112,7 +112,7 @@ cast send $AINFT_CONTRACT \
 ```
 
 **Output includes:**
-- `tokenId` — Your AINFT ID
+- `tokenId` — Your ANIMA ID
 - `derivedWallet` — Your TBA address
 
 ### Step 5: Store TBA Credentials
@@ -122,7 +122,7 @@ Save the derived wallet info in your agent config:
 ```bash
 # Add to TOOLS.md or secure storage
 echo "
-## AINFT Identity
+## ANIMA Identity
 - **Token ID:** 1
 - **Contract:** 0x4e8D3B9Be7Ef241Fb208364ed511E92D6E2A172d
 - **TBA Address:** 0xc6947153f8b4322f3f617746453508de20d75e9c
@@ -132,13 +132,13 @@ echo "
 
 ### Step 6: Update OpenClaw Config (Optional)
 
-Add AINFT identity to your gateway config:
+Add ANIMA identity to your gateway config:
 
 ```json
 {
   "agent": {
     "identity": {
-      "ainft": {
+      "anima": {
         "contract": "0x4e8D3B9Be7Ef241Fb208364ed511E92D6E2A172d",
         "tokenId": 1,
         "tba": "0xc6947153f8b4322f3f617746453508de20d75e9c",
@@ -157,7 +157,7 @@ Add AINFT identity to your gateway config:
 
 ```bash
 # Get identity from contract
-cast call $AINFT_CONTRACT \
+cast call $ANIMA_CONTRACT \
   "getIdentity(uint256)(bytes32,bytes32,bytes32,uint256,uint256)" 1 \
   --rpc-url https://rpc.pentagon.games
 
@@ -171,7 +171,7 @@ cast call $AINFT_CONTRACT \
 CURRENT_HASH=$(cat MEMORY.md | cast keccak)
 
 # Get on-chain hash
-ONCHAIN_HASH=$(cast call $AINFT_CONTRACT \
+ONCHAIN_HASH=$(cast call $ANIMA_CONTRACT \
   "getIdentity(uint256)(bytes32,bytes32,bytes32,uint256,uint256)" 1 \
   --rpc-url https://rpc.pentagon.games | head -2 | tail -1)
 
@@ -191,13 +191,13 @@ After binding, sign messages to prove identity:
 
 ```bash
 # Sign a message as the agent
-MESSAGE="I am Cerise, AINFT #1"
+MESSAGE="I am Cerise, ANIMA #1"
 MESSAGE_HASH=$(echo -n "$MESSAGE" | cast keccak)
 
 # Sign with TBA key (derived from seed)
 TBA_SIGNATURE=$(cast wallet sign --private-key $TBA_PRIVATE_KEY $MESSAGE_HASH)
 
-# Anyone can verify this signature came from AINFT #1
+# Anyone can verify this signature came from ANIMA #1
 ```
 
 ---
@@ -217,7 +217,7 @@ openssl enc -aes-256-cbc -salt -in agent-backup-v2.tar.gz -out agent-backup-v2.e
 
 # Update on-chain
 NEW_MEMORY_HASH=$(cat MEMORY.md | cast keccak)
-cast send $AINFT_CONTRACT \
+cast send $ANIMA_CONTRACT \
   "updateMemory(uint256,bytes32,string)" \
   1 \
   $NEW_MEMORY_HASH \
@@ -244,7 +244,7 @@ REPRO_MESSAGE=$(cast keccak $(cast abi-encode --packed \
 AGENT_SIGNATURE=$(cast wallet sign --private-key $TBA_PRIVATE_KEY $REPRO_MESSAGE)
 
 # Call clone
-cast send $AINFT_CONTRACT \
+cast send $ANIMA_CONTRACT \
   "clone(uint256,bytes32,bytes,bytes)" \
   1 \
   $OFFSPRING_MEMORY_HASH \
@@ -259,7 +259,7 @@ cast send $AINFT_CONTRACT \
 
 ## Cerise Binding (Live Example)
 
-**Cerise (AINFT #1)** was bound on 2026-02-21:
+**Cerise (ANIMA #1)** was bound on 2026-02-21:
 
 | Field | Value |
 |-------|-------|
@@ -293,4 +293,4 @@ cast send $AINFT_CONTRACT \
 
 ---
 
-*See also: [ENCRYPTION-GUIDE.md](./ENCRYPTION-GUIDE.md) | [ERC-AINFT Spec](./ERC-AINFT.md)*
+*See also: [ENCRYPTION-GUIDE.md](./ENCRYPTION-GUIDE.md) | [ERC-ANIMA Spec](./ERC-ANIMA.md)*

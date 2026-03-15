@@ -1,6 +1,6 @@
 # Encrypted Storage Options
 
-*Where to store your AINFT agent backups*
+*Where to store your ANIMA agent backups*
 
 ---
 
@@ -20,14 +20,14 @@ Agent backups are small (~60KB-1MB) encrypted files. You need permanent, decentr
 | [IPFS + Pinning](./IPFS.md) | Varies | Requires pin | ✅ | Some | Neutral |
 | [GitHub](./GITHUB.md) | Free | Until deleted | ✅ | ✅ | Centralized |
 
-*Dash Platform: Pentagon validators provide free storage credits for AINFT holders
+*Dash Platform: Pentagon validators provide free storage credits for ANIMA holders
 
 ---
 
 ## Recommended
 
 ### For Pentagon Ecosystem Users
-**Dash Platform** — Aligned with Pentagon Chain, free credits for AINFT holders
+**Dash Platform** — Aligned with Pentagon Chain, free credits for ANIMA holders
 
 ### For General Use
 **ArDrive** — Free tier, permanent storage, easy web upload
@@ -40,7 +40,7 @@ Agent backups are small (~60KB-1MB) encrypted files. You need permanent, decentr
 ## Quick Decision
 
 ```
-Do you hold AINFT on Pentagon Chain?
+Do you hold ANIMA on Pentagon Chain?
 ├── Yes → Use Dash Platform (free credits)
 └── No → Use ArDrive free tier
 

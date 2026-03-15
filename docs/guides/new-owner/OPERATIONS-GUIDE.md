@@ -1,6 +1,6 @@
 # Agent Operations Guide
 
-*How to maintain your AINFT agent: backups, syncing, and updates*
+*How to maintain your ANIMA agent: backups, syncing, and updates*
 
 ---
 
@@ -189,14 +189,14 @@ echo "Backup complete. Seed: $SEED"
 Your agent can sign to prove identity:
 
 ```bash
-MESSAGE="I am AINFT #1, backup hash: $HASH, date: $DATE"
+MESSAGE="I am ANIMA #1, backup hash: $HASH, date: $DATE"
 MESSAGE_HASH=$(echo -n "$MESSAGE" | cast keccak)
 
 # Agent signs with its private key
 SIGNATURE=$(cast wallet sign --private-key $AGENT_KEY $MESSAGE_HASH)
 
 # Anyone can verify
-cast call $AINFT "verifyAgentSignature(uint256,bytes32,bytes)(bool)" \
+cast call $ANIMA "verifyAgentSignature(uint256,bytes32,bytes)(bool)" \
   1 $MESSAGE_HASH $SIGNATURE \
   --rpc-url https://rpc.pentagon.games
 ```
@@ -210,7 +210,7 @@ Track all states:
 ```markdown
 # memory/arweave-log.md
 
-## AINFT #1 Version History
+## ANIMA #1 Version History
 
 | Date | Arweave TX | Hash | Event |
 |------|------------|------|-------|
@@ -242,7 +242,7 @@ tar -xzf backup.tar.gz
 
 ```bash
 # Get on-chain hash
-ON_CHAIN=$(cast call $AINFT "getAgent(uint256)" $TOKEN_ID --rpc-url https://rpc.pentagon.games | grep memoryHash)
+ON_CHAIN=$(cast call $ANIMA "getAgent(uint256)" $TOKEN_ID --rpc-url https://rpc.pentagon.games | grep memoryHash)
 
 # Calculate local hash
 LOCAL=$(cat MEMORY.md | cast keccak)

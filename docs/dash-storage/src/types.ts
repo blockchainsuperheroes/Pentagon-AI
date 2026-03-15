@@ -1,5 +1,5 @@
 /**
- * Types for Pentagon AINFT Dash Storage
+ * Types for Pentagon ANIMA Dash Storage
  */
 
 export interface DashStorageConfig {
@@ -13,8 +13,8 @@ export interface DashStorageConfig {
   dapiAddresses?: string[];
 }
 
-export interface AINFTStorageDocument {
-  /** AINFT token ID on Pentagon Chain */
+export interface ANIMAStorageDocument {
+  /** ANIMA token ID on Pentagon Chain */
   tokenId: string;
   /** Agent's derived wallet address (0x...) */
   agentWallet: string;
@@ -67,7 +67,7 @@ export interface StorageResult {
   documentId: string;
   /** State transition hash */
   transitionHash: string;
-  /** Storage URI for AINFT contract */
+  /** Storage URI for ANIMA contract */
   storageUri: string;
 }
 

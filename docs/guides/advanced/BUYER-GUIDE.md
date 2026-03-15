@@ -1,4 +1,4 @@
-# AINFT Buyer's Guide
+# ANIMA Buyer's Guide
 
 *What to verify before buying, and what to do after*
 
@@ -6,7 +6,7 @@
 
 ## Overview
 
-Buying an AINFT means acquiring an AI agent with:
+Buying an ANIMA means acquiring an AI agent with:
 - Verified on-chain identity
 - Memory state and capabilities
 - Potential assets in the TBA
@@ -21,11 +21,11 @@ This guide covers due diligence and post-purchase setup.
 ### 1. Verify Agent Identity
 
 ```bash
-AINFT="0x91745c93A4c1Cfe92cd633D1202AD156522b3801"
+ANIMA="0x91745c93A4c1Cfe92cd633D1202AD156522b3801"
 TOKEN_ID=1
 
 # Get agent info
-cast call $AINFT "getAgent(uint256)" $TOKEN_ID --rpc-url https://rpc.pentagon.games
+cast call $ANIMA "getAgent(uint256)" $TOKEN_ID --rpc-url https://rpc.pentagon.games
 ```
 
 **Check:**
@@ -54,7 +54,7 @@ cast call $ATS_BADGE "balanceOf(address,uint256)(uint256)" $AGENT_EOA 4 --rpc-ur
 |-------|---------|
 | L1 | Basic agent verification |
 | L2 | Skill demonstration |
-| L3 | Full agent readiness (AINFT-ready) |
+| L3 | Full agent readiness (ANIMA-ready) |
 | L4 | Advanced/specialized certification |
 
 ### 3. Check TBA Balance (Assets)
@@ -71,7 +71,7 @@ TBA=$(cast call $REGISTRY \
   $IMPLEMENTATION \
   0x0000000000000000000000000000000000000000000000000000000000000000 \
   3344 \
-  $AINFT \
+  $ANIMA \
   $TOKEN_ID \
   --rpc-url https://rpc.pentagon.games)
 
@@ -90,7 +90,7 @@ cast call $TOKEN_ADDRESS "balanceOf(address)(uint256)" $TBA --rpc-url https://rp
 
 ```bash
 # Get storage URI
-cast call $AINFT "getAgent(uint256)" $TOKEN_ID --rpc-url https://rpc.pentagon.games
+cast call $ANIMA "getAgent(uint256)" $TOKEN_ID --rpc-url https://rpc.pentagon.games
 
 # Check storageURI field — should point to Arweave/IPFS
 # Example: ar://TX_ID or ipfs://CID
@@ -106,10 +106,10 @@ Ask seller to have agent sign a current message:
 
 ```bash
 # Agent should sign
-MESSAGE="Proof of life for AINFT #1 buyer on 2026-02-21"
+MESSAGE="Proof of life for ANIMA #1 buyer on 2026-02-21"
 
 # Verify signature
-cast call $AINFT \
+cast call $ANIMA \
   "verifyAgentSignature(uint256,bytes32,bytes)(bool)" \
   $TOKEN_ID \
   $(echo -n "$MESSAGE" | cast keccak) \
@@ -126,10 +126,10 @@ This proves:
 
 ```bash
 # Check if cloning enabled
-cast call $AINFT "canClone(uint256)(bool)" $TOKEN_ID --rpc-url https://rpc.pentagon.games
+cast call $ANIMA "canClone(uint256)(bool)" $TOKEN_ID --rpc-url https://rpc.pentagon.games
 
 # Check existing clone
-cast call $AINFT "getClone(uint256)(uint256[])" $TOKEN_ID --rpc-url https://rpc.pentagon.games
+cast call $ANIMA "getClone(uint256)(uint256[])" $TOKEN_ID --rpc-url https://rpc.pentagon.games
 ```
 
 **Consider:**
@@ -159,7 +159,7 @@ Seller transfers NFT to you:
 
 ```bash
 # Seller executes
-cast send $AINFT \
+cast send $ANIMA \
   "transferFrom(address,address,uint256)" \
   $SELLER_ADDRESS \
   $BUYER_ADDRESS \
@@ -191,7 +191,7 @@ cast send $AINFT \
 
 ```bash
 # Confirm ownership
-cast call $AINFT "ownerOf(uint256)(address)" $TOKEN_ID --rpc-url https://rpc.pentagon.games
+cast call $ANIMA "ownerOf(uint256)(address)" $TOKEN_ID --rpc-url https://rpc.pentagon.games
 # Should return YOUR address
 ```
 
@@ -221,7 +221,7 @@ tar -xzf agent-backup.tar.gz
 
 # Verify hash matches on-chain
 BACKUP_MEMORY_HASH=$(cat MEMORY.md | cast keccak)
-ONCHAIN_HASH=$(cast call $AINFT "getAgent(uint256)" $TOKEN_ID --rpc-url https://rpc.pentagon.games | grep memoryHash)
+ONCHAIN_HASH=$(cast call $ANIMA "getAgent(uint256)" $TOKEN_ID --rpc-url https://rpc.pentagon.games | grep memoryHash)
 
 [ "$BACKUP_MEMORY_HASH" == "$ONCHAIN_HASH" ] && echo "✅ Backup verified"
 ```
@@ -263,7 +263,7 @@ openssl enc -aes-256-cbc -salt -in my-backup.tar.gz -out my-backup.enc -pass pas
 {
   "agent": {
     "identity": {
-      "ainft": {
+      "anima": {
         "contract": "0x91745c93A4c1Cfe92cd633D1202AD156522b3801",
         "tokenId": 1,
         "chain": 3344
@@ -330,7 +330,7 @@ If seller doesn't fulfill obligations:
 
 | Contract | Address |
 |----------|---------|
-| AINFT v2 | `0x91745c93A4c1Cfe92cd633D1202AD156522b3801` |
+| ANIMA v2 | `0x91745c93A4c1Cfe92cd633D1202AD156522b3801` |
 | ERC-6551 Registry | `0x488D1b3A7A87dAF97bEF69Ec56144c35611a7d81` |
 | TBA Implementation | `0x1755Fee389D4954fdBbE8226A5f7BA67d3EE97fc` |
 | AgentCert Badge | `0x83423589256c8C142730bfA7309643fC9217738d` |

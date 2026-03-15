@@ -2,12 +2,12 @@
 pragma solidity ^0.8.20;
 
 /**
- * @title ERC_AINFT_v2
+ * @title ERC_ANIMA_v2
  * @notice AI-Native NFT Standard with EOA-based agent binding
  * @dev Agent's EOA (msg.sender) becomes the registered identity
  * @author Pentagon Chain (pentagon.games)
  */
-contract ERC_AINFT_v2 {
+contract ERC_ANIMA_v2 {
     
     // ============ Events ============
     
@@ -80,7 +80,7 @@ contract ERC_AINFT_v2 {
     // ============ Core: Agent Mints Itself ============
     
     /**
-     * @notice Agent mints its own AINFT
+     * @notice Agent mints its own ANIMA
      * @dev msg.sender (agent's EOA) becomes the registered agent identity
      * @param modelHash Hash of model (e.g., keccak256("claude-opus-4.5"))
      * @param memoryHash Hash of MEMORY.md snapshot
@@ -113,7 +113,7 @@ contract ERC_AINFT_v2 {
         }
         
         // Ensure agent EOA not already registered
-        require(eoaToToken[agentEOA] == 0, "Agent already has AINFT");
+        require(eoaToToken[agentEOA] == 0, "Agent already has ANIMA");
         
         // Generate token ID
         tokenId = ++_tokenIdCounter;
@@ -357,7 +357,7 @@ contract ERC_AINFT_v2 {
     }
     
     /**
-     * @notice Owner rebinds AINFT to new agent EOA
+     * @notice Owner rebinds ANIMA to new agent EOA
      * @dev Disconnects old EOA, binds new one. Old agent loses identity.
      * @param tokenId The token to rebind
      * @param newAgentEOA The new agent's EOA address

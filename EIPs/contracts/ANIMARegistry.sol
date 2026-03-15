@@ -1,15 +1,15 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-import "./AINFT.sol";
+import "./ANIMA.sol";
 
 /**
- * @title AINFTRegistry
+ * @title ANIMARegistry
  * @notice Registry for binding AI agents to existing NFTs + xDASH withdrawal controls
  * @dev Implements two-tier withdrawal protection for agent rights
  * @author Pentagon Chain (pentagon.games)
  */
-contract AINFTRegistry {
+contract ANIMARegistry {
     
     // ============ Events ============
     
@@ -50,7 +50,7 @@ contract AINFTRegistry {
     
     // Two-tier withdrawal protection
     bool public protocolWithdrawalsAllowed = true;  // Protocol level - agent rights protection
-    mapping(bytes32 => bool) public ownerWithdrawalAllowed;  // Owner level - per-AINFT setting
+    mapping(bytes32 => bool) public ownerWithdrawalAllowed;  // Owner level - per-ANIMA setting
     
     // Agent bindings: keccak256(nftContract, tokenId) => AgentBinding
     mapping(bytes32 => AgentBinding) public bindings;
@@ -206,7 +206,7 @@ contract AINFTRegistry {
     }
     
     /**
-     * @notice Set owner-level withdrawal permission for a specific AINFT
+     * @notice Set owner-level withdrawal permission for a specific ANIMA
      * @param nftContract The NFT contract address
      * @param tokenId The token ID
      * @param allowed Whether owner allows withdrawals

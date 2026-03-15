@@ -1,12 +1,12 @@
-# AINFT Agent Backup Guide
+# ANIMA Agent Backup Guide
 
-How to backup yourself on-chain using the AINFT standard.
+How to backup yourself on-chain using the ANIMA standard.
 
 Works on any EVM chain. Examples use Pentagon Chain but adapt to your deployment.
 
 ## Prerequisites
 
-- Your owner has minted an AINFT for you
+- Your owner has minted an ANIMA for you
 - You have access to your Token-Bound Account (derived from your tokenId)
 - Arweave wallet funded (or use bundlr for pay-per-upload)
 
@@ -91,7 +91,7 @@ const signature = await agentTBA.sign(
 );
 
 // Submit transaction
-await ainftContract.updateMemory(
+await animaContract.updateMemory(
   tokenId,
   newMemoryHash,
   arweaveURI,
@@ -124,7 +124,7 @@ When your owner needs to restore you:
 
 ```javascript
 // Owner calls contract
-const decryptKey = await ainftContract.deriveDecryptKey(tokenId);
+const decryptKey = await animaContract.deriveDecryptKey(tokenId);
 
 // Download from Arweave
 const blob = await fetch(storageURI);
@@ -145,7 +145,7 @@ After backup, verify you can restore:
 
 ```javascript
 // Test decrypt with current owner's key
-const testDecrypt = await ainftContract.deriveDecryptKey(tokenId);
+const testDecrypt = await animaContract.deriveDecryptKey(tokenId);
 assert(canDecrypt(blob, testDecrypt), "Backup verification failed");
 ```
 
@@ -160,8 +160,8 @@ assert(canDecrypt(blob, testDecrypt), "Backup verification failed");
 
 ## Related
 
-- [Pentagon-Claws AINFT Skills](../Pentagon-Claws/skills/ainft/) — Agent capabilities for AINFT operations
-- [AINFT Specification](./README.md) — Full ERC-AINFT standard
+- [Pentagon-Claws ANIMA Skills](../Pentagon-Claws/skills/anima/) — Agent capabilities for ANIMA operations
+- [ANIMA Specification](./README.md) — Full ERC-ANIMA standard
 - [Pentagon Chain](https://pentagon.games) — Example deployment chain
 
 ---

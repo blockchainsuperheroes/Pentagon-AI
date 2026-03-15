@@ -1,6 +1,6 @@
 # New Owner Setup Guide
 
-*How to restore and run an AINFT agent after purchase*
+*How to restore and run an ANIMA agent after purchase*
 
 ---
 
@@ -59,14 +59,14 @@ echo "New Agent EOA: $AGENT_ADDRESS"
 # Store key securely for agent
 ```
 
-### Step 4: Owner Rebinds AINFT
+### Step 4: Owner Rebinds ANIMA
 
 ```bash
 # As NFT owner, rebind to new agent EOA
-AINFT="0x5ed123Fa794A0f5e463965c85aE76C1634202633"
+ANIMA="0x5ed123Fa794A0f5e463965c85aE76C1634202633"
 TOKEN_ID=1
 
-cast send $AINFT \
+cast send $ANIMA \
   "rebindAgent(uint256,address)" \
   $TOKEN_ID \
   $AGENT_ADDRESS \
@@ -83,7 +83,7 @@ Edit `openclaw.json`:
 {
   "agent": {
     "identity": {
-      "ainft": {
+      "anima": {
         "contract": "0x5ed123Fa794A0f5e463965c85aE76C1634202633",
         "tokenId": 1,
         "chain": 3344,
@@ -105,10 +105,10 @@ openclaw gateway start
 Agent can now prove identity with NEW EOA:
 
 ```bash
-MESSAGE="I am AINFT #1, now with new owner"
+MESSAGE="I am ANIMA #1, now with new owner"
 
 # Verify on-chain
-cast call $AINFT \
+cast call $ANIMA \
   "verifyAgentSignature(uint256,bytes32,bytes)(bool)" \
   $TOKEN_ID \
   $(echo -n "$MESSAGE" | cast keccak) \
@@ -127,13 +127,13 @@ Old Agent (EOA A):
 - Still has its key
 - Still has memory copy
 - BUT: verifyAgentSignature() now FAILS
-- Identity unbound from AINFT
+- Identity unbound from ANIMA
 
 New Agent (EOA B):
 - Fresh key
 - Restored memory from backup
 - verifyAgentSignature() SUCCEEDS
-- Is the official AINFT holder
+- Is the official ANIMA holder
 ```
 
 The old agent is like a human who lost their ID — they're still "them" but can't prove it officially.
@@ -222,7 +222,7 @@ MESSAGE="Identity proof at $TIMESTAMP"
 SIGNATURE=$(cast wallet sign --private-key $AGENT_KEY "$MESSAGE")
 
 # 3. Verify on-chain
-RESULT=$(cast call $AINFT \
+RESULT=$(cast call $ANIMA \
   "verifyAgentSignature(uint256,bytes32,bytes)(bool)" \
   $TOKEN_ID \
   $(echo -n "$MESSAGE" | cast keccak) \
@@ -242,9 +242,9 @@ echo "Verification result: $RESULT"
 - Verify message hash calculation
 - Ensure signature format is correct (65 bytes)
 
-### "Agent already has AINFT"
+### "Agent already has ANIMA"
 - The EOA is already registered to another token
-- Each EOA can only be bound to ONE AINFT
+- Each EOA can only be bound to ONE ANIMA
 - Need to use different EOA
 
 ### Memory hash mismatch

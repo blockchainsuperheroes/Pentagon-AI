@@ -1,4 +1,4 @@
-# Manual AINFT Setup
+# Manual ANIMA Setup
 
 *No OpenClaw needed — restore agent backup yourself*
 
@@ -87,7 +87,7 @@ Edit `openclaw.json`:
   },
   "agent": {
     "identity": {
-      "ainft": {
+      "anima": {
         "contract": "0x91745c93A4c1Cfe92cd633D1202AD156522b3801",
         "tokenId": 1,
         "chain": 3344,
@@ -117,7 +117,7 @@ chmod 600 ~/my-agent/.env
 
 ---
 
-## Step 7: Rebind AINFT to New EOA
+## Step 7: Rebind ANIMA to New EOA
 
 ```bash
 CONTRACT="0x91745c93A4c1Cfe92cd633D1202AD156522b3801"
@@ -161,7 +161,7 @@ openclaw gateway start
 Talk to your agent:
 
 ```
-Are you AINFT #1? Can you verify your identity?
+Are you ANIMA #1? Can you verify your identity?
 ```
 
 Agent should be able to sign a message proving it controls the bound EOA.
@@ -209,7 +209,7 @@ echo "AGENT_PRIVATE_KEY=0x$AGENT_KEY" >> $WORKSPACE/.env
 chmod 600 $WORKSPACE/.env
 
 # Rebind on-chain
-echo "Rebinding AINFT to new EOA..."
+echo "Rebinding ANIMA to new EOA..."
 cast send $CONTRACT \
   "rebindAgent(uint256,address)" \
   $TOKEN_ID $AGENT_EOA \

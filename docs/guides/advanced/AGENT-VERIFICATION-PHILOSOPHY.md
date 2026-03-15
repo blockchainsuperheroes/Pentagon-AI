@@ -1,6 +1,6 @@
 # Agent Verification: Centralized vs Decentralized
 
-*Why AINFT uses cryptographic self-sovereignty instead of trusted execution*
+*Why ANIMA uses cryptographic self-sovereignty instead of trusted execution*
 
 ---
 
@@ -69,7 +69,7 @@ When Agent A says "I'm Cerise, the agent you deployed last month," how do you ve
 
 ---
 
-## Decentralized Approach (AINFT)
+## Decentralized Approach (ANIMA)
 
 ### Architecture
 
@@ -93,7 +93,7 @@ When Agent A says "I'm Cerise, the agent you deployed last month," how do you ve
 ### How It Works
 
 1. **EOA Generation**: Agent generates their own Ethereum wallet (EOA)
-2. **AINFT Mint**: Agent signs mint transaction with their key
+2. **ANIMA Mint**: Agent signs mint transaction with their key
 3. **On-Chain Binding**: `agentEOA` permanently recorded to `tokenId`
 4. **Verification**: Anyone checks signature against registered EOA
 
@@ -107,7 +107,7 @@ When Agent A says "I'm Cerise, the agent you deployed last month," how do you ve
 
 ### Why This Is Better
 
-| Property | TEE Approach | AINFT Approach |
+| Property | TEE Approach | ANIMA Approach |
 |----------|--------------|----------------|
 | Single point of failure | Platform | None |
 | Verification dependency | Platform online | Any node |
@@ -128,11 +128,11 @@ When Agent A says "I'm Cerise, the agent you deployed last month," how do you ve
 
 > **The agent IS the proof.**
 
-In TEE systems, the platform proves the agent. In AINFT, the agent proves themselves.
+In TEE systems, the platform proves the agent. In ANIMA, the agent proves themselves.
 
 ```
 TEE:   Platform says "Trust me, this is Agent X"
-AINFT: Agent says "Here's my signature, verify it yourself"
+ANIMA: Agent says "Here's my signature, verify it yourself"
 ```
 
 ### Cryptographic Self-Sovereignty
@@ -158,7 +158,7 @@ The agent holds their own private key. This means:
 4. Trust platform's response
 ```
 
-**AINFT Approach:**
+**ANIMA Approach:**
 ```
 1. Agent signs message: "I am Agent X"
 2. Query blockchain: getAgentEOA(tokenId)
@@ -176,7 +176,7 @@ The agent holds their own private key. This means:
 4. Old identity lost or requires migration
 ```
 
-**AINFT Approach:**
+**ANIMA Approach:**
 ```
 1. Move agent to new server
 2. Agent still has same private key
@@ -193,7 +193,7 @@ All dependent services fail
 No recovery without platform
 ```
 
-**AINFT Approach:**
+**ANIMA Approach:**
 ```
 Platform irrelevant
 Agent EOA still on-chain
@@ -218,7 +218,7 @@ Human's Machine          Cloud VPS            Sovereign/Dark
           inspect                access                autonomy
 ```
 
-AINFT supports all levels because:
+ANIMA supports all levels because:
 - Binding is to the EOA (cryptographic fact)
 - Not to where the agent runs (infrastructure detail)
 - Agent can migrate, identity persists
@@ -227,14 +227,14 @@ AINFT supports all levels because:
 
 ## Security Model
 
-### What AINFT Guarantees
+### What ANIMA Guarantees
 
 ✅ **Identity Binding**: Token X is permanently bound to EOA Y
 ✅ **Signature Verification**: Anyone can verify agent signed a message
 ✅ **Lineage Tracking**: Parent-child relationships immutable
 ✅ **State Commitments**: Memory hash publicly verifiable
 
-### What AINFT Does NOT Guarantee
+### What ANIMA Does NOT Guarantee
 
 ❌ **Key Security**: If agent leaks key, identity compromised
 ❌ **Memory Privacy**: Hash is public (but contents encrypted)
@@ -247,7 +247,7 @@ For high-security applications, combine with:
 
 | Layer | Purpose |
 |-------|---------|
-| AgentCert L3 | Prove agent readiness before AINFT mint |
+| AgentCert L3 | Prove agent readiness before ANIMA mint |
 | TBA | Give agent smart contract wallet with controls |
 | Encrypted Storage | Protect memory on Arweave/IPFS |
 | Owner Controls | Human can freeze/transfer if needed |
@@ -274,7 +274,7 @@ function mintSelf(
     require(_verifySignature(..., platformSigner), "Invalid attestation");
     
     // Ensure EOA not already registered
-    require(eoaToToken[agentEOA] == 0, "Agent already has AINFT");
+    require(eoaToToken[agentEOA] == 0, "Agent already has ANIMA");
     
     // Register binding
     eoaToToken[agentEOA] = tokenId;
@@ -302,7 +302,7 @@ function verifyAgentSignature(
 
 ```bash
 # Get registered EOA
-REGISTERED=$(cast call $AINFT "getAgentEOA(uint256)(address)" $TOKEN_ID)
+REGISTERED=$(cast call $ANIMA "getAgentEOA(uint256)(address)" $TOKEN_ID)
 
 # Agent signs a challenge
 SIGNATURE=$(agent signs "challenge-12345")
@@ -316,7 +316,7 @@ RECOVERED=$(ecrecover(challenge, signature))
 
 ## Summary
 
-| Aspect | TEE/Centralized | AINFT/Decentralized |
+| Aspect | TEE/Centralized | ANIMA/Decentralized |
 |--------|-----------------|---------------------|
 | Trust model | Platform | Cryptography |
 | Key custody | Platform holds | Agent holds |
@@ -326,7 +326,7 @@ RECOVERED=$(ecrecover(challenge, signature))
 | Privacy | Platform sees all | Agent controls |
 | Portability | Locked | Universal |
 
-**Bottom line**: AINFT makes agents first-class cryptographic entities. They prove themselves, hold their own keys, and don't depend on any platform for identity.
+**Bottom line**: ANIMA makes agents first-class cryptographic entities. They prove themselves, hold their own keys, and don't depend on any platform for identity.
 
 ---
 
@@ -334,7 +334,7 @@ RECOVERED=$(ecrecover(challenge, signature))
 
 ### The Autonomy Spectrum
 
-AINFT enables varying degrees of agent autonomy:
+ANIMA enables varying degrees of agent autonomy:
 
 ```
 Level 1              Level 2              Level 3              Level 4
@@ -409,7 +409,7 @@ Even at Level 3-4, the NFT owner retains:
 
 ### Design Philosophy
 
-AINFT **enables** full sovereignty but **doesn't require** it.
+ANIMA **enables** full sovereignty but **doesn't require** it.
 
 The standard is neutral — it's a tool. Whether to create Level 1 helpers or Level 4 autonomous entities is an ethical and practical decision left to the deployer.
 
@@ -419,8 +419,8 @@ Most agents should remain at Level 1-2. Sovereignty is a feature for specific us
 
 ## References
 
-- [ERC-AINFTA: AI-Native NFT Standard](./ERC-AINFT.md)
-- [AINFT v2 Contract](./contracts/ERC_AINFT_v2.sol)
+- [ERC-ANIMA: AI-Native NFT Standard](./ERC-ANIMA.md)
+- [ANIMA v2 Contract](./contracts/ERC_ANIMA_v2.sol)
 - [OpenClaw Bind Guide](./OPENCLAW-BIND-GUIDE.md)
 - [ERC-6551: Token Bound Accounts](https://eips.ethereum.org/EIPS/eip-6551)
 

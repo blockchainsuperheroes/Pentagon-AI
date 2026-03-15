@@ -35,7 +35,7 @@
 ## Upload Backup (Web)
 
 1. Log in to app.ardrive.io
-2. Create folder: `AINFT-Backups`
+2. Create folder: `ANIMA-Backups`
 3. Click "Upload"
 4. Select your `.enc` backup file
 5. Confirm upload

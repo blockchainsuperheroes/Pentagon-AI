@@ -2,7 +2,7 @@
 pragma solidity ^0.8.20;
 
 import "forge-std/Script.sol";
-import "../contracts/ERC_AINFT_v2.sol";
+import "../contracts/ERC_ANIMA_v2.sol";
 
 contract DeployV2 is Script {
     function run() external {
@@ -11,9 +11,9 @@ contract DeployV2 is Script {
         
         vm.startBroadcast(deployerPrivateKey);
         
-        ERC_AINFT_v2 ainft = new ERC_AINFT_v2("Pentagon AINFT v2", "PAINFT2", platformSigner);
+        ERC_ANIMA_v2 anima = new ERC_ANIMA_v2("Pentagon ANIMA v2", "PANIMA2", platformSigner);
         
-        console.log("AINFT v2 deployed to:", address(ainft));
+        console.log("ANIMA v2 deployed to:", address(anima));
         console.log("Platform signer:", platformSigner);
         
         vm.stopBroadcast();

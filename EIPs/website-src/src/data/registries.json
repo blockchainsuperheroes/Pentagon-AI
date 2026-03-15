@@ -5,13 +5,13 @@
       "chainId": 3344,
       "contracts": [
         {
-          "name": "AINFT Genesis",
+          "name": "ANIMA Genesis",
           "address": "0x4e8D3B9Be7Ef241Fb208364ed511E92D6E2A172d",
           "type": "ERC-8170 Token",
           "status": "active"
         },
         {
-          "name": "AINFTRegistry",
+          "name": "ANIMARegistry",
           "address": "0x327165c476da9071933d4e2dbb58efe2f6c9f486",
           "type": "Agent Binding Registry",
           "status": "active"

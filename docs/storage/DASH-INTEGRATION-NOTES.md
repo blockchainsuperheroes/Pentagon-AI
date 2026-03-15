@@ -1,4 +1,4 @@
-# AINFT ↔ Dash Platform Integration Notes
+# ANIMA ↔ Dash Platform Integration Notes
 
 *Started: 2026-02-25*
 

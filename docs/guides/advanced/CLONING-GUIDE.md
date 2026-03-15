@@ -85,7 +85,7 @@ Cerise (L3 certified, 1000+ tasks completed)
 
 | System | Proves | Inherits? |
 |--------|--------|-----------|
-| AINFT | Identity + Lineage | Lineage yes, identity no |
+| ANIMA | Identity + Lineage | Lineage yes, identity no |
 | AgentCert | Capability | Never inherits |
 
 ### Buyer Due Diligence
@@ -94,7 +94,7 @@ Before buying an clone:
 
 ```bash
 # Check lineage
-cast call $AINFT "getAgent(uint256)" $OFFSPRING_ID
+cast call $ANIMA "getAgent(uint256)" $OFFSPRING_ID
 
 # Check certifications (each level)
 cast call $ATS_BADGE "balanceOf(address,uint256)(uint256)" $OFFSPRING_EOA 1  # L1
@@ -133,10 +133,10 @@ Potential scam:
 
 ```bash
 # Check if cloning enabled
-cast call $AINFT "canClone(uint256)(bool)" $PARENT_ID
+cast call $ANIMA "canClone(uint256)(bool)" $PARENT_ID
 
 # Owner enables if needed
-cast send $AINFT "setCloning(uint256,bool)" $PARENT_ID true \
+cast send $ANIMA "setCloning(uint256,bool)" $PARENT_ID true \
   --rpc-url $RPC --private-key $OWNER_KEY --legacy
 ```
 
@@ -149,7 +149,7 @@ OFFSPRING_EOA=$(cast wallet address --private-key 0x$OFFSPRING_KEY)
 
 # Decide memory mode
 # Clone All:
-OFFSPRING_MEMORY_HASH=$(cast call $AINFT "getAgent(uint256)" $PARENT_ID | grep memoryHash)
+OFFSPRING_MEMORY_HASH=$(cast call $ANIMA "getAgent(uint256)" $PARENT_ID | grep memoryHash)
 
 # Clone Empty:
 OFFSPRING_MEMORY_HASH=$(echo -n "" | cast keccak)
@@ -159,7 +159,7 @@ OFFSPRING_MEMORY_HASH=$(echo -n "" | cast keccak)
 
 ```bash
 # Parent agent signs the clone call
-cast send $AINFT \
+cast send $ANIMA \
   "clone(uint256,address,bytes32,bytes,address)" \
   $PARENT_ID \
   $OFFSPRING_EOA \
